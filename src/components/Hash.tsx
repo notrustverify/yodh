@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react'
-import { QRCodeSVG } from 'qrcode.react';
+import React from 'react'
 import { checkHash } from '@/services/gift.service';
 
 
@@ -7,7 +6,6 @@ export default function Hash({ secret, secretContract }:{ secret: Uint8Array, se
 
    const isValid = checkHash(secret, secretContract )
    return (<>
-   <div>{isValid ? "" : "Secret is not valid"}</div>
-   
+      <div>{isValid ? "" : "Secret is not valid"}</div>
    </>)
 }

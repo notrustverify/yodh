@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Page, Text, View, Document, StyleSheet, Link, Image, Svg, Font } from '@react-pdf/renderer'
+import { Page, Text, Document, StyleSheet, Link, Image, Font } from '@react-pdf/renderer'
 import { getUrl, shortAddress } from '@/services/utils'
 import QRCode from 'qrcode'
 

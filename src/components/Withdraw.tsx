@@ -1,17 +1,14 @@
 'use client'
 import React, { useCallback, useEffect, useRef } from 'react'
-import { FC, useState } from 'react'
+import { useState } from 'react'
 import styles from '../styles/Gift.module.css'
-import { announce, checkHash, claim, createGift, getContractState } from '@/services/gift.service'
+import { announce, checkHash, claim, getContractState } from '@/services/gift.service'
 import { TxStatus } from './TxStatus'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
 import {
   addressFromContractId,
-  ContractState,
-  Fields,
   node,
   number256ToNumber,
-  ONE_ALPH,
   waitForTxConfirmation,
   ZERO_ADDRESS
 } from '@alephium/web3'
@@ -40,27 +37,6 @@ export const WithdrawDapp = ({
   const initialized = useRef(false)
   const [step, setStep] = useState<WithdrawState>(WithdrawState.Locking)
   const [isNotClaimed, setIsNotClaimed] = useState<boolean>(true)
-  const [messageText, setMessage] = useState('')
-
-  function useInterval(callback: () => void, delay: number) {
-    const savedCallback = useRef<() => void>(() => {})
-
-    // Remember the latest callback.
-    useEffect(() => {
-      savedCallback.current = callback
-    }, [callback])
-
-    // Set up the interval.
-    useEffect(() => {
-      function tick() {
-        savedCallback.current()
-      }
-      if (delay !== null) {
-        let id = setInterval(tick, delay)
-        return () => clearInterval(id)
-      }
-    }, [delay])
-  }
 
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Head from 'next/head'
 import styles from '@/styles/Home.module.css'
-import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
-import { useRouter } from 'next/router'
 import { WithdrawDapp } from '@/components/Withdraw'
-import Link from 'next/link'
 import NewGift from '@/components/NewGift'
-import { getContractIdGroup } from '@/services/utils'
-import { useWalletConfig } from '@alephium/web3-react'
 
-interface Params {
-   contract: string;
-   secret: string;
-   msg: string;
-}
-
-export default function Home({contract, secret, msg}:{contract:string, secret:string, msg:string}) {
+export default function Home({ contract, secret, msg }:{ contract:string, secret:string, msg:string }) {
   
-   console.log(contract)
+  if (undefined !== contract)
+    console.log(contract)
+
   return (
     <>
       <div className={styles.container}>

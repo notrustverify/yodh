@@ -1,14 +1,11 @@
-import React, { useCallback, useEffect, useRef } from 'react'
-import store, { StoreBase, StoreType } from 'store2'
+import React from 'react'
 import QrCode from './Qrcode'
 import Modal from 'react-modal'
 import styles from '@/styles/Gift.module.css'
 import { Icon } from '@iconify/react'
 import { Gift } from '@/services/utils'
 
-
-
-export const Gifts = ({gifts}:{gifts:Array<Gift>}) => {
+export const Gifts = ({ gifts }:{ gifts:Array<Gift> }) => {
   const customStyles = {
     content: {
       top: '50%',
@@ -21,7 +18,7 @@ export const Gifts = ({gifts}:{gifts:Array<Gift>}) => {
     }
   }
 
-  const results: any = []
+  const results: JSX.Element[] = []
 
   const [modalIsOpen, setIsOpen] = React.useState(false)
 
@@ -32,10 +29,10 @@ export const Gifts = ({gifts}:{gifts:Array<Gift>}) => {
   const closeModal = () => {
     setIsOpen(false)
   }
-  if(gifts !== null){
+
+  if (gifts !== null) {
 
    gifts.forEach(element => {
-
    
        let message = element.message
        if (element.message === undefined) message = ''
@@ -49,7 +46,6 @@ export const Gifts = ({gifts}:{gifts:Array<Gift>}) => {
        )
    });
   
-
 }
 
   return (

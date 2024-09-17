@@ -10,7 +10,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer'
 import PdfGiftCard from './Pdf'
 import QrCode from './Qrcode'
 import { Footer } from './Footer'
-import store, { StoreBase, StoreType } from 'store2'
+import store from 'store2'
 import { Gifts } from './CreatedGifts'
 import { Gift, WithdrawState } from '@/services/utils'
 
@@ -25,8 +25,6 @@ export default function Home() {
   const [giftWrapped, setGiftWrapped] = useState<boolean>(false)
   const [gifts, setGifts] = useState<Array<Gift>>([])
   const initialized = useRef(false)
-
-
 
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<any> => {
@@ -51,7 +49,7 @@ export default function Home() {
       setOngoingTxId(result.txId)
       setContractId(result.contractInstance.contractId)
 
-     store.add('gifts', [{contractId: result.contractInstance.contractId, secret: array, message: message }])
+     store.add('gifts', [{ contractId: result.contractInstance.contractId, secret: array, message: message }])
     }
   }
 

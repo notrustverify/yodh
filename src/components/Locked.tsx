@@ -1,10 +1,8 @@
-import React, { useCallback, useRef } from 'react'
-import styles from '../styles/Gift.module.css'
-import Link from 'next/link'
+import React from 'react'
 import { ZERO_ADDRESS } from '@alephium/web3'
 import { shortAddress } from '@/services/utils'
 
-export const Locked = ({announcedAddress, connectedAddress, announcementLockedUntil}:{announcedAddress:string, connectedAddress:string|undefined, announcementLockedUntil:bigint}) => {
+export const Locked = ({ announcedAddress, connectedAddress, announcementLockedUntil }:{ announcedAddress:string, connectedAddress:string|undefined, announcementLockedUntil:bigint }) => {
   return (
    <label htmlFor='gift-message'>
    {announcedAddress !== connectedAddress &&

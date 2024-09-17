@@ -84,6 +84,10 @@ main {
   padding: 3rem 1rem;
 }
 
+footer {
+  padding: 1rem 1rem 0rem 1rem;
+}
+
 hr {
   background-color: var(--color-bg-secondary);
   border: none;

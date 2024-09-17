@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
-import { AlephiumWalletProvider, useWalletConfig } from '@alephium/web3-react'
-import { NetworkId, web3 } from '@alephium/web3'
+import { AlephiumWalletProvider } from '@alephium/web3-react'
+import { web3 } from '@alephium/web3'
 import { getContractIdGroup, getNetwork, getNode } from '../services/utils'
-import store from 'store2'
 import { useRouter } from 'next/router'
-import { contract } from '@alephium/web3/dist/src/codec'
 
 interface Params {
    contract: string;

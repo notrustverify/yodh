@@ -1,4 +1,4 @@
-import { addressFromContractId, groupOfAddress, NetworkId, NodeProvider, web3 } from '@alephium/web3'
+import { addressFromContractId, groupOfAddress, NetworkId, web3 } from '@alephium/web3'
 import router from 'next/router'
 
 export interface TokenFaucetConfig {
@@ -38,7 +38,7 @@ export function getContractIdGroup(contractId: string): number {
   return groupOfAddress(addressFromContractId(contractId))
 }
 
-export function getUrlParams(path:any) {
+export function getUrlParams(path: string) {
   // This ensures the code runs on the client-side only
   if(!router.isReady) return
   // Parse the URL fragment (hash) from the router's `asPath`
@@ -65,7 +65,7 @@ export async function contractExists(address: string): Promise<boolean> {
     const nodeProvider = web3.getCurrentNodeProvider();
     await nodeProvider.contracts.getContractsAddressState(address);
     return true;
-  } catch (error: any) {
+  } catch (error) {
     if (error instanceof Error && error.message.includes("KeyNotFound")) {
       return false;
     }

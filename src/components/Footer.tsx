@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react'
+import React from 'react'
 import styles from '../styles/Gift.module.css'
 import Link from 'next/link'
 
