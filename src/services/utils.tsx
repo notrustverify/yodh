@@ -9,16 +9,16 @@ export interface TokenFaucetConfig {
 }
 
 export interface Gift {
-   contractId: string
-   message: string
-   secret: Uint8Array
+  contractId: string
+  message: string
+  secret: Uint8Array
 }
 
 export enum WithdrawState {
-   Locked = 'Gift',
-   Locking = 'Unwrapping your gift',
-   Claiming = 'Opening your gift',
-   Wrapping = 'Gift wrapping'
+  Locked = 'Gift',
+  Locking = 'Unwrapping your gift',
+  Claiming = 'Opening your gift',
+  Wrapping = 'Gift wrapping'
 }
 
 export function getNetwork(): NetworkId {
@@ -27,60 +27,58 @@ export function getNetwork(): NetworkId {
 }
 
 export function getNode(): string {
-   return (process.env.NODE_URL ?? 'https://fullnode-testnet.alephium.notrustverify.ch')
- }
+  return (process.env.NODE_URL ?? 'https://fullnode-testnet.alephium.notrustverify.ch')
+}
 
- export function getUrl(): string {
-   return (process.env.URL ?? "https://predictalph.notrustverify.ch")
- }
+export function getUrl(): string {
+  return (process.env.URL ?? "https://yodh.app")
+}
 
- export function getContractIdGroup(contractId: string): number {
-   return groupOfAddress(addressFromContractId(contractId))
- }
+export function getContractIdGroup(contractId: string): number {
+  return groupOfAddress(addressFromContractId(contractId))
+}
 
 export function getUrlParams(path:any) {
- // This ensures the code runs on the client-side only
- if(!router.isReady) return
- // Parse the URL fragment (hash) from the router's `asPath`
- const hashIndex = router.asPath.indexOf('#');
+  // This ensures the code runs on the client-side only
+  if(!router.isReady) return
+  // Parse the URL fragment (hash) from the router's `asPath`
+  const hashIndex = router.asPath.indexOf('#');
 
- if (hashIndex > -1) {
-   const hash = router.asPath.substring(hashIndex + 1); // Get rid of the `#`
-   const searchParams = new URLSearchParams(hash);
+  if (hashIndex > -1) {
+    const hash = router.asPath.substring(hashIndex + 1); // Get rid of the `#`
+    const searchParams = new URLSearchParams(hash);
 
-   const contract = searchParams.get('contract') || '';
-   const secret = searchParams.get('secret') || '';
-   const msg = searchParams.get('msg') || '';
+    const contract = searchParams.get('contract') || '';
+    const secret = searchParams.get('secret') || '';
+    const msg = searchParams.get('msg') || '';
 
-   return({
-     contract,
-     secret,
-     msg,
-   });
+    return({
+      contract,
+      secret,
+      msg,
+    });
 
- }
+  }
 }
 export async function contractExists(address: string): Promise<boolean> {
-   try {
-     const nodeProvider = web3.getCurrentNodeProvider();
-     await nodeProvider.contracts.getContractsAddressState(address);
-     return true;
-   } catch (error: any) {
-     if (error instanceof Error && error.message.includes("KeyNotFound")) {
-       return false;
-     }
-     throw error;
-   }
- }
-
-
+  try {
+    const nodeProvider = web3.getCurrentNodeProvider();
+    await nodeProvider.contracts.getContractsAddressState(address);
+    return true;
+  } catch (error: any) {
+    if (error instanceof Error && error.message.includes("KeyNotFound")) {
+      return false;
+    }
+    throw error;
+  }
+}
 
 export function shortAddress(address: string){
-   return `${address.substring(0, 3)}...${address.substring(address.length - 3)}`}
-
+  return `${address.substring(0, 3)}...${address.substring(address.length - 3)}`
+}
 
 export function getGiftUrl(contractId:string, secret: Uint8Array, message:string){
-   const encodedSecret = Buffer.from(secret).toString('base64')
+  const encodedSecret = Buffer.from(secret).toString('base64')
 
-   return `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(encodedSecret)}&msg=${encodeURIComponent(message)}`
+  return `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(encodedSecret)}&msg=${encodeURIComponent(message)}`
 }

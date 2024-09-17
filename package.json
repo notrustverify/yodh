@@ -1,12 +1,12 @@
 {
   "name": "yodh",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "next dev",
     "start": "next start",
     "export": "next export",
-    "build": "npm run devnet:build",
+    "build": "next build",
     "devnet:build": "NEXT_PUBLIC_NETWORK=devnet next build",
     "testnet:build": "NEXT_PUBLIC_NETWORK=testnet next build",
     "mainnet:build": "NEXT_PUBLIC_NETWORK=mainnet next build",
