@@ -1,0 +1,86 @@
+
+Contract Gift (
+    // Variables to initialise contract
+    sender: Address,  // for cancellation
+    hashedSecret: ByteVec,
+    announcementLockIntervall: U256,
+    version: U256,  // To ensure future compatibility
+    isCancellable: Bool,
+
+    // Variable related to announcment and claim
+    mut announcedAddress: Address,
+    mut announcementLockedUntil: U256
+) {
+    event Lock(by: Address, until: U256)
+    event Withdraw(by: Address)
+    event Cancel()
+
+    enum ErrorCodes {
+        GiftLocked = 0
+        UnannouncedCaller = 1
+        WrongSecret = 2
+        CallerIsNotSender = 3
+        CancelIsNotAllowed = 4
+    }
+    
+    @using(assetsInContract = true, updateFields = true, checkExternalCaller = false)
+    pub fn announce() -> () {
+        // Ensure announcement is valid
+        //verifyAbsoluteLocktime!(announcementLockedUntil)
+        assert!(blockTimeStamp!() >= announcementLockedUntil, ErrorCodes.GiftLocked)
+
+        // Since the recipient may not have ALPH, we take the gas fees from the sent amount
+        payGasFee!(selfAddress!(), txGasFee!())
+
+        // Register announcement
+        announcedAddress = callerAddress!()
+        announcementLockedUntil = blockTimeStamp!() + announcementLockIntervall
+
+        emit Lock(announcedAddress, announcementLockedUntil)
+    }
+
+    @using(assetsInContract = true)
+    pub fn withdraw(secret: ByteVec) -> () {
+        // Check that caller is announced
+        checkCaller!(callerAddress!() == announcedAddress, ErrorCodes.UnannouncedCaller)
+
+        // Check that caller know secret
+        assert!(hashedSecret == sha256!(secret), ErrorCodes.WrongSecret)
+
+        // Since the recipient may not have ALPH, we take the gas fees from the sent amount
+        payGasFee!(selfAddress!(), txGasFee!())
+
+        emit Withdraw(announcedAddress)
+
+        // Withdraw and destroy the smart contract
+        destroySelf!(announcedAddress)
+    }
+
+    @using(updateFields = true)
+    pub fn resetLock() -> () {
+        checkCaller!(callerAddress!() == sender, ErrorCodes.CallerIsNotSender)
+        
+        announcementLockedUntil = 0
+    }
+
+    @using(assetsInContract = true)
+    pub fn cancel() -> () {
+        // Ensures that the contract is cancellable
+        assert!(isCancellable, ErrorCodes.CancelIsNotAllowed)
+
+        checkCaller!(callerAddress!() == sender, ErrorCodes.CallerIsNotSender)
+
+        emit Cancel()
+
+        // Withdraw and destroy the smart contract
+        destroySelf!(sender)
+    }
+
+    pub fn getVersion() -> U256 {
+        return version
+    }
+
+    pub fn isCancellable() -> Bool {
+        return isCancellable
+    }
+}

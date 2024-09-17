@@ -1,0 +1,155 @@
+/* styles/Home.module.css */
+
+.mainContainer {
+   text-align: center;
+   width: 100%;
+   max-width: 600px;
+   padding: 40px;
+   background-color: #FFFFFF;
+   border-radius: 20px;
+   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+   transition: box-shadow 0.3s ease;
+   overflow-x: hidden;
+ }
+ 
+ .mainContainer:hover {
+   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+ }
+ 
+ .header {
+   text-align: center;
+ }
+ 
+ .header h1 {
+   font-size: 2.8rem;
+   margin-bottom: 10px;
+   display: inline-flex;
+   align-items: center;
+   gap: 10px;
+   background: linear-gradient(45deg, #4e54c8, #8f94fb);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+ }
+ 
+ .header p {
+   font-size: 1.1rem;
+   line-height: 1.5;
+   margin-bottom: 25px;
+   color: #555;
+ }
+ 
+ #yodhSection {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+ }
+ 
+ /* Add a class for the form */
+ .giftForm {
+   width: 100%;
+   background-color: #f4f7ff;
+   padding: 30px;
+   border-radius: 12px;
+   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+   margin-bottom: 30px;
+ }
+ 
+ .giftForm label {
+   display: block;
+   margin-bottom: 8px;
+   font-size: 1rem;
+   color: #333;
+ }
+ 
+ .giftForm textarea,
+ .giftForm input {
+   width: 100%;
+   padding: 12px 15px;
+   margin-bottom: 20px;
+   border: 1px solid #d1d5db;
+   border-radius: 8px;
+   background-color: #fff;
+   color: #333;
+   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+ }
+ 
+ .giftForm textarea:focus,
+ .giftForm input:focus {
+   border-color: #8f94fb;
+   box-shadow: 0 0 10px rgba(143, 148, 251, 0.25);
+ }
+ 
+ .wrapButtonModal {
+   width: 30%;
+   padding: 10px;
+   background: linear-gradient(45deg, #4e54c8, #8f94fb);
+   color: #FFF;
+   border: none;
+   border-radius: 50px;
+   font-size: 0.8rem;
+   cursor: pointer;
+   transition: background-color 0.3s, transform 0.3s;
+   display: block;
+   align-items: center;
+   justify-content: center;
+ }
+
+ .wrapButton {
+   width: 100%;
+   padding: 15px;
+   background: linear-gradient(45deg, #4e54c8, #8f94fb);
+   color: #FFF;
+   border: none;
+   border-radius: 50px;
+   font-size: 1.2rem;
+   cursor: pointer;
+   transition: background-color 0.3s, transform 0.3s;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+ }
+ 
+ .wrapButton i {
+   margin-right: 10px;
+ }
+ 
+ .wrapButton:hover {
+   transform: translateY(-5px);
+ }
+ 
+ .responseMessage {
+   margin-top: 20px;
+   font-size: 1.1rem;
+   color: #333;
+ }
+ 
+ .responseMessage.success {
+   color: #28a745;
+ }
+ 
+ .responseMessage.error {
+   color: #e3342f;
+ }
+ 
+ .footerGift {
+   margin-top: -40px;
+   font-size: 0.9rem;
+   color: #555;
+ }
+ 
+ @media (max-width: 768px) {
+   .mainContainer {
+     padding: 30px;
+   }
+ 
+   .header h1 {
+     font-size: 2.2rem;
+   }
+ 
+   .walletButton,
+   .wrapButton {
+     font-size: 1rem;
+     padding: 12px 20px;
+   }
+ }
+ 

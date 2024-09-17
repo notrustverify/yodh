@@ -1,0 +1,159 @@
+{
+  "version": "v3.6.3",
+  "name": "Gift",
+  "bytecode": "070640234046405a407440824090010200000013d37920c9a956a001340c7bb281d0b4a10056ce022aa10105a000a0015f010201010014d3594f474eb4a000450d7bce01160050410e7bb281d006a0005ea000b0010000000008d3b474d95eb4ce00450f7b0ca10101020000000dd3a7633c58ce04107bb4ce00450f7b075dce00b0010000000103d3da1a8f8ace0302010000000103d35eccdb20ce0402",
+  "codeHash": "f717e29a3be9dc350eb757635317ceeb7cf0d935115866442e50cdb9d1eeaf33",
+  "fieldsSig": {
+    "names": [
+      "sender",
+      "hashedSecret",
+      "announcementLockIntervall",
+      "version",
+      "isCancellable",
+      "announcedAddress",
+      "announcementLockedUntil"
+    ],
+    "types": [
+      "Address",
+      "ByteVec",
+      "U256",
+      "U256",
+      "Bool",
+      "Address",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "Lock",
+      "fieldNames": [
+        "by",
+        "until"
+      ],
+      "fieldTypes": [
+        "Address",
+        "U256"
+      ]
+    },
+    {
+      "name": "Withdraw",
+      "fieldNames": [
+        "by"
+      ],
+      "fieldTypes": [
+        "Address"
+      ]
+    },
+    {
+      "name": "Cancel",
+      "fieldNames": [],
+      "fieldTypes": []
+    }
+  ],
+  "functions": [
+    {
+      "name": "announce",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "withdraw",
+      "paramNames": [
+        "secret"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "resetLock",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "cancel",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "getVersion",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "isCancellable",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Bool"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ErrorCodes",
+      "fields": [
+        {
+          "name": "GiftLocked",
+          "value": {
+            "type": "U256",
+            "value": "0"
+          }
+        },
+        {
+          "name": "UnannouncedCaller",
+          "value": {
+            "type": "U256",
+            "value": "1"
+          }
+        },
+        {
+          "name": "WrongSecret",
+          "value": {
+            "type": "U256",
+            "value": "2"
+          }
+        },
+        {
+          "name": "CallerIsNotSender",
+          "value": {
+            "type": "U256",
+            "value": "3"
+          }
+        },
+        {
+          "name": "CancelIsNotAllowed",
+          "value": {
+            "type": "U256",
+            "value": "4"
+          }
+        }
+      ]
+    }
+  ]
+}

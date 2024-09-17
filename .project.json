@@ -1,0 +1,20 @@
+{
+  "fullNodeVersion": "v3.6.3",
+  "compilerOptionsUsed": {
+    "ignoreUnusedConstantsWarnings": false,
+    "ignoreUnusedVariablesWarnings": false,
+    "ignoreUnusedFieldsWarnings": false,
+    "ignoreUnusedPrivateFunctionsWarnings": false,
+    "ignoreUpdateFieldsCheckWarnings": false,
+    "ignoreCheckExternalCallerWarnings": false,
+    "ignoreUnusedFunctionReturnWarnings": false
+  },
+  "infos": {
+    "Gift": {
+      "sourceFile": "gift.ral",
+      "sourceCodeHash": "fc7c52efa9a4b83525f49f78067c11883bd8fd6a12701d1ef150b84eec1027e8",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "f717e29a3be9dc350eb757635317ceeb7cf0d935115866442e50cdb9d1eeaf33"
+    }
+  }
+}
