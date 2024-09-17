@@ -27,11 +27,11 @@ export function getNetwork(): NetworkId {
 }
 
 export function getNode(): string {
-  return (process.env.NODE_URL ?? 'https://fullnode-testnet.alephium.notrustverify.ch')
+  return (process.env.NEXT_PUBLIC_NODE_URL ?? 'https://fullnode-testnet.alephium.notrustverify.ch')
 }
 
 export function getUrl(): string {
-  return (process.env.URL ?? "https://yodh.app")
+  return (process.env.NEXT_PUBLIC_URL ?? "https://yodh.app")
 }
 
 export function getContractIdGroup(contractId: string): number {
