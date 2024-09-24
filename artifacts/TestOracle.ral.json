@@ -1,0 +1,49 @@
+{
+  "version": "v3.6.4",
+  "name": "TestOracle",
+  "bytecode": "02011801000101020ad3a0e6c23105b416005f56a101a000a00102",
+  "codeHash": "49fe5214cf690f6347c928f5af895fa89986f51d5c25584cd4e6369e6e5c8c07",
+  "fieldsSig": {
+    "names": [
+      "initialValue"
+    ],
+    "types": [
+      "DIAOracleValue"
+    ],
+    "isMutable": [
+      true
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "QueriedOracle",
+      "fieldNames": [
+        "by",
+        "key"
+      ],
+      "fieldTypes": [
+        "Address",
+        "ByteVec"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "getValue",
+      "paramNames": [
+        "key"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": [
+        "DIAOracleValue"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": []
+}

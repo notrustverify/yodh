@@ -1,8 +1,8 @@
 {
-  "version": "v3.6.3",
+  "version": "v3.6.4",
   "name": "Gift",
-  "bytecode": "070640234046405a407440824090010200000013d37920c9a956a001340c7bb281d0b4a10056ce022aa10105a000a0015f010201010014d3594f474eb4a000450d7bce01160050410e7bb281d006a0005ea000b0010000000008d3b474d95eb4ce00450f7b0ca10101020000000dd3a7633c58ce04107bb4ce00450f7b075dce00b0010000000103d3da1a8f8ace0302010000000103d35eccdb20ce0402",
-  "codeHash": "f717e29a3be9dc350eb757635317ceeb7cf0d935115866442e50cdb9d1eeaf33",
+  "bytecode": "0808402440444067407b409540a340b140bf010701030010d3cdc56d1cb4170116011600a51702160116001602ac0516011602160060010000000010d37920c9a956a001340c7bb4a10056ce022aa10106a000a0015f010201010014d3594f474eb4a000450d7bce01160050410e7bb281d007a0005ea000b0010000000008d3b474d95eb4ce00450f7b0ca10101020000000dd3a7633c58ce04107bb4ce00450f7b085dce00b0010000000103d37a8243cdce0502010000000103d3da1a8f8ace0302010000000103d35eccdb20ce0402",
+  "codeHash": "dadf39de130f9d00bff620884228d871ff12de86fea17a63bca8967ce811c15a",
   "fieldsSig": {
     "names": [
       "sender",
@@ -10,6 +10,7 @@
       "announcementLockIntervall",
       "version",
       "isCancellable",
+      "initialUsdPrice",
       "announcedAddress",
       "announcementLockedUntil"
     ],
@@ -19,10 +20,12 @@
       "U256",
       "U256",
       "Bool",
+      "U256",
       "Address",
       "U256"
     ],
     "isMutable": [
+      false,
       false,
       false,
       false,
@@ -33,6 +36,19 @@
     ]
   },
   "eventsSig": [
+    {
+      "name": "Deposit",
+      "fieldNames": [
+        "by",
+        "amount",
+        "tokenId"
+      ],
+      "fieldTypes": [
+        "Address",
+        "U256",
+        "ByteVec"
+      ]
+    },
     {
       "name": "Lock",
       "fieldNames": [
@@ -60,6 +76,19 @@
     }
   ],
   "functions": [
+    {
+      "name": "deposit",
+      "paramNames": [
+        "tokenId"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
     {
       "name": "announce",
       "paramNames": [],
@@ -93,6 +122,15 @@
       "paramTypes": [],
       "paramIsMutable": [],
       "returnTypes": []
+    },
+    {
+      "name": "getInitialUsdPrice",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
     },
     {
       "name": "getVersion",

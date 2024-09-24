@@ -1,6 +1,19 @@
-import { addressFromContractId, hashMessage, Number256, SignerProvider, Token, ZERO_ADDRESS } from '@alephium/web3'
-import { Gift } from 'artifacts/ts'
+import {
+  addressFromContractId,
+  ALPH_TOKEN_ID,
+  DUST_AMOUNT,
+  hashMessage,
+  MINIMAL_CONTRACT_DEPOSIT,
+  Number256,
+  ONE_ALPH,
+  SignerProvider,
+  SignExecuteContractMethodParams,
+  Token,
+  ZERO_ADDRESS
+} from '@alephium/web3'
+import { Gift, GiftFactory, GiftFactoryTypes, GiftTypes } from 'artifacts/ts'
 import { sha256 } from 'js-sha256'
+import { getGiftFactoryContractAddress } from './utils'
 
 export const createGift = async (
   amount: bigint,
@@ -8,21 +21,57 @@ export const createGift = async (
   senderAddress: string,
   secret: Uint8Array,
   announcementLockIntervall: bigint,
-  tokens: Array<Token> = []
+  tokenId: string,
+  decimal: number
 ) => {
-  return await Gift.deploy(sender, {
-     initialAttoAlphAmount: amount * 10n ** 18n,
-     initialTokenAmounts: tokens,
-     initialFields: {
-      sender: senderAddress,
+  const data: GiftFactoryTypes.SignExecuteMethodParams<'createGift'> = {
+    args: {
       hashedSecret: sha256(secret),
       announcementLockIntervall: announcementLockIntervall,
+      version: 0n,
+      isCancellable: false,
       announcedAddress: ZERO_ADDRESS,
       announcementLockedUntil: 0n,
-      version: 1n,
-      isCancellable: false
-     }
-  })
+      givenTokenId: ALPH_TOKEN_ID
+    },
+    signer: sender,
+    attoAlphAmount: amount * ONE_ALPH
+  }
+
+  console.log(data)
+  if (tokenId !== ALPH_TOKEN_ID) {
+    data.args.givenTokenId = tokenId
+
+    data.attoAlphAmount = MINIMAL_CONTRACT_DEPOSIT
+    data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
+  }
+
+  return await GiftFactory.at(getGiftFactoryContractAddress()).transact.createGift(data)
+}
+
+export const giftDeposit = async (
+  contractId: string,
+  amount: bigint,
+  sender: any,
+  tokenId: string,
+  decimal: number
+) => {
+  const data: GiftTypes.SignExecuteMethodParams<'deposit'> = {
+    args: {
+      tokenId: ALPH_TOKEN_ID
+    },
+    signer: sender,
+    attoAlphAmount: amount * ONE_ALPH
+  }
+
+  if (tokenId !== ALPH_TOKEN_ID) {
+    data.args.tokenId = tokenId
+
+    data.attoAlphAmount = MINIMAL_CONTRACT_DEPOSIT
+    data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
+  }
+
+  return await Gift.at(addressFromContractId(contractId)).transact.deposit(data)
 }
 
 export const checkHash = (secret: Uint8Array, hashedSecretContract: string | undefined) => {

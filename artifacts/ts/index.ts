@@ -3,4 +3,6 @@
 /* eslint-disable */
 
 export * from "./Gift";
+export * from "./GiftFactory";
+export * from "./TestOracle";
 export * from "./scripts";

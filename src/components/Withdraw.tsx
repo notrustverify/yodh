@@ -14,12 +14,13 @@ import {
 } from '@alephium/web3'
 import { GiftTypes } from 'artifacts/ts'
 import Hash from './Hash'
-import { contractExists, shortAddress, WithdrawState } from '@/services/utils'
+import { contractExists, findTokenFromId, getTokenList, shortAddress, Token, WithdrawState } from '@/services/utils'
 import Link from 'next/link'
 import Head from 'next/head'
 import { Icon } from '@iconify/react'
 import { Footer } from './Footer'
 import { Locked } from './Locked'
+import TokenGifted from './TokensGifted'
 
 export const WithdrawDapp = ({
   contractId,
@@ -37,6 +38,8 @@ export const WithdrawDapp = ({
   const initialized = useRef(false)
   const [step, setStep] = useState<WithdrawState>(WithdrawState.Locking)
   const [isNotClaimed, setIsNotClaimed] = useState<boolean>(true)
+  const [tokenList, setTokenList] = useState<Token[]>()
+
 
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -80,7 +83,6 @@ export const WithdrawDapp = ({
   )
 
   useCallback(() => {
-    console.log('update')
     setStep(contractState?.fields.announcedAddress === ZERO_ADDRESS ? WithdrawState.Locking : WithdrawState.Locked)
   }, [contractState?.fields, account, isNotClaimed])
 
@@ -97,10 +99,15 @@ export const WithdrawDapp = ({
             data.fields.announcedAddress === ZERO_ADDRESS ? WithdrawState.Locking : WithdrawState.Locked
           )
         })
+
+        getTokenList().then((data) => {
+         setTokenList(data)
+       })
+
       }
     }
-  })
-  console.log(contractState?.fields, step)
+  }, [contractId, secret, isNotClaimed])
+
   return (
     <div className={styles.mainContainer}>
       <Head>
@@ -118,15 +125,7 @@ export const WithdrawDapp = ({
         <AlephiumConnectButton />
 
         <form className={styles.giftForm} id="gift-form" onSubmit={handleWithdrawSubmit}>
-          <label htmlFor="gift-message">
-            {contractState !== undefined && (
-              <p>
-                {' '}
-                {shortAddress(contractState.fields.sender)} sent you{' '}
-                {number256ToNumber(contractState.asset.alphAmount, 18)} ALPH
-              </p>
-            )}
-          </label>
+          { tokenList !== undefined && contractState !== undefined && <TokenGifted tokenList={tokenList} contractState={contractState} /> }
 
           <label htmlFor="gift-message">
             {contractState !== undefined && message !== undefined && 'Message: ' + message}
@@ -200,7 +199,7 @@ export const WithdrawDapp = ({
 
       {ongoingTxId && <TxStatus txId={ongoingTxId} txStatusCallback={txStatusCallback} step={step} />}
 
-      <Link href="/">Create a new Gift Card</Link>
+      <Link href={"/"} >Create a new Gift Card</Link>
       <Footer />
     </div>
   )

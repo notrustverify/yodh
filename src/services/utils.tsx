@@ -14,12 +14,31 @@ export interface Gift {
   secret: Uint8Array
 }
 
+export interface TokenList {
+   networkId: number;
+   tokens:    Token[];
+}
+
+export interface Token {
+   id:             string;
+   name:           string;
+   symbol:         string;
+   decimals:       number;
+   description:    string;
+   logoURI:        string;
+   nameOnChain?:   string;
+   symbolOnChain?: string;
+}
+
 export enum WithdrawState {
   Locked = 'Gift',
   Locking = 'Unwrapping your gift',
   Claiming = 'Opening your gift',
-  Wrapping = 'Gift wrapping'
+  Wrapping = 'Gift wrapping',
+  Deposit = 'Adding tokens'
 }
+
+export const GIFT_FACTORY_CONTRACT_ID = "v34YV5zM7at3w5TyN8ZVxEngWYjUxN8S5Q2PeontLK1q"
 
 export function getNetwork(): NetworkId {
   const network = (process.env.NETWORK ?? 'testnet') as NetworkId
@@ -82,3 +101,22 @@ export function getGiftUrl(contractId:string, secret: Uint8Array, message:string
 
   return `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(encodedSecret)}&msg=${encodeURIComponent(message)}`
 }
+
+export async function getTokenList(): Promise<Token[]>{
+   const url = `https://raw.githubusercontent.com/alephium/token-list/master/tokens/${getNetwork()}.json`
+   
+   const response = await fetch(url);
+  
+   if (!response.ok) {
+     throw new Error('Network response was not ok');
+   }
+ 
+   const data: TokenList = await response.json(); // Ensure type assertion here
+   return data.tokens; // Correctly returning the value
+    
+}
+
+export function findTokenFromId(tokenList: Token[], tokenId: string): Token|undefined{
+   return tokenList?.find((token) => token.id === tokenId)
+}
+

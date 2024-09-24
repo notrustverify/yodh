@@ -6,11 +6,13 @@ Contract Gift (
     announcementLockIntervall: U256,
     version: U256,  // To ensure future compatibility
     isCancellable: Bool,
+    initialUsdPrice: U256,
 
-    // Variable related to announcment and claim
+    // Variable related to announcement and claim
     mut announcedAddress: Address,
     mut announcementLockedUntil: U256
 ) {
+    event Deposit(by: Address, amount: U256, tokenId: ByteVec)
     event Lock(by: Address, until: U256)
     event Withdraw(by: Address)
     event Cancel()
@@ -22,15 +24,22 @@ Contract Gift (
         CallerIsNotSender = 3
         CancelIsNotAllowed = 4
     }
+
+    @using(preapprovedAssets = true, payToContractOnly = true, checkExternalCaller = false)
+    pub fn deposit(tokenId: ByteVec) -> () {
+        let caller = callerAddress!()
+        let tokenAmount = tokenRemaining!(caller, tokenId)
+        transferTokenToSelf!(caller, tokenId, tokenAmount)
+        emit Deposit(caller, tokenAmount, tokenId)
+    }
     
-    @using(assetsInContract = true, updateFields = true, checkExternalCaller = false)
+    @using(updateFields = true, checkExternalCaller = false)    // assetsInContract = true
     pub fn announce() -> () {
         // Ensure announcement is valid
-        //verifyAbsoluteLocktime!(announcementLockedUntil)
         assert!(blockTimeStamp!() >= announcementLockedUntil, ErrorCodes.GiftLocked)
 
         // Since the recipient may not have ALPH, we take the gas fees from the sent amount
-        payGasFee!(selfAddress!(), txGasFee!())
+        //payGasFee!(selfAddress!(), txGasFee!())
 
         // Register announcement
         announcedAddress = callerAddress!()
@@ -74,6 +83,10 @@ Contract Gift (
 
         // Withdraw and destroy the smart contract
         destroySelf!(sender)
+    }
+
+    pub fn getInitialUsdPrice() -> U256 {
+        return initialUsdPrice
     }
 
     pub fn getVersion() -> U256 {

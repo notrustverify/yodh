@@ -34,6 +34,7 @@ import {
 } from "@alephium/web3";
 import { default as GiftContractJson } from "../Gift.ral.json";
 import { getContractByCodeHash } from "./contracts";
+import { DIAOracleValue, AllStructs } from "./types";
 
 // Custom types for the contract
 export namespace GiftTypes {
@@ -43,17 +44,27 @@ export namespace GiftTypes {
     announcementLockIntervall: bigint;
     version: bigint;
     isCancellable: boolean;
+    initialUsdPrice: bigint;
     announcedAddress: Address;
     announcementLockedUntil: bigint;
   };
 
   export type State = ContractState<Fields>;
 
+  export type DepositEvent = ContractEvent<{
+    by: Address;
+    amount: bigint;
+    tokenId: HexString;
+  }>;
   export type LockEvent = ContractEvent<{ by: Address; until: bigint }>;
   export type WithdrawEvent = ContractEvent<{ by: Address }>;
   export type CancelEvent = ContractEvent<{}>;
 
   export interface CallMethodTable {
+    deposit: {
+      params: CallContractParams<{ tokenId: HexString }>;
+      result: CallContractResult<null>;
+    };
     announce: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<null>;
@@ -69,6 +80,10 @@ export namespace GiftTypes {
     cancel: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<null>;
+    };
+    getInitialUsdPrice: {
+      params: Omit<CallContractParams<{}>, "args">;
+      result: CallContractResult<bigint>;
     };
     getVersion: {
       params: Omit<CallContractParams<{}>, "args">;
@@ -96,6 +111,10 @@ export namespace GiftTypes {
   };
 
   export interface SignExecuteMethodTable {
+    deposit: {
+      params: SignExecuteContractMethodParams<{ tokenId: HexString }>;
+      result: SignExecuteScriptTxResult;
+    };
     announce: {
       params: Omit<SignExecuteContractMethodParams<{}>, "args">;
       result: SignExecuteScriptTxResult;
@@ -109,6 +128,10 @@ export namespace GiftTypes {
       result: SignExecuteScriptTxResult;
     };
     cancel: {
+      params: Omit<SignExecuteContractMethodParams<{}>, "args">;
+      result: SignExecuteScriptTxResult;
+    };
+    getInitialUsdPrice: {
       params: Omit<SignExecuteContractMethodParams<{}>, "args">;
       result: SignExecuteScriptTxResult;
     };
@@ -132,11 +155,11 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     return encodeContractFields(
       addStdIdToFields(this.contract, fields),
       this.contract.fieldsSig,
-      []
+      AllStructs
     );
   }
 
-  eventIndex = { Lock: 0, Withdraw: 1, Cancel: 2 };
+  eventIndex = { Deposit: 0, Lock: 1, Withdraw: 2, Cancel: 3 };
   consts = {
     ErrorCodes: {
       GiftLocked: BigInt("0"),
@@ -152,6 +175,14 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
   }
 
   tests = {
+    deposit: async (
+      params: TestContractParamsWithoutMaps<
+        GiftTypes.Fields,
+        { tokenId: HexString }
+      >
+    ): Promise<TestContractResultWithoutMaps<null>> => {
+      return testMethod(this, "deposit", params, getContractByCodeHash);
+    },
     announce: async (
       params: Omit<
         TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
@@ -184,6 +215,19 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "cancel", params, getContractByCodeHash);
     },
+    getInitialUsdPrice: async (
+      params: Omit<
+        TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
+        "testArgs"
+      >
+    ): Promise<TestContractResultWithoutMaps<bigint>> => {
+      return testMethod(
+        this,
+        "getInitialUsdPrice",
+        params,
+        getContractByCodeHash
+      );
+    },
     getVersion: async (
       params: Omit<
         TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
@@ -212,8 +256,8 @@ export const Gift = new Factory(
   Contract.fromJson(
     GiftContractJson,
     "",
-    "f717e29a3be9dc350eb757635317ceeb7cf0d935115866442e50cdb9d1eeaf33",
-    []
+    "dadf39de130f9d00bff620884228d871ff12de86fea17a63bca8967ce811c15a",
+    AllStructs
   )
 );
 
@@ -229,6 +273,19 @@ export class GiftInstance extends ContractInstance {
 
   async getContractEventsCurrentCount(): Promise<number> {
     return getContractEventsCurrentCount(this.address);
+  }
+
+  subscribeDepositEvent(
+    options: EventSubscribeOptions<GiftTypes.DepositEvent>,
+    fromCount?: number
+  ): EventSubscription {
+    return subscribeContractEvent(
+      Gift.contract,
+      this,
+      options,
+      "Deposit",
+      fromCount
+    );
   }
 
   subscribeLockEvent(
@@ -272,7 +329,10 @@ export class GiftInstance extends ContractInstance {
 
   subscribeAllEvents(
     options: EventSubscribeOptions<
-      GiftTypes.LockEvent | GiftTypes.WithdrawEvent | GiftTypes.CancelEvent
+      | GiftTypes.DepositEvent
+      | GiftTypes.LockEvent
+      | GiftTypes.WithdrawEvent
+      | GiftTypes.CancelEvent
     >,
     fromCount?: number
   ): EventSubscription {
@@ -280,6 +340,11 @@ export class GiftInstance extends ContractInstance {
   }
 
   view = {
+    deposit: async (
+      params: GiftTypes.CallMethodParams<"deposit">
+    ): Promise<GiftTypes.CallMethodResult<"deposit">> => {
+      return callMethod(Gift, this, "deposit", params, getContractByCodeHash);
+    },
     announce: async (
       params?: GiftTypes.CallMethodParams<"announce">
     ): Promise<GiftTypes.CallMethodResult<"announce">> => {
@@ -318,6 +383,17 @@ export class GiftInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    getInitialUsdPrice: async (
+      params?: GiftTypes.CallMethodParams<"getInitialUsdPrice">
+    ): Promise<GiftTypes.CallMethodResult<"getInitialUsdPrice">> => {
+      return callMethod(
+        Gift,
+        this,
+        "getInitialUsdPrice",
+        params === undefined ? {} : params,
+        getContractByCodeHash
+      );
+    },
     getVersion: async (
       params?: GiftTypes.CallMethodParams<"getVersion">
     ): Promise<GiftTypes.CallMethodResult<"getVersion">> => {
@@ -343,6 +419,11 @@ export class GiftInstance extends ContractInstance {
   };
 
   transact = {
+    deposit: async (
+      params: GiftTypes.SignExecuteMethodParams<"deposit">
+    ): Promise<GiftTypes.SignExecuteMethodResult<"deposit">> => {
+      return signExecuteMethod(Gift, this, "deposit", params);
+    },
     announce: async (
       params: GiftTypes.SignExecuteMethodParams<"announce">
     ): Promise<GiftTypes.SignExecuteMethodResult<"announce">> => {
@@ -362,6 +443,11 @@ export class GiftInstance extends ContractInstance {
       params: GiftTypes.SignExecuteMethodParams<"cancel">
     ): Promise<GiftTypes.SignExecuteMethodResult<"cancel">> => {
       return signExecuteMethod(Gift, this, "cancel", params);
+    },
+    getInitialUsdPrice: async (
+      params: GiftTypes.SignExecuteMethodParams<"getInitialUsdPrice">
+    ): Promise<GiftTypes.SignExecuteMethodResult<"getInitialUsdPrice">> => {
+      return signExecuteMethod(Gift, this, "getInitialUsdPrice", params);
     },
     getVersion: async (
       params: GiftTypes.SignExecuteMethodParams<"getVersion">

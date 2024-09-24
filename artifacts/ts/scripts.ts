@@ -12,3 +12,5 @@ import {
   HexString,
 } from "@alephium/web3";
 import { getContractByCodeHash } from "./contracts";
+
+import { DIAOracleValue, AllStructs } from "./types";

@@ -5,6 +5,8 @@ import Link from 'next/link'
 export const Footer = () => {
   return (
     <footer className={styles.footerGift}>
+      <br />
+
       <p>
         Developed by{' '}
         <Link href="https://notrustverify.ch" rel="noopener noreferrer" target="_blank">

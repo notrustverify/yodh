@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import { AlephiumWalletProvider } from '@alephium/web3-react'
-import { web3 } from '@alephium/web3'
+import { NodeProvider, web3 } from '@alephium/web3'
 import { getContractIdGroup, getNetwork, getNode } from '../services/utils'
 import { useRouter } from 'next/router'
 
@@ -10,6 +10,7 @@ interface Params {
    contract: string;
    secret: string;
    msg: string;
+   pot: boolean;
 }
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -30,11 +31,13 @@ export default function App({ Component, pageProps }: AppProps) {
         const contract = searchParams.get('contract') || '';
         const secret = searchParams.get('secret') || '';
         const msg = searchParams.get('msg') || '';
+        const pot =  Boolean(searchParams.get('pot'))|| false
    
         setParams({
           contract,
           secret,
           msg,
+          pot
         });
       
       }
@@ -45,10 +48,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <AlephiumWalletProvider
       network={getNetwork()}
-      addressGroup={ params !== undefined && getContractIdGroup(params?.contract) || undefined}
+      addressGroup={ params !== undefined && getContractIdGroup(params?.contract) || 0}
       theme="rounded"
     >
-      <Component {...pageProps} contract={params?.contract} secret={params?.secret} msg={params?.msg}  />
+      <Component {...pageProps} contractIdUrl={params?.contract} secret={params?.secret} msg={params?.msg} pot={params?.pot} />
     </AlephiumWalletProvider>
   )
 }

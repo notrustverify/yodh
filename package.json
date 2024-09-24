@@ -1,6 +1,6 @@
 {
   "name": "yodh",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "dev": "next dev",
@@ -33,6 +33,7 @@
     "@alephium/web3": "^1.7.3",
     "@alephium/web3-react": "v1.5.2",
     "@alephium/web3-wallet": "^1.7.3",
+    "@alph-name-service/ans-sdk": "^0.1.0",
     "@next/font": "13.1.4",
     "@react-pdf/renderer": "^3.4.4",
     "detect-browser": "^5.3.0",
@@ -48,6 +49,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^5.3.0",
     "react-modal": "^3.16.1",
+    "react-select": "^5.8.0",
     "react-spinners": "^0.14.1",
     "react-transition-state": "^1.1.4",
     "react-use-measure": "^2.1.1",
@@ -71,6 +73,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
+    "dotenv": "^16.4.5",
     "encoding": "^0.1.13",
     "eslint": "8.34.0",
     "eslint-config-prettier": "^8.6.0",

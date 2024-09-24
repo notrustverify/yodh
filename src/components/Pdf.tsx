@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Page, Text, Document, StyleSheet, Link, Image, Font } from '@react-pdf/renderer'
 import { getUrl, shortAddress } from '@/services/utils'
 import QRCode from 'qrcode'
+import AlephiumDomain from './ANS'
 
 // Create styles
 const styles = StyleSheet.create({
@@ -110,15 +111,24 @@ export default function PdfGiftCard({
     <Document>
       <Page size="A4" style={styles.body}>
         <Text style={styles.title}>Yodh Gift Card</Text>
-        <Image style={styles.image} src={'/img/yodh.jpg'} />
-        <Text style={styles.text}>{sender && shortAddress(sender)} sent you some ALPH.</Text>
+        <Image  style={styles.image} src={'/img/yodh.jpg'} />
+        <Text style={styles.text}>{sender && <AlephiumDomain addressParams={sender} />} sent you some ALPH.</Text>
         <Text style={styles.text}>Message:</Text>
         <Text style={styles.textWrap}>{message}</Text>
         <Text style={styles.text}>
           To claim your ALPH visit this <Link href={urlToEncode}>link</Link> or scan the QR Code below.
         </Text>
         <Image src={qrCode} style={styles.qrcode} />
-      </Page>
+        
+     
+        <Text style={styles.text}>How to claim: </Text>
+        <Text style={styles.text}>1. Start by downloading Alephium wallets on <Link href='https://alephium.org/#wallets'>https://alephium.org/#wallets</Link> </Text>
+        <Text style={styles.text}>2. Scan the QR code above with any QR code app</Text>
+        <Text style={styles.text}>3. Connect your Alephium wallet and claim your gift</Text>
+        <br/>
+
+        <Text style={styles.text}>Any questions, join Alephium Telegram <Link href='https://t.me/alephiumgroup'>@alephiumgroup</Link> or on Discord <Link href='https://alephium.org/discord'>alephium.org/discord</Link> </Text>
+        </Page>
     </Document>
   )
 }

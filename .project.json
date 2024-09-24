@@ -1,5 +1,5 @@
 {
-  "fullNodeVersion": "v3.6.3",
+  "fullNodeVersion": "v3.6.4",
   "compilerOptionsUsed": {
     "ignoreUnusedConstantsWarnings": false,
     "ignoreUnusedVariablesWarnings": false,
@@ -10,11 +10,35 @@
     "ignoreUnusedFunctionReturnWarnings": false
   },
   "infos": {
+    "DIAOracleValue": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "af3410714a702453d1eeb764f2e88e603102366cf24bc03e9a1aa78297815a67",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
     "Gift": {
       "sourceFile": "gift.ral",
-      "sourceCodeHash": "fc7c52efa9a4b83525f49f78067c11883bd8fd6a12701d1ef150b84eec1027e8",
+      "sourceCodeHash": "33d986d449935151868764d9d5ecac8d0a06cb1c139e0cd3f75ee16ae2a5c765",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "f717e29a3be9dc350eb757635317ceeb7cf0d935115866442e50cdb9d1eeaf33"
+      "codeHashDebug": "dadf39de130f9d00bff620884228d871ff12de86fea17a63bca8967ce811c15a"
+    },
+    "GiftFactory": {
+      "sourceFile": "giftFactory.ral",
+      "sourceCodeHash": "78941d0edce71b23be89ddaff28dcb9095e0c7c4d19c9df11ac028497618afd9",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "522f3499160cf9f7f59002c6187c414d681b09b1e7c952ebb11188e6a033031e"
+    },
+    "IDIAOracle": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "af3410714a702453d1eeb764f2e88e603102366cf24bc03e9a1aa78297815a67",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "TestOracle": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "af3410714a702453d1eeb764f2e88e603102366cf24bc03e9a1aa78297815a67",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "49fe5214cf690f6347c928f5af895fa89986f51d5c25584cd4e6369e6e5c8c07"
     }
   }
 }

@@ -22,7 +22,7 @@
  
  .header h1 {
    font-size: 2.8rem;
-   margin-bottom: 10px;
+   margin-bottom: 0px;
    display: inline-flex;
    align-items: center;
    gap: 10px;
@@ -34,7 +34,7 @@
  .header p {
    font-size: 1.1rem;
    line-height: 1.5;
-   margin-bottom: 25px;
+   margin-bottom: -25px;
    color: #555;
  }
  
@@ -136,6 +136,23 @@
    font-size: 0.9rem;
    color: #555;
  }
+
+ .giftCardSection {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   width: 100%; /* Ensure full width to avoid wrapping */
+}
+
+.giftCardSection label {
+   width: auto; /* or set a specific width if needed */
+   white-space: nowrap; /* Prevent wrapping */
+}
+
+#poolGiftCard {
+   margin-left: 0;
+}
+ 
  
  @media (max-width: 768px) {
    .mainContainer {

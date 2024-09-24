@@ -1,0 +1,17 @@
+[
+  {
+    "name": "DIAOracleValue",
+    "fieldNames": [
+      "value",
+      "timestamp"
+    ],
+    "fieldTypes": [
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      true,
+      true
+    ]
+  }
+]

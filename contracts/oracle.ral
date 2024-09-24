@@ -1,0 +1,21 @@
+struct DIAOracleValue {
+    mut value: U256,
+    mut timestamp: U256
+}
+
+Interface IDIAOracle {
+    pub fn getValue(key: ByteVec) -> DIAOracleValue
+}
+
+Contract TestOracle (
+    mut initialValue: DIAOracleValue
+) {
+    event QueriedOracle(by: Address, key: ByteVec)
+
+    @using(updateFields = true, checkExternalCaller = false)
+    pub fn getValue(key: ByteVec) -> DIAOracleValue {
+        emit QueriedOracle(callerAddress!(), key)
+        initialValue.timestamp = blockTimeStamp!()
+        return initialValue
+    }
+}
