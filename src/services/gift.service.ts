@@ -13,7 +13,7 @@ import {
 } from '@alephium/web3'
 import { Gift, GiftFactory, GiftFactoryTypes, GiftTypes } from 'artifacts/ts'
 import { sha256 } from 'js-sha256'
-import { getGiftFactoryContractAddress } from './utils'
+import { GIFT_FACTORY_CONTRACT_ADDRESS } from './utils'
 
 export const createGift = async (
   amount: bigint,
@@ -46,7 +46,7 @@ export const createGift = async (
     data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
   }
 
-  return await GiftFactory.at(getGiftFactoryContractAddress()).transact.createGift(data)
+  return await GiftFactory.at(GIFT_FACTORY_CONTRACT_ADDRESS).transact.createGift(data)
 }
 
 export const giftDeposit = async (

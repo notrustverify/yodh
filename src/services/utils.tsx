@@ -38,7 +38,7 @@ export enum WithdrawState {
   Deposit = 'Adding tokens'
 }
 
-export const GIFT_FACTORY_CONTRACT_ID = "v34YV5zM7at3w5TyN8ZVxEngWYjUxN8S5Q2PeontLK1q"
+export const GIFT_FACTORY_CONTRACT_ADDRESS = "v34YV5zM7at3w5TyN8ZVxEngWYjUxN8S5Q2PeontLK1q"
 
 export function getNetwork(): NetworkId {
   const network = (process.env.NETWORK ?? 'testnet') as NetworkId
