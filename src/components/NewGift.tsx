@@ -2,18 +2,7 @@ import Head from 'next/head'
 import styles from '@/styles/Gift.module.css'
 import { AlephiumConnectButton, useBalance, useWallet } from '@alephium/web3-react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import {
-  ALPH_TOKEN_ID,
-  contractIdFromAddress,
-  hexToString,
-  node,
-  NodeProvider,
-  number256ToNumber,
-  ONE_ALPH,
-  sleep,
-  waitForTxConfirmation,
-  web3
-} from '@alephium/web3'
+import { ALPH_TOKEN_ID, contractIdFromAddress, node, ONE_ALPH, waitForTxConfirmation, web3 } from '@alephium/web3'
 import { createGift, getContractState, giftDeposit } from '@/services/gift.service'
 import { Icon } from '@iconify/react'
 import { TxStatus } from './TxStatus'
@@ -23,11 +12,9 @@ import QrCode from './Qrcode'
 import { Footer } from './Footer'
 import store from 'store2'
 import { Gifts } from './CreatedGifts'
-import { findTokenFromId, getNode, getTokenList, getUrl, Gift, Token, WithdrawState } from '@/services/utils'
+import { getTokenList, getUrl, Gift, Token, WithdrawState } from '@/services/utils'
 import Select from 'react-select'
 import { GiftTypes } from 'artifacts/ts'
-import { sign } from 'crypto'
-import TokenGifted from './TokensGifted'
 import TokenPot from './TokenPot'
 import Link from 'next/link'
 import { FaRegCopy } from 'react-icons/fa'
@@ -54,16 +41,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   const [isPot, setPot] = useState<boolean>(false)
   const [isCopied, setIsCopied] = useState(false)
 
-
-  const [selectedToken, setSelectedToken] = useState<Token | undefined>({
-    id: '0000000000000000000000000000000000000000000000000000000000000000',
-    name: 'Alephium',
-    symbol: 'ALPH',
-    decimals: 18,
-    description:
-      'Alephium is a scalable, decentralized, and secure blockchain platform that enables the creation of fast and secure applications.',
-    logoURI: 'https://raw.githubusercontent.com/alephium/token-list/master/logos/ALPH.png'
-  })
+  const [selectedToken, setSelectedToken] = useState<Token | undefined>()
 
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<any> => {
@@ -110,6 +88,8 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   }
 
   const handleAddPotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
     if (signer) {
       const result = await giftDeposit(
         contractId,
@@ -127,6 +107,15 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   }
   useEffect(() => {
     if (!initialized.current) {
+      setSelectedToken({
+        id: '0000000000000000000000000000000000000000000000000000000000000000',
+        name: 'Alephium',
+        symbol: 'ALPH',
+        decimals: 18,
+        description:
+          'Alephium is a scalable, decentralized, and secure blockchain platform that enables the creation of fast and secure applications.',
+        logoURI: 'https://raw.githubusercontent.com/alephium/token-list/master/logos/ALPH.png'
+      })
       initialized.current = true
       getTokenList().then((data) => {
         setTokenList(data)
@@ -191,8 +180,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             ></textarea>
           )}
 
-          <label className="gift-amount">
-            <Select
+          <Select
               options={tokenSelect}
               isSearchable={true}
               isClearable={true}
@@ -201,7 +189,6 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
                 return option.value === selectedToken?.symbol
               })}
             />
-          </label>
 
           <label htmlFor="gift-amount">Amount in {selectedToken?.symbol}</label>
           <label htmlFor="gift-amount">
@@ -261,27 +248,24 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         ) : (
           ''
         )}
-         <br/>
+        <br />
         {isPot && contractId !== '' && (
           <Link href={`${getUrl()}/#contract=${contractId}&pot=${isPot}`} rel="noopener noreferrer" target="_blank">
             Share this to deposit tokens
           </Link>
         )}{' '}
-        {isPot && contractId !== '' && 
-        
-        isCopied? (
-         'URL Copied'
-       ) : (
-         <FaRegCopy
-           onClick={() => {
-             navigator.clipboard.writeText(`${getUrl()}/#contract=${contractId}&pot=${isPot}`)
-             setIsCopied(true)
-           }}
-         >
-           Copy to Clipboard
-         </FaRegCopy>
-       )
-        }
+        {isPot && contractId !== '' && isCopied
+          ? 'URL Copied'
+          : isPot && (
+              <FaRegCopy
+                onClick={() => {
+                  navigator.clipboard.writeText(`${getUrl()}/#contract=${contractId}&pot=${isPot}`)
+                  setIsCopied(true)
+                }}
+              >
+                Copy to Clipboard
+              </FaRegCopy>
+            )}
         {!pot && contractId !== '' && secret.length >= 0 && giftWrapped && (
           <details id="gitflink">
             <summary>Click to display QRCode</summary>

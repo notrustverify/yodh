@@ -112,7 +112,7 @@ export default function PdfGiftCard({
       <Page size="A4" style={styles.body}>
         <Text style={styles.title}>Yodh Gift Card</Text>
         <Image  style={styles.image} src={'/img/yodh.jpg'} />
-        <Text style={styles.text}>{sender && <AlephiumDomain addressParams={sender} />} sent you some ALPH.</Text>
+        <Text style={styles.text}>{sender && shortAddress(sender)} sent you some ALPH.</Text>
         <Text style={styles.text}>Message:</Text>
         <Text style={styles.textWrap}>{message}</Text>
         <Text style={styles.text}>

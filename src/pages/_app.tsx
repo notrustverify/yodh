@@ -48,7 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <AlephiumWalletProvider
       network={getNetwork()}
-      addressGroup={ params !== undefined && getContractIdGroup(params?.contract) || 0}
+      addressGroup={0}
       theme="rounded"
     >
       <Component {...pageProps} contractIdUrl={params?.contract} secret={params?.secret} msg={params?.msg} pot={params?.pot} />

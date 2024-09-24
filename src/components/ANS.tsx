@@ -1,6 +1,6 @@
-import { getNetwork, getNode, shortAddress } from "@/services/utils";
+import { getNode, shortAddress } from "@/services/utils";
 import { ANS } from "@alph-name-service/ans-sdk";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 export default function AlephiumDomain({ addressParams }:{addressParams:string}){
@@ -8,27 +8,27 @@ const [ansName, setAnsName] = useState<string>('');
 
 const fetchAnsProfile = async (address:string) => {
 	try {
-		const ans = new ANS("mainnet", false, getNode());
+		const ans = new ANS("mainnet", true, getNode());
 		const profile = await ans.getProfile(address);
 		if (profile?.name) {
-			setAnsName(profile.name);
+			return profile.name
 		}
 	} catch (error) {
 		console.error('Error fetching ANS:', error);
 	}
-};
+}
 
 
 useEffect(() => {
 	if (addressParams) {
-		fetchAnsProfile(addressParams);
+		fetchAnsProfile(addressParams).then((name) => name !== undefined && setAnsName(name));
 	}
 }, [addressParams]);
 
 
 return(
-   <>
-   {ansName !== '' ? ansName : shortAddress(addressParams)}
-   </>
+   <span>
+   {addressParams !== undefined && ansName !== '' ? ansName : shortAddress(addressParams)}
+   </span>
 )
 }

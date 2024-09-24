@@ -1,6 +1,6 @@
 import React from 'react'
 import { findTokenFromId, shortAddress, Token } from '@/services/utils'
-import { number256ToNumber } from '@alephium/web3'
+import { ALPH_TOKEN_ID, number256ToNumber } from '@alephium/web3'
 import { GiftTypes } from 'artifacts/ts'
 import AlephiumDomain from './ANS'
 
@@ -15,7 +15,7 @@ export default function TokenGifted({
 
   if (contractState.asset.tokens !== undefined) {
     if (contractState.asset.tokens.length <= 0)
-      results.push(<>{number256ToNumber(contractState.asset.alphAmount, 18)} ALPH</>)
+      results.push(<span key={ALPH_TOKEN_ID}>{number256ToNumber(contractState.asset.alphAmount, 18)} ALPH</span>)
 
     contractState.asset.tokens.forEach((element) => {
       const token = findTokenFromId(tokenList, element.id)
@@ -24,9 +24,9 @@ export default function TokenGifted({
         const tokenSymbol = token.symbol
 
         results.push(
-          <>
+          <span key={element.id}>
             {tokenAmount} {tokenSymbol}{' '}
-          </>
+          </span>
         )
       }
     })
@@ -37,7 +37,7 @@ export default function TokenGifted({
       {contractState !== undefined && (
         <p>
           {' '}
-          <AlephiumDomain addressParams={contractState.fields.sender} /> sent you {results}
+          {shortAddress(contractState.fields.sender)} sent you {results}
         </p>
       )}
     </label>

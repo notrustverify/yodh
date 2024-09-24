@@ -23,21 +23,21 @@
     jest "^28.1.3"
     prettier "^2.8.7"
 
-"@alephium/get-extension-wallet@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.npmjs.org/@alephium/get-extension-wallet/-/get-extension-wallet-1.5.2.tgz"
-  integrity sha512-b19CZUNm7goDUleiftzoX25rnFszNt14Uw3i1fGPonotqPoMp71uPfTMdkQQ3pK9Y1YWkb3TrMCsK/san5a60Q==
+"@alephium/get-extension-wallet@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.npmjs.org/@alephium/get-extension-wallet/-/get-extension-wallet-1.7.3.tgz"
+  integrity sha512-g/Pw3rg2P0aVIPRJ4Nnpyb41WTfzaZTvE+8Ge6HBPzpWP9w95gzj8CqEHfoV2zg2MkmbU6gL0x0rtoDTOYkSKQ==
   dependencies:
-    "@alephium/web3" "^1.5.2"
+    "@alephium/web3" "^1.7.3"
     bowser "^2.11.0"
 
-"@alephium/walletconnect-provider@^1.5.2":
-  version "1.5.2"
-  resolved "https://registry.npmjs.org/@alephium/walletconnect-provider/-/walletconnect-provider-1.5.2.tgz"
-  integrity sha512-7MkYK6YQo4twhhaOymF1rFN7wIQ3yfiBiMrlgRkmI6vPAo0p2qbb+sBXAhxLLiqv1s4oB98dvnMbjFy3fnp8Tg==
+"@alephium/walletconnect-provider@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.npmjs.org/@alephium/walletconnect-provider/-/walletconnect-provider-1.7.3.tgz"
+  integrity sha512-AcqXJzCQcb1P7U4aKjfIAWL5e/Bq5AHQ5iY32dpyWGZrC2P/rSOA0Osd+tQ/TRG0fBb/QXMl46qMWy6DhhYibA==
   dependencies:
-    "@alephium/web3" "^1.5.2"
-    "@alephium/web3-wallet" "^1.5.2"
+    "@alephium/web3" "^1.7.3"
+    "@alephium/web3-wallet" "^1.7.3"
     "@walletconnect/core" "2.15.1"
     "@walletconnect/keyvaluestorage" "1.1.1"
     "@walletconnect/sign-client" "2.15.1"
@@ -58,13 +58,13 @@
     preact "10.4.1"
     qrcode "1.4.4"
 
-"@alephium/web3-react@v1.5.2":
-  version "1.5.2"
-  resolved "https://registry.npmjs.org/@alephium/web3-react/-/web3-react-1.5.2.tgz"
-  integrity sha512-VpjPjIx2Unf5No+4hX4uCPfV+GKAYUvJiLcC0+L9kxdfS+0zrSceTlrPjhtQrd3+67UNOPJyeAhMS2XLr5V6/A==
+"@alephium/web3-react@^1.7.3":
+  version "1.7.3"
+  resolved "https://registry.npmjs.org/@alephium/web3-react/-/web3-react-1.7.3.tgz"
+  integrity sha512-HisJsXdPPiCJurTwJVfwuaL0y10m2Ce/Qp3xmAnOldsPtlzYnjZQHeqsHuj8CKD8rkCILSxHvQzcw3zr4453UA==
   dependencies:
-    "@alephium/get-extension-wallet" "^1.5.2"
-    "@alephium/walletconnect-provider" "^1.5.2"
+    "@alephium/get-extension-wallet" "^1.7.3"
+    "@alephium/walletconnect-provider" "^1.7.3"
     "@alephium/walletconnect-qrcode-modal" "^0.1.0"
     buffer "^6.0.3"
     detect-browser "^5.3.0"
@@ -83,7 +83,7 @@
     "@alephium/web3" "^1.7.3"
     "@alephium/web3-wallet" "^1.7.3"
 
-"@alephium/web3-wallet@^1.5.2", "@alephium/web3-wallet@^1.7.3":
+"@alephium/web3-wallet@^1.7.3":
   version "1.7.3"
   resolved "https://registry.npmjs.org/@alephium/web3-wallet/-/web3-wallet-1.7.3.tgz"
   integrity sha512-jR5hq4dZX7qkslZBMILK5wuZ/3nfQzfIWkOrT9Gln/lZ9ilLdBMIpIbVPKHbHz40fihWJDCu1UOvtw8B8p8dUg==
@@ -96,7 +96,7 @@
     elliptic "6.5.4"
     fs-extra "10.0.1"
 
-"@alephium/web3@^1.1.1", "@alephium/web3@^1.5.2", "@alephium/web3@^1.7.3":
+"@alephium/web3@^1.1.1", "@alephium/web3@^1.7.3":
   version "1.7.3"
   resolved "https://registry.npmjs.org/@alephium/web3/-/web3-1.7.3.tgz"
   integrity sha512-TvhHorYNctw9f31cuhpECpo2Ym3sMvBmCWquVqEMZ/gsF2PVeMLAFtG7QsHG625x41OSRAsfbBuQzT3lq2K/yw==
@@ -4197,7 +4197,7 @@ grapheme-splitter@^1.0.4:
   resolved "https://registry.npmjs.org/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
 
-h3@^1.10.2, h3@^1.11.1:
+h3@^1.10.2, h3@^1.12.0:
   version "1.12.0"
   resolved "https://registry.npmjs.org/h3/-/h3-1.12.0.tgz"
   integrity sha512-Zi/CcNeWBXDrFNlV0hUBJQR9F7a96RjMeAZweW/ZWkR9fuXrMcvKnSA63f/zZ9l0GgQOZDVHGvXivNN9PWOwhA==
@@ -5639,7 +5639,7 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
-lru-cache@^10.2.0:
+lru-cache@^10.4.3:
   version "10.4.3"
   resolved "https://registry.npmjs.org/lru-cache/-/lru-cache-10.4.3.tgz"
   integrity sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==
@@ -5838,7 +5838,7 @@ node-addon-api@^7.0.0:
   resolved "https://registry.npmjs.org/node-addon-api/-/node-addon-api-7.1.1.tgz"
   integrity sha512-5m3bsyrjFWE1xf7nz7YXdN4udnVtXK6/Yfgn5qnahL6bCkf2yKt4k3nuTKAtT4r3IG8JNR2ncsIMdZuAzJjHQQ==
 
-node-fetch-native@^1.6.2, node-fetch-native@^1.6.3, node-fetch-native@^1.6.4:
+node-fetch-native@^1.6.4:
   version "1.6.4"
   resolved "https://registry.npmjs.org/node-fetch-native/-/node-fetch-native-1.6.4.tgz"
   integrity sha512-IhOigYzAKHd244OC0JIMIUrjzctirCmPkaIfhDeGcEETWof5zKYUW7e7MYvChGWh/4CJeXEgsRyGzuF334rOOQ==
@@ -5959,19 +5959,19 @@ object.values@^1.1.6:
     define-properties "^1.1.4"
     es-abstract "^1.20.4"
 
-ofetch@^1.3.3:
-  version "1.3.4"
-  resolved "https://registry.npmjs.org/ofetch/-/ofetch-1.3.4.tgz"
-  integrity sha512-KLIET85ik3vhEfS+3fDlc/BAZiAp+43QEC/yCo5zkNoY2YaKvNkOaFr/6wCFgFH1kuYQM5pMNi0Tg8koiIemtw==
+ofetch@^1.3.4:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/ofetch/-/ofetch-1.4.0.tgz"
+  integrity sha512-MuHgsEhU6zGeX+EMh+8mSMrYTnsqJQQrpM00Q6QHMKNqQ0bKy0B43tk8tL1wg+CnsSTy1kg4Ir2T5Ig6rD+dfQ==
   dependencies:
     destr "^2.0.3"
-    node-fetch-native "^1.6.3"
-    ufo "^1.5.3"
+    node-fetch-native "^1.6.4"
+    ufo "^1.5.4"
 
 ohash@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.npmjs.org/ohash/-/ohash-1.1.3.tgz"
-  integrity sha512-zuHHiGTYTA1sYJ/wZN+t5HKZaH23i4yI1HMwbuXm24Nid7Dv0KcuRlKoNKS9UNfAVSBlnGLcuQrnOKWOZoEGaw==
+  version "1.1.4"
+  resolved "https://registry.npmjs.org/ohash/-/ohash-1.1.4.tgz"
+  integrity sha512-FlDryZAahJmEF3VR3w1KogSEdWX3WhA5GPakFx4J81kEAiHyLMpdLLElS8n8dfNadMgAne/MywcvmogzscVt4g==
 
 on-exit-leak-free@^0.2.0:
   version "0.2.0"
@@ -7274,7 +7274,7 @@ typescript@^4.4.2, typescript@>=2.7, "typescript@>=2.8.0 || >= 3.2.0-dev || >= 3
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.9.5.tgz"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
 
-ufo@^1.4.0, ufo@^1.5.3:
+ufo@^1.4.0, ufo@^1.5.3, ufo@^1.5.4:
   version "1.5.4"
   resolved "https://registry.npmjs.org/ufo/-/ufo-1.5.4.tgz"
   integrity sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==
@@ -7334,20 +7334,20 @@ universalify@^2.0.0:
   integrity sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
 
 unstorage@^1.9.0:
-  version "1.10.2"
-  resolved "https://registry.npmjs.org/unstorage/-/unstorage-1.10.2.tgz"
-  integrity sha512-cULBcwDqrS8UhlIysUJs2Dk0Mmt8h7B0E6mtR+relW9nZvsf/u4SkAYyNliPiPW7XtFNb5u3IUMkxGxFTTRTgQ==
+  version "1.12.0"
+  resolved "https://registry.npmjs.org/unstorage/-/unstorage-1.12.0.tgz"
+  integrity sha512-ARZYTXiC+e8z3lRM7/qY9oyaOkaozCeNd2xoz7sYK9fv7OLGhVsf+BZbmASqiK/HTZ7T6eAlnVq9JynZppyk3w==
   dependencies:
     anymatch "^3.1.3"
     chokidar "^3.6.0"
     destr "^2.0.3"
-    h3 "^1.11.1"
+    h3 "^1.12.0"
     listhen "^1.7.2"
-    lru-cache "^10.2.0"
+    lru-cache "^10.4.3"
     mri "^1.2.0"
-    node-fetch-native "^1.6.2"
-    ofetch "^1.3.3"
-    ufo "^1.4.0"
+    node-fetch-native "^1.6.4"
+    ofetch "^1.3.4"
+    ufo "^1.5.4"
 
 untun@^0.1.3:
   version "0.1.3"

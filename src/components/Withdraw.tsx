@@ -128,7 +128,7 @@ export const WithdrawDapp = ({
           { tokenList !== undefined && contractState !== undefined && <TokenGifted tokenList={tokenList} contractState={contractState} /> }
 
           <label htmlFor="gift-message">
-            {contractState !== undefined && message !== undefined && 'Message: ' + message}
+            <p>{contractState !== undefined && message !== undefined && 'Message: ' + message}</p>
           </label>
           <label htmlFor="gift-message">
             {isNotClaimed && contractState !== undefined ? (
