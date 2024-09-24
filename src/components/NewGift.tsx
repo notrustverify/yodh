@@ -72,6 +72,9 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         selectedToken?.decimals ?? Number(ONE_ALPH)
       )
       setOngoingTxId(result.txId)
+
+      store.add('gifts', [{ contractId: '', secret: array, message: message }])
+
       await waitForTxConfirmation(result.txId, 1, 5 * 1000)
 
       const details = await web3.getCurrentNodeProvider().transactions.getTransactionsDetailsTxid(result.txId)
@@ -80,9 +83,15 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         const contractIdGenerated = contractIdFromAddress(details.generatedOutputs[0].address)
         setContractId(Buffer.from(contractIdGenerated).toString('hex'))
 
-        store.add('gifts', [
+        let giftsStored = store.get('gifts')
+        giftsStored.pop() // remove last entry to replace with the right one with contractid
+        giftsStored = [
+          ...giftsStored,
           { contractId: Buffer.from(contractIdGenerated).toString('hex'), secret: array, message: message }
-        ])
+        ]
+
+        store.remove('gifts')
+        store.add('gifts', giftsStored)
       }
     }
   }
@@ -135,7 +144,17 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
       })
       setContractId(contractIdParam)
     }
+
+    window.addEventListener('beforeunload', beforeUnload)
+  return () => {
+    window.removeEventListener('beforeunload', beforeUnload)
+  }
   }, [contractIdParam])
+
+
+  function beforeUnload(e: BeforeUnloadEvent) {
+   e.preventDefault();
+ }
 
   return (
     <div className={styles.mainContainer}>
@@ -179,8 +198,8 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
               onChange={(e) => setMessage(e.target.value)}
             ></textarea>
           )}
-
-          <Select
+          <label htmlFor="gift-amount">
+            <Select
               options={tokenSelect}
               isSearchable={true}
               isClearable={true}
@@ -189,6 +208,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
                 return option.value === selectedToken?.symbol
               })}
             />
+          </label>
 
           <label htmlFor="gift-amount">Amount in {selectedToken?.symbol}</label>
           <label htmlFor="gift-amount">
@@ -256,7 +276,8 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         )}{' '}
         {isPot && contractId !== '' && isCopied
           ? 'URL Copied'
-          : isPot && (
+          : isPot &&
+            contractId !== '' && (
               <FaRegCopy
                 onClick={() => {
                   navigator.clipboard.writeText(`${getUrl()}/#contract=${contractId}&pot=${isPot}`)

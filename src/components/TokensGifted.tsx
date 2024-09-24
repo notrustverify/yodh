@@ -37,7 +37,7 @@ export default function TokenGifted({
       {contractState !== undefined && (
         <p>
           {' '}
-          {shortAddress(contractState.fields.sender)} sent you {results}
+          <AlephiumDomain addressParams={contractState.fields.sender} /> sent you {results}
         </p>
       )}
     </label>
