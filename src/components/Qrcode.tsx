@@ -49,7 +49,7 @@ export default function QrCode({
             Add tokens URL
           </Link>
         )}{' '}
-        {isCopiedPot ? (
+      {pot ? isCopiedPot ? (
           'URL Copied'
         ) : (
           <FaRegCopy
@@ -60,7 +60,7 @@ export default function QrCode({
           >
             Copy to Clipboard
           </FaRegCopy>
-        )}
+        ) : '' }
       </p>
       <QRCodeCanvas value={urlToEncode} />
     </>

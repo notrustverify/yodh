@@ -12,6 +12,7 @@ export interface Gift {
   contractId: string
   message: string
   secret: Uint8Array
+  pot: boolean
 }
 
 export interface TokenList {

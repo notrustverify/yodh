@@ -40,7 +40,7 @@ export const Gifts = ({ gifts }:{ gifts:Array<Gift> }) => {
        results.push(
          <div key={element.contractId}>
            <label htmlFor="gift-message">
-             <QrCode contractId={element.contractId} message={message} secret={new Uint8Array(Object.values(element.secret))} />
+             <QrCode contractId={element.contractId} message={message} secret={new Uint8Array(Object.values(element.secret))} pot={element.pot}  />
            </label>
          </div>
        )
