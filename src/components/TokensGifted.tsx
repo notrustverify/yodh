@@ -1,6 +1,6 @@
 import React from 'react'
 import { findTokenFromId, shortAddress, Token } from '@/services/utils'
-import { ALPH_TOKEN_ID, number256ToNumber } from '@alephium/web3'
+import { ALPH_TOKEN_ID, MINIMAL_CONTRACT_DEPOSIT, number256ToNumber } from '@alephium/web3'
 import { GiftTypes } from 'artifacts/ts'
 import AlephiumDomain from './ANS'
 
@@ -14,23 +14,23 @@ export default function TokenGifted({
   const results: JSX.Element[] = []
 
   if (contractState.asset.tokens !== undefined) {
-    if (contractState.asset.tokens.length <= 0)
-      results.push(<span key={ALPH_TOKEN_ID}>{number256ToNumber(contractState.asset.alphAmount, 18)} ALPH</span>)
+   if (number256ToNumber(contractState.asset.alphAmount,18) > 0.1)
+     results.push(<>{number256ToNumber(contractState.asset.alphAmount, 18)} ALPH</>)
 
-    contractState.asset.tokens.forEach((element) => {
-      const token = findTokenFromId(tokenList, element.id)
-      if (token !== undefined) {
-        const tokenAmount = number256ToNumber(element.amount, token.decimals)
-        const tokenSymbol = token.symbol
+   contractState.asset.tokens.forEach((element) => {
+     const token = findTokenFromId(tokenList, element.id)
+     if (token !== undefined) {
+       const tokenAmount = number256ToNumber(element.amount, token.decimals)
+       const tokenSymbol = token.symbol
 
-        results.push(
-          <span key={element.id}>
-            {tokenAmount} {tokenSymbol}{' '}
-          </span>
-        )
-      }
-    })
-  }
+       results.push(
+         <>
+           {' / '}{tokenAmount} {tokenSymbol}{' '}
+         </>
+       )
+     }
+   })
+ }
 
   return (
     <label htmlFor="gift-message">

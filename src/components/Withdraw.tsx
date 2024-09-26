@@ -2,11 +2,12 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { useState } from 'react'
 import styles from '../styles/Gift.module.css'
-import { announce, checkHash, claim, getContractState } from '@/services/gift.service'
+import { announce, cancel, checkHash, claim, getContractState } from '@/services/gift.service'
 import { TxStatus } from './TxStatus'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
 import {
   addressFromContractId,
+  isValidAddress,
   node,
   number256ToNumber,
   waitForTxConfirmation,
@@ -14,7 +15,7 @@ import {
 } from '@alephium/web3'
 import { GiftTypes } from 'artifacts/ts'
 import Hash from './Hash'
-import { contractExists, findTokenFromId, getTokenList, shortAddress, Token, WithdrawState } from '@/services/utils'
+import { contractExists, contractIdFromAddressString, findTokenFromId, getTokenList, shortAddress, Token, WithdrawState } from '@/services/utils'
 import Link from 'next/link'
 import Head from 'next/head'
 import { Icon } from '@iconify/react'
@@ -39,26 +40,26 @@ export const WithdrawDapp = ({
   const [step, setStep] = useState<WithdrawState>(WithdrawState.Locking)
   const [isNotClaimed, setIsNotClaimed] = useState<boolean>(true)
   const [tokenList, setTokenList] = useState<Token[]>()
+  const [contract, setContract] = useState<string>('')
 
 
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (signer) {
       let result
-      console.log(step)
       switch (step as WithdrawState) {
         case WithdrawState.Locking:
-          result = await announce(signer, contractId)
+          result = await announce(signer, contract)
           setOngoingTxId(result.txId)
           await waitForTxConfirmation(result.txId, 1, 10)
           setStep(WithdrawState.Locked)
-          getContractState(contractId).then((data) => setContractState(data))
+          getContractState(contract).then((data) => setContractState(data))
           setOngoingTxId('')
           break
 
         case WithdrawState.Locked:
           setStep(WithdrawState.Claiming)
-          result = await claim(signer, secretDecoded, contractId)
+          result = await claim(signer, secretDecoded, contract)
           setOngoingTxId(result.txId)
           await waitForTxConfirmation(result.txId, 1, 10)
           break
@@ -69,12 +70,29 @@ export const WithdrawDapp = ({
     }
   }
 
+
+  const handleCancelGift = async (e: React.FormEvent) => {
+   e.preventDefault()
+   if (signer) {
+   
+      const result = await cancel(signer, contract)
+         setOngoingTxId(result.txId)
+         await waitForTxConfirmation(result.txId, 1, 10)
+         setStep(WithdrawState.Cancel)
+         getContractState(contract).then((data) => setContractState(data))
+         setOngoingTxId('')
+         
+
+   }
+ }
+
+
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<any> => {
       if ((status.type === 'Confirmed' && numberOfChecks > 2) || (status.type === 'TxNotFound' && numberOfChecks > 5)) {
         setOngoingTxId(undefined)
         setIsNotClaimed(false)
-        getContractState(contractId).then((data) => setContractState(data))
+        getContractState(contract).then((data) => setContractState(data))
       }
 
       return Promise.resolve()
@@ -88,12 +106,20 @@ export const WithdrawDapp = ({
 
   useEffect(() => {
     //getState()
+
     if (!initialized.current && contractId !== '') {
       initialized.current = true
-      contractExists(addressFromContractId(contractId)).then((exist) => setIsNotClaimed(exist))
+
+      let dataContractId = contractId
+      // address can be passed
+      if(isValidAddress(contractId)) dataContractId = contractIdFromAddressString(contractId)
+
+      contractExists(addressFromContractId(dataContractId)).then((exist) => setIsNotClaimed(exist))
       setSecretDecoded(new Uint8Array(Buffer.from(decodeURIComponent(secret), 'base64')))
+
       if (isNotClaimed) {
-        getContractState(contractId).then((data) => {
+        setContract(dataContractId)
+        getContractState(dataContractId).then((data) => {
           setContractState(data)
           setStep(
             data.fields.announcedAddress === ZERO_ADDRESS ? WithdrawState.Locking : WithdrawState.Locked
@@ -107,6 +133,7 @@ export const WithdrawDapp = ({
       }
     }
   }, [contractId, secret, isNotClaimed])
+
 
   return (
     <div className={styles.mainContainer}>
@@ -194,12 +221,23 @@ export const WithdrawDapp = ({
           </button>
         </form>
 
-        <p id="response-message"></p>
       </section>
-
+      {
+      connectionStatus === 'connected' && contractState?.fields.sender === account?.address &&
+         <button
+         type="button"
+         disabled={
+           !!ongoingTxId ||
+           contractState?.fields.sender !== account?.address ||
+           !isNotClaimed }
+         className={styles.wrapButton}
+         onClick={handleCancelGift}
+       >Cancel</button>
+      }
       {ongoingTxId && <TxStatus txId={ongoingTxId} txStatusCallback={txStatusCallback} step={step} />}
 
       <Link href={"/"} >Create a new Gift Card</Link>
+      <br/>
       <Footer />
     </div>
   )

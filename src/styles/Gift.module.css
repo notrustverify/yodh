@@ -140,8 +140,7 @@
  .giftCardSection {
    display: flex;
    align-items: center;
-   justify-content: flex-start;
-   width: 100%; /* Ensure full width to avoid wrapping */
+   gap: 10px; /* Space between the label and checkbox */
 }
 
 .giftCardSection label {
@@ -150,7 +149,22 @@
 }
 
 #poolGiftCard {
-   margin-left: 0;
+   margin: 0;
+   width: 20px; /* Set size to adjust as needed */
+   height: 20px;
+}
+
+#poolGiftCard:focus, #poolGiftCard:hover {
+   outline: none;
+   border: none;
+   box-shadow: none; /* Removes outline or shadow on focus/hover */
+}
+
+.giftCardSection input[type="checkbox"] {
+   margin-top: 0.75em;
+   width: 20px; /* Custom size if needed */
+   height: 20px;
+   accent-color: #4e54c8; /* Optional, to set checkbox color */
 }
  
  
@@ -160,7 +174,7 @@
    }
  
    .header h1 {
-     font-size: 2.2rem;
+     font-size: 2.0rem;
    }
  
    .walletButton,

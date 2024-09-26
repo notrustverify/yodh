@@ -1,4 +1,4 @@
-import { addressFromContractId, groupOfAddress, NetworkId, web3 } from '@alephium/web3'
+import { addressFromContractId, binToHex, contractIdFromAddress, groupOfAddress, NetworkId, web3 } from '@alephium/web3'
 import router from 'next/router'
 
 export interface TokenFaucetConfig {
@@ -36,10 +36,11 @@ export enum WithdrawState {
   Locking = 'Unwrapping your gift',
   Claiming = 'Opening your gift',
   Wrapping = 'Gift wrapping',
-  Deposit = 'Adding tokens'
+  Deposit = 'Adding tokens',
+  Cancel = 'Canceling gift'
 }
 
-export const GIFT_FACTORY_CONTRACT_ADDRESS = "v34YV5zM7at3w5TyN8ZVxEngWYjUxN8S5Q2PeontLK1q"
+export const GIFT_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_GIFT_FACTORY_ADDRESS ??"23YbSbpLCpz7PpzMZ23ksjNzpiqEDkoqisyY4fLvba61d"
 
 export function getNetwork(): NetworkId {
   const network = (process.env.NETWORK ?? 'testnet') as NetworkId
@@ -120,4 +121,9 @@ export async function getTokenList(): Promise<Token[]>{
 export function findTokenFromId(tokenList: Token[], tokenId: string): Token|undefined{
    return tokenList?.find((token) => token.id === tokenId)
 }
+
+export const contractIdFromAddressString = (contractAddr: string) =>  {
+   return binToHex(contractIdFromAddress(contractAddr))
+}
+
 

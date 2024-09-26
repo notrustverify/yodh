@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { FaRegCopy } from 'react-icons/fa'
 import { getUrl, shortAddress } from '../services/utils'
+import { Icon } from '@iconify/react'
 
 export default function QrCode({
   contractId,
@@ -49,18 +50,29 @@ export default function QrCode({
             Add tokens URL
           </Link>
         )}{' '}
-      {pot ? isCopiedPot ? (
-          'URL Copied'
+        {pot ? (
+          isCopiedPot ? (
+            'URL Copied'
+          ) : (
+            <FaRegCopy
+              onClick={() => {
+                navigator.clipboard.writeText(urlToEncode)
+                setIsCopiedPot(true)
+              }}
+            >
+              Copy to Clipboard
+            </FaRegCopy>
+          )
         ) : (
-          <FaRegCopy
-            onClick={() => {
-              navigator.clipboard.writeText(urlToEncode)
-              setIsCopiedPot(true)
-            }}
-          >
-            Copy to Clipboard
-          </FaRegCopy>
-        ) : '' }
+          ''
+        )}
+      </p>
+      <p>
+        {contractId == '' && (
+          <small>
+            <Icon icon="twemoji:warning" /> Contract is missing, find it your tx history
+          </small>
+        )}
       </p>
       <QRCodeCanvas value={urlToEncode} />
     </>

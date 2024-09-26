@@ -56,7 +56,7 @@ export const Gifts = ({ gifts }:{ gifts:Array<Gift> }) => {
           onClick={openModal}
           disabled={gifts === null || gifts.length <= 0}
         >
-          Gift cards created
+          Your gifts cards
         </button>
         <Modal
           isOpen={modalIsOpen}

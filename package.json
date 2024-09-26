@@ -50,6 +50,7 @@
     "react-modal": "^3.16.1",
     "react-select": "^5.8.0",
     "react-spinners": "^0.14.1",
+    "react-tooltip": "^5.28.0",
     "react-transition-state": "^1.1.4",
     "react-use-measure": "^2.1.1",
     "resize-observer-polyfill": "^1.5.1",

@@ -13,7 +13,7 @@ import {
 } from '@alephium/web3'
 import { Gift, GiftFactory, GiftFactoryTypes, GiftTypes } from 'artifacts/ts'
 import { sha256 } from 'js-sha256'
-import { GIFT_FACTORY_CONTRACT_ADDRESS } from './utils'
+import { GIFT_FACTORY_ADDRESS } from './utils'
 
 export const createGift = async (
   amount: bigint,
@@ -29,7 +29,7 @@ export const createGift = async (
       hashedSecret: sha256(secret),
       announcementLockIntervall: announcementLockIntervall,
       version: 0n,
-      isCancellable: false,
+      isCancellable: true,
       announcedAddress: ZERO_ADDRESS,
       announcementLockedUntil: 0n,
       givenTokenId: ALPH_TOKEN_ID
@@ -38,7 +38,6 @@ export const createGift = async (
     attoAlphAmount: amount * ONE_ALPH
   }
 
-  console.log(data)
   if (tokenId !== ALPH_TOKEN_ID) {
     data.args.givenTokenId = tokenId
 
@@ -46,13 +45,13 @@ export const createGift = async (
     data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
   }
 
-  return await GiftFactory.at(GIFT_FACTORY_CONTRACT_ADDRESS).transact.createGift(data)
+  return await GiftFactory.at(GIFT_FACTORY_ADDRESS).transact.createGift(data)
 }
 
 export const giftDeposit = async (
   contractId: string,
   amount: bigint,
-  sender: any,
+  sender: SignerProvider,
   tokenId: string,
   decimal: number
 ) => {
@@ -79,7 +78,7 @@ export const checkHash = (secret: Uint8Array, hashedSecretContract: string | und
 }
 
 export const getContractState = async (contractId: string) => {
-  return await Gift.at(addressFromContractId(contractId)).fetchState()
+   return await Gift.at(addressFromContractId(contractId)).fetchState()
 }
 
 export const claim = async (signer: SignerProvider, secretDecoded: Uint8Array, contractId: string) => {
@@ -96,3 +95,9 @@ export const announce = async (signer: SignerProvider, contractId: string) => {
     signer: signer
   })
 }
+
+export const cancel = async (signer: SignerProvider, contractId: string) => {
+   return await Gift.at(addressFromContractId(contractId)).transact.cancel({
+     signer: signer
+   })
+ }
