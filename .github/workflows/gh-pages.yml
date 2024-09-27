@@ -34,6 +34,7 @@ jobs:
           NEXT_PUBLIC_URL: ${{ vars.PUBLIC_URL }}
           NEXT_PUBLIC_NETWORK: ${{ vars.NETWORK }}
           NEXT_PUBLIC_NODE_URL: ${{ vars.NODE_URL }}
+          NEXT_PUBLIC_GIFT_FACTORY_ADDRESS: ${{ vars.GIFT_FACTORY_ADDRESS }}
         
       #- run: npm run export
       - name: Upload artifact
