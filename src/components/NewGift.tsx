@@ -239,7 +239,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             options={tokenSelect}
             isSearchable={true}
             isClearable={true}
-            onChange={(option) => setSelectedToken(tokenList?.find((token) => token.name === option?.label))}
+            onChange={(option) => setSelectedToken(tokenList?.find((token) => token.symbol === option?.label))}
             value={tokenSelect?.find(function (option) {
               return option.value === selectedToken?.symbol
             })}
