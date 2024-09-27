@@ -44,7 +44,7 @@ export enum WithdrawState {
 export const GIFT_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_GIFT_FACTORY_ADDRESS ??"23YbSbpLCpz7PpzMZ23ksjNzpiqEDkoqisyY4fLvba61d"
 
 export function getNetwork(): NetworkId {
-  const network = (process.env.NETWORK ?? 'testnet') as NetworkId
+  const network = (process.env.NEXT_PUBLIC_NETWORK ?? 'testnet') as NetworkId
   return network
 }
 
