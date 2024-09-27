@@ -2,7 +2,15 @@ import Head from 'next/head'
 import styles from '@/styles/Gift.module.css'
 import { AlephiumConnectButton, useBalance, useWallet } from '@alephium/web3-react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { ALPH_TOKEN_ID, contractIdFromAddress, node, number256ToNumber, ONE_ALPH, waitForTxConfirmation, web3 } from '@alephium/web3'
+import {
+  ALPH_TOKEN_ID,
+  contractIdFromAddress,
+  node,
+  number256ToNumber,
+  ONE_ALPH,
+  waitForTxConfirmation,
+  web3
+} from '@alephium/web3'
 import { createGift, getContractState, giftDeposit } from '@/services/gift.service'
 import { Icon } from '@iconify/react'
 import { TxStatus } from './TxStatus'
@@ -56,14 +64,14 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<any> => {
       setGiftWrapped(false)
-      if ((status.type === 'Confirmed' && numberOfChecks >= 2 || detailsLoaded) || (status.type === 'TxNotFound' && numberOfChecks > 5)) {
+      if (detailsLoaded || (status.type === 'TxNotFound' && numberOfChecks > 5)) {
         setOngoingTxId(undefined)
         setGiftWrapped(true)
       }
 
       return Promise.resolve()
     },
-    [setOngoingTxId]
+    [detailsLoaded]
   )
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -97,7 +105,6 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
           setContractId(contractIdFromAddressString(contractAddr))
           setDetailsLoaded(true)
 
-
           let giftsStored = store.get('gifts')
           giftsStored.pop() // remove last entry to replace with the right one with contractid
           giftsStored = [
@@ -112,10 +119,9 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
 
           store.remove('gifts')
           store.add('gifts', giftsStored)
-
+          setGifts(store.get('gifts'))
         }
       } catch (error) {
-    
         if ((error as Error).message.toLowerCase() == 'user rejected') {
           const giftsStored = store.get('gifts')
           giftsStored.pop()
@@ -139,9 +145,11 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         selectedToken?.id ?? ALPH_TOKEN_ID,
         selectedToken?.decimals ?? Number(ONE_ALPH)
       )
+
       setOngoingTxId(result.txId)
       await waitForTxConfirmation(result.txId, 1, 5 * 1000)
       setDetailsLoaded(true)
+      setGiftWrapped(true)
 
       getContractState(contractId).then((data) => {
         setContractState(data)
@@ -165,14 +173,13 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
     }
 
     if (contractIdParam !== undefined) {
-
       getContractState(contractIdParam).then((data) => {
         setContractState(data)
       })
       setContractId(contractIdParam)
     }
 
-   !pot && window.addEventListener('beforeunload', beforeUnload)
+    !pot && window.addEventListener('beforeunload', beforeUnload)
     return () => {
       window.removeEventListener('beforeunload', beforeUnload)
     }
@@ -209,7 +216,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             <label htmlFor="gift-message">
               {contractState?.asset.tokens !== undefined &&
                 tokenList !== undefined &&
-                number256ToNumber(contractState.asset.alphAmount,18) > 0.1 && (
+                number256ToNumber(contractState.asset.alphAmount, 18) > 0.1 && (
                   <TokenPot tokenList={tokenList} contractState={contractState} />
                 )}
             </label>
@@ -282,11 +289,17 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         </form>
       </section>
 
+      {pot && giftWrapped && (
+        <label htmlFor="gift-amount">
+          <Icon icon="material-symbols:done" width="32" height="32" style={{ color: '#7e7eff' }} /> {withdrawAmount}{' '}
+          {selectedToken?.symbol} has been added
+        </label>
+      )}
       {ongoingTxId && (
         <TxStatus
           txId={ongoingTxId}
           txStatusCallback={txStatusCallback}
-          step={pot ? WithdrawState.Deposit : WithdrawState.Wrapping}
+          step={pot ? WithdrawState.Adding : WithdrawState.Wrapping}
         />
       )}
 
@@ -330,6 +343,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
           </details>
         )}
       </div>
+      
       {pot && contractId !== '' && <Link href={'/'}>Create a new Gift Card</Link>}
       <Footer />
     </div>

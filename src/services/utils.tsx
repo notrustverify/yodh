@@ -37,7 +37,8 @@ export enum WithdrawState {
   Claiming = 'Opening your gift',
   Wrapping = 'Gift wrapping',
   Deposit = 'Adding tokens',
-  Cancel = 'Canceling gift'
+  Cancel = 'Canceling gift',
+  Adding = 'Adding tokens'
 }
 
 export const GIFT_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_GIFT_FACTORY_ADDRESS ??"23YbSbpLCpz7PpzMZ23ksjNzpiqEDkoqisyY4fLvba61d"

@@ -166,7 +166,7 @@ export const WithdrawDapp = ({
           </label>
 
           <label htmlFor="gift-message">
-            <Icon icon="material-symbols:info" /> You will need to sign 2 times for security purpose.
+          <small><Icon icon="material-symbols:info" /> You will need to sign 2 times for security purpose.</small>
           </label>
 
           {contractState !== undefined && (
@@ -222,8 +222,9 @@ export const WithdrawDapp = ({
         </form>
 
       </section>
-      {
-      connectionStatus === 'connected' && contractState?.fields.sender === account?.address &&
+      {}<label htmlFor="gift-message" ></label>
+      {connectionStatus === 'connected' && contractState?.fields.sender === account?.address && <b><Icon icon="twemoji:warning" /> If you lose the secret, you can cancel it to recover the tokens. Only you have access to this option.</b> }
+      {connectionStatus === 'connected' && contractState?.fields.sender === account?.address &&
          <button
          type="button"
          disabled={
@@ -232,7 +233,7 @@ export const WithdrawDapp = ({
            !isNotClaimed }
          className={styles.wrapButton}
          onClick={handleCancelGift}
-       >Cancel</button>
+       >{isNotClaimed ? "Cancel" : "Already cancel" }</button>
       }
       {ongoingTxId && <TxStatus txId={ongoingTxId} txStatusCallback={txStatusCallback} step={step} />}
 
