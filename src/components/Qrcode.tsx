@@ -56,7 +56,7 @@ export default function QrCode({
           ) : (
             <FaRegCopy
               onClick={() => {
-                navigator.clipboard.writeText(urlToEncode)
+                navigator.clipboard.writeText(urlPotToEncode)
                 setIsCopiedPot(true)
               }}
             >

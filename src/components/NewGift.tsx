@@ -60,7 +60,6 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
       'Alephium is a scalable, decentralized, and secure blockchain platform that enables the creation of fast and secure applications.',
     logoURI: 'https://raw.githubusercontent.com/alephium/token-list/master/logos/ALPH.png'
   })
-
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<any> => {
       setGiftWrapped(false)
