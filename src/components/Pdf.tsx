@@ -1,135 +1,174 @@
-import React, { useState } from 'react'
-import { Page, Text, Document, StyleSheet, Link, Image, Font } from '@react-pdf/renderer'
-import { getUrl, shortAddress } from '@/services/utils'
+import React, { useState, useEffect } from 'react'
+import { Page, Text, Document, StyleSheet, View, Image, Link } from '@react-pdf/renderer'
 import QRCode from 'qrcode'
-import AlephiumDomain from './ANS'
+import { getUrl } from '@/services/utils'
 
-// Create styles
+// Styles for the PDF based on the image provided
 const styles = StyleSheet.create({
-  page: {
-    flexDirection: 'row',
-    backgroundColor: '#E4E4E4'
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1
-  },
   body: {
-    paddingTop: 35,
-    paddingBottom: 65,
-    paddingHorizontal: 35,
-    fontFamily: 'Times-Roman'
-  },
-  title: {
-    fontSize: 24,
-    textAlign: 'center',
-  },
-  author: {
-    fontSize: 12,
-    textAlign: 'center',
-    marginBottom: 40
-  },
-  subtitle: {
-    fontSize: 18,
-    margin: 12,
-  },
-  text: {
-    margin: 12,
-    fontSize: 14,
-    textAlign: 'justify',
-  },
-  textWrap: {
-   paddingTop: '-20px',
-   fontSize: 14,
-   margin: 12
-  },
-  image: {
-    margin: 12,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '10%'
+    padding: 20, 
+    fontFamily: 'Helvetica',
+    color: '#333',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#f9f9f9'
   },
   header: {
-    fontSize: 12,
-    marginBottom: 20,
-    textAlign: 'center',
-    color: 'grey'
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20 // Adjusted margin
   },
-  pageNumber: {
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 10 // Space between logo and title
+  },
+  title: {
+    fontSize: 24, 
+    fontWeight: 'bold',
+    color: '#2c3e50'
+  },
+  section: {
+    marginBottom: 12
+  },
+  inputLabel: {
+    fontSize: 12,
+    marginBottom: 3,
+    color: '#555',
+    fontWeight: 'bold'
+  },
+  inputField: {
+    fontSize: 12,
+    marginBottom: 10,
+    color: '#333',
+    paddingBottom: 4,
+    borderBottom: '1 solid #ccc'
+  },
+  instructions: {
+    marginTop: 15,
+    fontSize: 11,
+    color: '#555',
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  link: {
+    fontSize: 11,
+    color: '#2980B9',
+    textDecoration: 'underline',
+    marginVertical: 8,
+    textAlign: 'center'
+  },
+  qrCodeContainer: {
+    alignItems: 'center',
+    marginTop: 5
+  },
+  qrCode: {
+    width: 100,
+    height: 100
+  },
+  footer: {
     position: 'absolute',
-    fontSize: 12,
-    bottom: 30,
-    left: 0,
-    right: 0,
-    textAlign: 'center',
-    color: 'grey'
+    bottom: 20,
+    left: 20,
+    right: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    fontSize: 10,
+    color: '#555',
+    borderTop: '1 solid #ccc',
+    paddingTop: 5
   },
-  qrcode: {
-   marginLeft: 'auto',
-   marginRight: 'auto',
-   width: '50%',
-   height: 'auto', 
-   maxWidth: '40%'
- }
-
+  footerText: {
+    fontSize: 9,
+    color: '#777'
+  }
 })
 
-// Create Document Component
 export default function PdfGiftCard({
   sender,
   contractId,
+  message,
   secret,
-  message
+  amount,
+  tokenSymbol
 }: {
   sender: string | undefined
   contractId: string
-  secret: Uint8Array
   message: string
+  secret: Uint8Array
+  amount: string
+  tokenSymbol: string | undefined
 }) {
-  const [qrCode, setQrCode] = useState<string>()
+  const [qrCode, setQrCode] = useState<string | null>(null)
   const encodedSecret = Buffer.from(secret).toString('base64')
+  const urlToEncode = `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(
+    encodedSecret
+  )}&msg=${encodeURIComponent(message)}`
 
-  const urlToEncode = `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(encodedSecret)}&msg=${encodeURIComponent(
-    message
-  )}`
-
-
-  QRCode.toDataURL(urlToEncode, { type: 'image/png' }).then((img: string) => {
-    setQrCode(img)
-
-  })
-
-  Font.registerHyphenationCallback(word => {
-   const middle = Math.floor(word.length / 2);
-   const parts = word.length === 1 ? [word] : [word.substr(0, middle), word.substr(middle)];
-
- 
-   return parts;
- });
+  // Generate QR code
+  useEffect(() => {
+    QRCode.toDataURL(urlToEncode, { type: 'image/png' })
+      .then((img: string) => setQrCode(img))
+      .catch((err) => console.error('QR Code generation failed', err))
+  }, [urlToEncode])
 
   return (
     <Document>
-      <Page size="A4" style={styles.body}>
-        <Text style={styles.title}>Yodh Gift Card</Text>
-        <Image  style={styles.image} src={'/img/yodh.jpg'} />
-        <Text style={styles.text}>{sender && shortAddress(sender)} sent you some tokens.</Text>
-        <Text style={styles.text}>Message:</Text>
-        <Text style={styles.textWrap}>{message}</Text>
-        <Text style={styles.text}>
-          To claim your ALPH visit this <Link href={urlToEncode}>link</Link> or scan the QR Code below.
-        </Text>
-        <Image src={qrCode} style={styles.qrcode} />
-        
-     
-        <Text style={styles.text}>How to claim: </Text>
-        <Text style={styles.text}>1. Start by downloading Alephium wallets on <Link href='https://alephium.org/#wallets'>https://alephium.org/#wallets</Link> </Text>
-        <Text style={styles.text}>2. Scan the QR code above with any QR code app</Text>
-        <Text style={styles.text}>3. Connect your Alephium wallet and claim your gift</Text>
-        <br/>
+      <Page size="A4" orientation="landscape" style={styles.body}>
+        {/* Header Section */}
+        <View style={styles.header}>
+          <Image style={styles.logo} src="/img/yodh.jpg" />
+          <Text style={styles.title}>Gift certificate</Text>
+        </View>
 
-        <Text style={styles.text}>Any questions, join Alephium Telegram <Link href='https://t.me/alephiumgroup'>@alephiumgroup</Link> or on Discord <Link href='https://alephium.org/discord'>alephium.org/discord</Link> </Text>
-        </Page>
+        {/* From Field */}
+        <View style={styles.section}>
+          <Text style={styles.inputLabel}>From:</Text>
+          <Text style={styles.inputField}>{sender}</Text>
+        </View>
+
+        {/* Amount Field */}
+        <View style={styles.section}>
+          <Text style={styles.inputLabel}>Amount:</Text>
+          <Text style={styles.inputField}>
+            {amount} {tokenSymbol}
+          </Text>
+        </View>
+
+        {/* Message Field */}
+        <View style={styles.section}>
+          <Text style={styles.inputLabel}>Message:</Text>
+          <Text style={styles.inputField}>{message}</Text>
+        </View>
+
+        {/* Claim Instructions */}
+        <Text style={styles.instructions}>Download Alephium wallet</Text>
+        <Link style={styles.link} src={'https://alephium.org/#wallets'}>
+          alephium.org/#wallets
+        </Link>
+        <Text style={styles.instructions}>To claim your gift, visit the link below or scan the QR code:</Text>
+
+        {/* Centered Link */}
+        <Link style={styles.link} src={urlToEncode}>
+          Gift Link
+        </Link>
+
+        {/* QR Code */}
+        {qrCode && (
+          <View style={styles.qrCodeContainer}>
+            <Image style={styles.qrCode} src={qrCode} />
+          </View>
+        )}
+
+        {/* Footer Section */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>Yodh | DigitALPH Gift Card</Text>
+          <Text style={styles.footerText}>yodh.app</Text>
+        </View>
+      </Page>
     </Document>
   )
 }

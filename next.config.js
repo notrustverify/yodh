@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   distDir: 'build',
-  output: 'export',
+ // output: 'export',
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback.fs = false

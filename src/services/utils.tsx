@@ -127,4 +127,6 @@ export const contractIdFromAddressString = (contractAddr: string) =>  {
    return binToHex(contractIdFromAddress(contractAddr))
 }
 
+export const isEncodedFormat = (secret: string) => Buffer.from(decodeURIComponent(secret), 'base64').toString('base64') == decodeURIComponent(secret)
 
+export const isBase64 = (secret: string) => Buffer.from(secret, 'base64').toString('base64') == secret

@@ -7,6 +7,8 @@ import { TxStatus } from './TxStatus'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
 import {
   addressFromContractId,
+  bs58,
+  isBase58,
   isValidAddress,
   node,
   number256ToNumber,
@@ -15,13 +17,24 @@ import {
 } from '@alephium/web3'
 import { GiftTypes } from 'artifacts/ts'
 import Hash from './Hash'
-import { contractExists, contractIdFromAddressString, findTokenFromId, getTokenList, shortAddress, Token, WithdrawState } from '@/services/utils'
+import {
+  contractExists,
+  contractIdFromAddressString,
+  findTokenFromId,
+  getTokenList,
+  isBase64,
+  isEncodedFormat,
+  shortAddress,
+  Token,
+  WithdrawState
+} from '@/services/utils'
 import Link from 'next/link'
 import Head from 'next/head'
 import { Icon } from '@iconify/react'
 import { Footer } from './Footer'
 import { Locked } from './Locked'
 import TokenGifted from './TokensGifted'
+import { Header } from './Header'
 
 export const WithdrawDapp = ({
   contractId,
@@ -41,7 +54,6 @@ export const WithdrawDapp = ({
   const [isNotClaimed, setIsNotClaimed] = useState<boolean>(true)
   const [tokenList, setTokenList] = useState<Token[]>()
   const [contract, setContract] = useState<string>('')
-
 
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -70,22 +82,17 @@ export const WithdrawDapp = ({
     }
   }
 
-
   const handleCancelGift = async (e: React.FormEvent) => {
-   e.preventDefault()
-   if (signer) {
-   
+    e.preventDefault()
+    if (signer) {
       const result = await cancel(signer, contract)
-         setOngoingTxId(result.txId)
-         await waitForTxConfirmation(result.txId, 1, 10)
-         setStep(WithdrawState.Cancel)
-         getContractState(contract).then((data) => setContractState(data))
-         setOngoingTxId('')
-         
-
-   }
- }
-
+      setOngoingTxId(result.txId)
+      await waitForTxConfirmation(result.txId, 1, 10)
+      setStep(WithdrawState.Cancel)
+      getContractState(contract).then((data) => setContractState(data))
+      setOngoingTxId('')
+    }
+  }
 
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<any> => {
@@ -97,7 +104,7 @@ export const WithdrawDapp = ({
 
       return Promise.resolve()
     },
-    [setOngoingTxId]
+    [contract]
   )
 
   useCallback(() => {
@@ -110,49 +117,54 @@ export const WithdrawDapp = ({
     if (!initialized.current && contractId !== '') {
       initialized.current = true
 
+      if (secret == undefined || secret == '') {
+        const secretPrompt = prompt('Secret missing, copy paste secret.', '')
+        if (secretPrompt !== null) {
+          if (isEncodedFormat(secretPrompt)) {
+            setSecretDecoded(Buffer.from(decodeURIComponent(secretPrompt), 'base64'))
+          } else {
+            isBase64(secretPrompt)
+              ? Buffer.from(secretPrompt, 'base64')
+              : setSecretDecoded(new TextEncoder().encode(secretPrompt))
+          }
+        }
+      } else {
+        setSecretDecoded(Buffer.from(decodeURIComponent(secret), 'base64'))
+      }
+
       let dataContractId = contractId
       // address can be passed
-      if(isValidAddress(contractId)) dataContractId = contractIdFromAddressString(contractId)
+      if (isValidAddress(contractId)) dataContractId = contractIdFromAddressString(contractId)
 
       contractExists(addressFromContractId(dataContractId)).then((exist) => setIsNotClaimed(exist))
-      setSecretDecoded(new Uint8Array(Buffer.from(decodeURIComponent(secret), 'base64')))
 
       if (isNotClaimed) {
         setContract(dataContractId)
         getContractState(dataContractId).then((data) => {
           setContractState(data)
-          setStep(
-            data.fields.announcedAddress === ZERO_ADDRESS ? WithdrawState.Locking : WithdrawState.Locked
-          )
+          setStep(data.fields.announcedAddress === ZERO_ADDRESS ? WithdrawState.Locking : WithdrawState.Locked)
         })
 
         getTokenList().then((data) => {
-         setTokenList(data)
-       })
-
+          setTokenList(data)
+        })
       }
     }
   }, [contractId, secret, isNotClaimed])
-
+  console.log(new TextDecoder().decode(secretDecoded))
 
   return (
     <div className={styles.mainContainer}>
-      <Head>
-        <title>Yodh - Alephium Gift Cards</title>
-      </Head>
-
-      <header className={styles.header}>
-        <h1>
-          Yodh <Icon icon="fa:gift" />
-        </h1>
-        <p>Create ALPH digital gift cards easily.</p>
-      </header>
+      
+      <Header gifts={undefined} />
 
       <section id="yodhSection">
         <AlephiumConnectButton />
 
         <form className={styles.giftForm} id="gift-form" onSubmit={handleWithdrawSubmit}>
-          { tokenList !== undefined && contractState !== undefined && <TokenGifted tokenList={tokenList} contractState={contractState} /> }
+          {tokenList !== undefined && contractState !== undefined && (
+            <TokenGifted tokenList={tokenList} contractState={contractState} />
+          )}
 
           <label htmlFor="gift-message">
             <p>{contractState !== undefined && message !== undefined && 'Message: ' + message}</p>
@@ -166,7 +178,9 @@ export const WithdrawDapp = ({
           </label>
 
           <label htmlFor="gift-message">
-          <small><Icon icon="material-symbols:info" /> You will need to sign 2 times for security purpose.</small>
+            <small>
+              <Icon icon="material-symbols:info" /> You will need to sign 2 times for security purpose.
+            </small>
           </label>
 
           {contractState !== undefined && (
@@ -180,12 +194,14 @@ export const WithdrawDapp = ({
           <button
             type="submit"
             disabled={
-              !!ongoingTxId ||
-              !checkHash(secretDecoded, contractState?.fields.hashedSecret) ||
-              !isNotClaimed ||
-              contractState?.fields.announcedAddress !== ZERO_ADDRESS ||
-              connectionStatus !== 'connected' ||
-              step != WithdrawState.Locking
+              contractState !== undefined &&
+              contractState?.fields.announcementLockedUntil >= BigInt(Date.now()) &&
+              (!!ongoingTxId ||
+                !checkHash(secretDecoded, contractState?.fields.hashedSecret) ||
+                !isNotClaimed ||
+                contractState?.fields.announcedAddress !== ZERO_ADDRESS ||
+                connectionStatus !== 'connected' ||
+                step != WithdrawState.Locking)
             }
             className={styles.wrapButton}
           >
@@ -220,25 +236,29 @@ export const WithdrawDapp = ({
             )}
           </button>
         </form>
-
       </section>
-      {}<label htmlFor="gift-message" ></label>
-      {connectionStatus === 'connected' && contractState?.fields.sender === account?.address && <b><Icon icon="twemoji:warning" /> If you lose the secret, you can cancel it to recover the tokens. Only you have access to this option.</b> }
-      {connectionStatus === 'connected' && contractState?.fields.sender === account?.address &&
-         <button
-         type="button"
-         disabled={
-           !!ongoingTxId ||
-           contractState?.fields.sender !== account?.address ||
-           !isNotClaimed }
-         className={styles.wrapButton}
-         onClick={handleCancelGift}
-       >{isNotClaimed ? "Cancel" : "Already cancel" }</button>
-      }
+      {}
+      <label htmlFor="gift-message"></label>
+      {connectionStatus === 'connected' && contractState?.fields.sender === account?.address && (
+        <b>
+          <Icon icon="twemoji:warning" /> If you lose the secret, you can cancel it to recover the tokens. Only you have
+          access to this option.
+        </b>
+      )}
+      {connectionStatus === 'connected' && contractState?.fields.sender === account?.address && (
+        <button
+          type="button"
+          disabled={!!ongoingTxId || contractState?.fields.sender !== account?.address || !isNotClaimed}
+          className={styles.wrapButton}
+          onClick={handleCancelGift}
+        >
+          {isNotClaimed ? 'Cancel' : 'Already cancel'}
+        </button>
+      )}
       {ongoingTxId && <TxStatus txId={ongoingTxId} txStatusCallback={txStatusCallback} step={step} />}
 
-      <Link href={"/"} >Create a new Gift Card</Link>
-      <br/>
+      <Link href={'/'}>Create a new Gift Card</Link>
+      <br />
       <Footer />
     </div>
   )

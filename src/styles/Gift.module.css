@@ -25,7 +25,7 @@
    margin-bottom: 0px;
    display: inline-flex;
    align-items: center;
-   gap: 10px;
+   gap: 0px;
    background: linear-gradient(45deg, #4e54c8, #8f94fb);
    -webkit-background-clip: text;
    -webkit-text-fill-color: transparent;

@@ -3,8 +3,10 @@ import styles from '@/styles/Gift.module.css'
 import { AlephiumConnectButton, useBalance, useWallet } from '@alephium/web3-react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
+   addressFromContractId,
   ALPH_TOKEN_ID,
   contractIdFromAddress,
+  isValidAddress,
   node,
   number256ToNumber,
   ONE_ALPH,
@@ -27,6 +29,8 @@ import TokenPot from './TokenPot'
 import Link from 'next/link'
 import { FaRegCopy } from 'react-icons/fa'
 import { Tooltip } from 'react-tooltip'
+import Image from 'next/image'
+import { Header } from './Header'
 
 interface OptionSelect {
   value: string
@@ -79,6 +83,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
 
       const array = new Uint8Array(128)
       crypto.getRandomValues(array)
+      //array = new TextEncoder().encode("testingsecret")
       setSecret(array)
 
       // store it in case of connection lost
@@ -194,16 +199,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         <title>Yodh - Alephium Gift Cards</title>
       </Head>
 
-      <header className={styles.header}>
-        <Gifts gifts={gifts} />
-
-        <h1>
-          Yodh <Icon icon="fa:gift" />
-        </h1>
-        <p>
-          <small>Create ALPH digital gift cards easily.</small>
-        </p>
-      </header>
+      <Header gifts={gifts} />
 
       <section id="yodhSection">
         <AlephiumConnectButton />
@@ -211,6 +207,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         {/* Add the local class to the form */}
         <form className={styles.giftForm} id="gift-form" onSubmit={!pot ? handleWithdrawSubmit : handleAddPotSubmit}>
           <label htmlFor="gift-message">{!pot ? 'Your Message' : 'Add tokens in the pot'}</label>
+          { pot &&<Link href={`https://explorer.alephium.org/addresses/${addressFromContractId(contractId)}`}>Visit pot contract</Link> }
           {pot && contractState !== undefined && (
             <label htmlFor="gift-message">
               {contractState?.asset.tokens !== undefined &&
@@ -269,10 +266,11 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             <label
               htmlFor="poolGiftCard"
               data-tooltip-id="my-tooltip"
-              data-tooltip-content="Add additional tokens following the creation of the gift card."
+              data-tooltip-content="Want to do a common gift for a birthday? Building a community cagnotte? Use this!"
             >
               Pool gift card <Icon icon="material-symbols:info" />
             </label>
+            
             <input
               disabled={pot}
               checked={pot}
@@ -280,6 +278,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
               type="checkbox"
               id="poolGiftCard"
             />
+           
           </div>
 
           <button type="submit" disabled={connectionStatus !== 'connected'} className={styles.wrapButton}>
@@ -306,7 +305,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         {!pot && contractId !== '' && giftWrapped ? (
           <PDFDownloadLink
             document={
-              <PdfGiftCard sender={account?.address} contractId={contractId} message={message} secret={secret} />
+              <PdfGiftCard sender={account?.address} contractId={contractId} message={message} secret={secret} amount={withdrawAmount} tokenSymbol={selectedToken?.symbol}/>
             }
             title="Yodh Gift Card"
           >
