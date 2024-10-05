@@ -3,6 +3,7 @@ import styles from '../styles/Gift.module.css'
 import Link from 'next/link'
 import { Gifts } from './CreatedGifts'
 import Image from 'next/image'
+import logo from '../../public/img/yodh.jpg'
 
 export const Header = ({ gifts }: { gifts: any }) => {
   return (
@@ -10,7 +11,7 @@ export const Header = ({ gifts }: { gifts: any }) => {
      {gifts && <Gifts gifts={gifts} /> }
 
       <h1>
-        <Image src="/img/yodh.jpg" alt="yodh logo" width={60} height={60} /> Yodh
+        <Image src={logo} alt="yodh logo" width={60} height={60} /> Yodh
       </h1>
       <p>
         <small>DigitALPH Gift Card</small>
