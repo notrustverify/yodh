@@ -1,52 +1,52 @@
 Contract GiftFactory (
-    oracle: IDIAOracle,
-    giftTemplate: Gift
-   ) {
-    
-    event GiftCreated(newGiftId: ByteVec, by: Address)
+   oracle: IDIAOracle,
+   giftTemplate: Gift
+  ) {
+   
+   event GiftCreated(newGiftId: ByteVec, by: Address)
 
-    @using(preapprovedAssets = true, checkExternalCaller = false)
-    pub fn createGift(
-        // Variables to initialise contract
-        hashedSecret: ByteVec,
-        announcementLockIntervall: U256,
-        version: U256,  // To ensure future compatibility
-        isCancellable: Bool,
+   @using(preapprovedAssets = true, checkExternalCaller = false)
+   pub fn createGift(
+       // Variables to initialise contract
+       hashedSecret: ByteVec,
+       announcementLockIntervall: U256,
+       version: U256,  // To ensure future compatibility
+       isCancellable: Bool,
 
-        // Variable related to announcement and claim
-        announcedAddress: Address,
-        announcementLockedUntil: U256,
-        givenTokenId: ByteVec,
+       // Variable related to announcement and claim
+       announcedAddress: Address,
+       announcementLockedUntil: U256,
+       givenTokenId: ByteVec,
 
-        amount: U256
-    ) -> () {
-        let caller = callerAddress!()
-        let giftTemplateId = contractId!(giftTemplate)
+       amount: U256
+   ) -> () {
+       let caller = callerAddress!()
+       let giftTemplateId = contractId!(giftTemplate)
 
-        let mut alphUsdPrice = 0
-        if (givenTokenId == ALPH) {
-            alphUsdPrice = oracle.getValue(b`ALPH/USD`).value
-        }
+       let mut alphUsdPrice = 0
+       if (givenTokenId == ALPH) {
+           alphUsdPrice = oracle.getValue(b`ALPH/USD`).value
+       }
 
-            let (encodedImmFields, encodedMutFields) = Gift.encodeFields!(
-                caller,
-                hashedSecret,
-                announcementLockIntervall,
-                version,
-                isCancellable,
-                alphUsdPrice,
-                announcedAddress,
-                announcementLockedUntil
-            )
-
-            let contractId = copyCreateContract!{
-               caller -> ALPH: minimalContractDeposit!(), givenTokenId: amount
-           }(
-               giftTemplateId,
-               encodedImmFields,
-               encodedMutFields
+           let (encodedImmFields, encodedMutFields) = Gift.encodeFields!(
+               caller,
+               hashedSecret,
+               announcementLockIntervall,
+               version,
+               isCancellable,
+               alphUsdPrice,
+               announcedAddress,
+               announcementLockedUntil
            )
 
-            emit GiftCreated(contractId, caller)
-    }
+           let contractId = copyCreateContract!{
+              caller -> ALPH: minimalContractDeposit!(), givenTokenId: amount
+          }(
+              giftTemplateId,
+              encodedImmFields,
+              encodedMutFields
+          )
+
+           emit GiftCreated(contractId, caller)
+   }
 }

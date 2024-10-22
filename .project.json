@@ -1,5 +1,5 @@
 {
-  "fullNodeVersion": "v3.6.4",
+  "fullNodeVersion": "v3.8.4",
   "compilerOptionsUsed": {
     "ignoreUnusedConstantsWarnings": false,
     "ignoreUnusedVariablesWarnings": false,
@@ -24,9 +24,9 @@
     },
     "GiftFactory": {
       "sourceFile": "giftFactory.ral",
-      "sourceCodeHash": "78941d0edce71b23be89ddaff28dcb9095e0c7c4d19c9df11ac028497618afd9",
+      "sourceCodeHash": "da7e314b7fcbf5c1b436bd74cafcb827210a89ce15d00d74b1ed0d3c504c85e9",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "522f3499160cf9f7f59002c6187c414d681b09b1e7c952ebb11188e6a033031e"
+      "codeHashDebug": "2ba11f617ba7f3781b4efdab6771097e674ab8ed03c192d35101fe5e72023b36"
     },
     "IDIAOracle": {
       "sourceFile": "oracle.ral",

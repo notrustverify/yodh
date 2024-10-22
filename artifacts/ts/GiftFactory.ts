@@ -31,6 +31,7 @@ import {
   signExecuteMethod,
   addStdIdToFields,
   encodeContractFields,
+  Narrow,
 } from "@alephium/web3";
 import { default as GiftFactoryContractJson } from "../GiftFactory.ral.json";
 import { getContractByCodeHash } from "./contracts";
@@ -60,8 +61,9 @@ export namespace GiftFactoryTypes {
         announcedAddress: Address;
         announcementLockedUntil: bigint;
         givenTokenId: HexString;
+        amount: bigint;
       }>;
-      result: CallContractResult<HexString>;
+      result: CallContractResult<null>;
     };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
@@ -90,6 +92,7 @@ export namespace GiftFactoryTypes {
         announcedAddress: Address;
         announcementLockedUntil: bigint;
         givenTokenId: HexString;
+        amount: bigint;
       }>;
       result: SignExecuteScriptTxResult;
     };
@@ -130,9 +133,10 @@ class Factory extends ContractFactory<
           announcedAddress: Address;
           announcementLockedUntil: bigint;
           givenTokenId: HexString;
+          amount: bigint;
         }
       >
-    ): Promise<TestContractResultWithoutMaps<HexString>> => {
+    ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "createGift", params, getContractByCodeHash);
     },
   };
@@ -151,7 +155,7 @@ export const GiftFactory = new Factory(
   Contract.fromJson(
     GiftFactoryContractJson,
     "",
-    "522f3499160cf9f7f59002c6187c414d681b09b1e7c952ebb11188e6a033031e",
+    "2ba11f617ba7f3781b4efdab6771097e674ab8ed03c192d35101fe5e72023b36",
     AllStructs
   )
 );
@@ -204,15 +208,4 @@ export class GiftFactoryInstance extends ContractInstance {
       return signExecuteMethod(GiftFactory, this, "createGift", params);
     },
   };
-
-  async multicall<Callss extends GiftFactoryTypes.MultiCallParams[]>(
-    ...callss: Callss
-  ): Promise<GiftFactoryTypes.MulticallReturnType<Callss>> {
-    return (await multicallMethods(
-      GiftFactory,
-      this,
-      callss,
-      getContractByCodeHash
-    )) as GiftFactoryTypes.MulticallReturnType<Callss>;
-  }
 }

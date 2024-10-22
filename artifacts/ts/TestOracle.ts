@@ -31,6 +31,7 @@ import {
   signExecuteMethod,
   addStdIdToFields,
   encodeContractFields,
+  Narrow,
 } from "@alephium/web3";
 import { default as TestOracleContractJson } from "../TestOracle.ral.json";
 import { getContractByCodeHash } from "./contracts";
@@ -180,14 +181,22 @@ export class TestOracleInstance extends ContractInstance {
     },
   };
 
+  async multicall<Calls extends TestOracleTypes.MultiCallParams>(
+    calls: Calls
+  ): Promise<TestOracleTypes.MultiCallResults<Calls>>;
   async multicall<Callss extends TestOracleTypes.MultiCallParams[]>(
-    ...callss: Callss
-  ): Promise<TestOracleTypes.MulticallReturnType<Callss>> {
-    return (await multicallMethods(
+    callss: Narrow<Callss>
+  ): Promise<TestOracleTypes.MulticallReturnType<Callss>>;
+  async multicall<
+    Callss extends
+      | TestOracleTypes.MultiCallParams
+      | TestOracleTypes.MultiCallParams[]
+  >(callss: Callss): Promise<unknown> {
+    return await multicallMethods(
       TestOracle,
       this,
       callss,
       getContractByCodeHash
-    )) as TestOracleTypes.MulticallReturnType<Callss>;
+    );
   }
 }

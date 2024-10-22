@@ -31,6 +31,7 @@ import {
   signExecuteMethod,
   addStdIdToFields,
   encodeContractFields,
+  Narrow,
 } from "@alephium/web3";
 import { default as GiftContractJson } from "../Gift.ral.json";
 import { getContractByCodeHash } from "./contracts";
@@ -461,14 +462,15 @@ export class GiftInstance extends ContractInstance {
     },
   };
 
+  async multicall<Calls extends GiftTypes.MultiCallParams>(
+    calls: Calls
+  ): Promise<GiftTypes.MultiCallResults<Calls>>;
   async multicall<Callss extends GiftTypes.MultiCallParams[]>(
-    ...callss: Callss
-  ): Promise<GiftTypes.MulticallReturnType<Callss>> {
-    return (await multicallMethods(
-      Gift,
-      this,
-      callss,
-      getContractByCodeHash
-    )) as GiftTypes.MulticallReturnType<Callss>;
+    callss: Narrow<Callss>
+  ): Promise<GiftTypes.MulticallReturnType<Callss>>;
+  async multicall<
+    Callss extends GiftTypes.MultiCallParams | GiftTypes.MultiCallParams[]
+  >(callss: Callss): Promise<unknown> {
+    return await multicallMethods(Gift, this, callss, getContractByCodeHash);
   }
 }
