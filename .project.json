@@ -1,5 +1,5 @@
 {
-  "fullNodeVersion": "v3.8.4",
+  "fullNodeVersion": "v3.8.0",
   "compilerOptionsUsed": {
     "ignoreUnusedConstantsWarnings": false,
     "ignoreUnusedVariablesWarnings": false,
@@ -7,7 +7,8 @@
     "ignoreUnusedPrivateFunctionsWarnings": false,
     "ignoreUpdateFieldsCheckWarnings": false,
     "ignoreCheckExternalCallerWarnings": false,
-    "ignoreUnusedFunctionReturnWarnings": false
+    "ignoreUnusedFunctionReturnWarnings": false,
+    "skipAbstractContractCheck": false
   },
   "infos": {
     "DIAOracleValue": {
@@ -24,9 +25,9 @@
     },
     "GiftFactory": {
       "sourceFile": "giftFactory.ral",
-      "sourceCodeHash": "da7e314b7fcbf5c1b436bd74cafcb827210a89ce15d00d74b1ed0d3c504c85e9",
+      "sourceCodeHash": "9f55ab2a0a2c7521d335bcc97bf9085b4639806b4051ff8671fe7d33d72ec603",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "2ba11f617ba7f3781b4efdab6771097e674ab8ed03c192d35101fe5e72023b36"
+      "codeHashDebug": "5139f63f3aa2e40843b86930abed77a5ce4ac3f9e88325c815487e3db3217e1e"
     },
     "IDIAOracle": {
       "sourceFile": "oracle.ral",

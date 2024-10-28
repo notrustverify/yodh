@@ -35,6 +35,7 @@ import { Footer } from './Footer'
 import { Locked } from './Locked'
 import TokenGifted from './TokensGifted'
 import { Header } from './Header'
+import { ECDH } from 'crypto'
 
 export const WithdrawDapp = ({
   contractId,
@@ -47,7 +48,7 @@ export const WithdrawDapp = ({
 }) => {
   const { signer, account, connectionStatus } = useWallet()
   const [ongoingTxId, setOngoingTxId] = useState<string>()
-  const [contractState, setContractState] = useState<GiftTypes.State>()
+  const [contractState, setContractState] = useState<GiftTypes.State | undefined>(undefined)
   const [secretDecoded, setSecretDecoded] = useState<Uint8Array>(new Uint8Array())
   const initialized = useRef(false)
   const [step, setStep] = useState<WithdrawState>(WithdrawState.Locking)
@@ -121,7 +122,7 @@ export const WithdrawDapp = ({
         const secretPrompt = prompt('Secret missing, copy paste secret.', '')
         if (secretPrompt !== null) {
           if (isEncodedFormat(secretPrompt)) {
-            setSecretDecoded(Buffer.from(decodeURIComponent(secretPrompt), 'base64'))
+            setSecretDecoded(new Uint8Array(Buffer.from(decodeURIComponent(secretPrompt), 'base64')))
           } else {
             isBase64(secretPrompt)
               ? Buffer.from(secretPrompt, 'base64')
@@ -129,14 +130,14 @@ export const WithdrawDapp = ({
           }
         }
       } else {
-        setSecretDecoded(Buffer.from(decodeURIComponent(secret), 'base64'))
+        setSecretDecoded(new Uint8Array(Buffer.from(decodeURIComponent(secret), 'base64')))
       }
 
       let dataContractId = contractId
       // address can be passed
       if (isValidAddress(contractId)) dataContractId = contractIdFromAddressString(contractId)
 
-      contractExists(addressFromContractId(dataContractId)).then((exist) => setIsNotClaimed(exist))
+      contractExists(addressFromContractId(dataContractId)).then((exist) =>  setIsNotClaimed(exist))
 
       if (isNotClaimed) {
         setContract(dataContractId)
@@ -151,9 +152,7 @@ export const WithdrawDapp = ({
       }
     }
   }, [contractId, secret, isNotClaimed])
-  console.log(new TextDecoder().decode(secretDecoded))
-
-  return (
+  return ( 
     <div className={styles.mainContainer}>
       
       <Header gifts={undefined} />
@@ -195,9 +194,9 @@ export const WithdrawDapp = ({
             type="submit"
             disabled={
               contractState !== undefined &&
-              contractState?.fields.announcementLockedUntil >= BigInt(Date.now()) &&
+              contractState?.fields.announcementLockedUntil >= BigInt(Date.now()) || !checkHash(secretDecoded, contractState?.fields.hashedSecret) &&
               (!!ongoingTxId ||
-                !checkHash(secretDecoded, contractState?.fields.hashedSecret) ||
+               
                 !isNotClaimed ||
                 contractState?.fields.announcedAddress !== ZERO_ADDRESS ||
                 connectionStatus !== 'connected' ||

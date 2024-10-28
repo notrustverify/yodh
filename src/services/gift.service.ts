@@ -5,6 +5,8 @@ import {
   hashMessage,
   MINIMAL_CONTRACT_DEPOSIT,
   Number256,
+  number256ToBigint,
+  number256ToNumber,
   ONE_ALPH,
   SignerProvider,
   SignExecuteContractMethodParams,
@@ -24,24 +26,26 @@ export const createGift = async (
   tokenId: string,
   decimal: number
 ) => {
+  
   const data: GiftFactoryTypes.SignExecuteMethodParams<'createGift'> = {
     args: {
-      hashedSecret: sha256(secret),
-      announcementLockIntervall: announcementLockIntervall,
-      version: 0n,
-      isCancellable: true,
-      announcedAddress: ZERO_ADDRESS,
-      announcementLockedUntil: 0n,
-      givenTokenId: ALPH_TOKEN_ID
+       hashedSecret: sha256(secret),
+       announcementLockIntervall: announcementLockIntervall,
+       version: 0n,
+       isCancellable: true,
+       announcedAddress: ZERO_ADDRESS,
+       announcementLockedUntil: 0n,
+       givenTokenId: ALPH_TOKEN_ID,
+       amount: amount*10n**18n
     },
     signer: sender,
-    attoAlphAmount: amount * ONE_ALPH
+    attoAlphAmount: amount*10n**18n
   }
 
   if (tokenId !== ALPH_TOKEN_ID) {
     data.args.givenTokenId = tokenId
 
-    data.attoAlphAmount = MINIMAL_CONTRACT_DEPOSIT
+    data.attoAlphAmount = MINIMAL_CONTRACT_DEPOSIT + DUST_AMOUNT
     data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
   }
 

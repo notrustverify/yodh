@@ -34,7 +34,7 @@ import {
   Narrow,
 } from "@alephium/web3";
 import { default as TestOracleContractJson } from "../TestOracle.ral.json";
-import { getContractByCodeHash } from "./contracts";
+import { getContractByCodeHash, registerContract } from "./contracts";
 import { DIAOracleValue, AllStructs } from "./types";
 
 // Custom types for the contract
@@ -131,6 +131,7 @@ export const TestOracle = new Factory(
     AllStructs
   )
 );
+registerContract(TestOracle);
 
 // Use this class to interact with the blockchain
 export class TestOracleInstance extends ContractInstance {

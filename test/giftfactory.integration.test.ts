@@ -98,7 +98,7 @@ describe('integration tests', () => {
 
       // Check that created event matches provided values
       const giftState = await Gift.at(createdGift.address).fetchState()
-      expect(Object.keys(giftState.fields).length).toEqual(Object.keys(giftArgs).length + 2) // added sender and initialUsdPrice
+      expect(Object.keys(giftState.fields).length).toEqual(Object.keys(giftArgs).length + 1) // added sender and initialUsdPrice
       // Check that provided values are forwarded
       expect(giftState.fields.announcedAddress).toEqual(giftArgs.announcedAddress)
       expect(giftState.fields.announcementLockIntervall).toEqual(giftArgs.announcementLockIntervall)
@@ -111,7 +111,7 @@ describe('integration tests', () => {
       expect(giftState.fields.initialUsdPrice).toBeDefined()
       //expect(giftState.fields.initialUsdPrice).toEqual((amountToGive + MINIMAL_CONTRACT_DEPOSIT) / (ORACLE_INIT_VALUE*ALPH_PRICE_DECIMALS))
       // Gift should hold the expected value
-      expect(giftState.asset.alphAmount).toEqual(amountToGive + MINIMAL_CONTRACT_DEPOSIT)
+      expect(giftState.asset.alphAmount).toEqual(amountToGive)
       expect(giftState.asset.tokens).toBeDefined()
       expect(giftState.asset.tokens?.length).toEqual(0)
 
@@ -180,7 +180,7 @@ describe('integration tests', () => {
 
       // Check that created event matches provided values
       const giftState = await Gift.at(createdGift.address).fetchState()
-      expect(Object.keys(giftState.fields).length).toEqual(Object.keys(giftArgs).length + 2) // added sender and initialUsdPrice
+      expect(Object.keys(giftState.fields).length).toEqual(Object.keys(giftArgs).length + 1) // added sender and initialUsdPrice
       // Check that provided values are forwarded
       expect(giftState.fields.announcedAddress).toEqual(giftArgs.announcedAddress)
       expect(giftState.fields.announcementLockIntervall).toEqual(giftArgs.announcementLockIntervall)

@@ -34,7 +34,7 @@ import {
   Narrow,
 } from "@alephium/web3";
 import { default as GiftFactoryContractJson } from "../GiftFactory.ral.json";
-import { getContractByCodeHash } from "./contracts";
+import { getContractByCodeHash, registerContract } from "./contracts";
 import { DIAOracleValue, AllStructs } from "./types";
 
 // Custom types for the contract
@@ -155,10 +155,11 @@ export const GiftFactory = new Factory(
   Contract.fromJson(
     GiftFactoryContractJson,
     "",
-    "2ba11f617ba7f3781b4efdab6771097e674ab8ed03c192d35101fe5e72023b36",
+    "5139f63f3aa2e40843b86930abed77a5ce4ac3f9e88325c815487e3db3217e1e",
     AllStructs
   )
 );
+registerContract(GiftFactory);
 
 // Use this class to interact with the blockchain
 export class GiftFactoryInstance extends ContractInstance {

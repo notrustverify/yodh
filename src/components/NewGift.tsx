@@ -254,7 +254,6 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             id="gift-amount"
             placeholder="Enter the amount"
             required
-            min="1"
             value={withdrawAmount}
             onChange={(e) => {
               setWithdrawAmount(e.target.value)

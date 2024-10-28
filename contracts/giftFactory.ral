@@ -39,14 +39,26 @@ Contract GiftFactory (
                announcementLockedUntil
            )
 
-           let contractId = copyCreateContract!{
-              caller -> ALPH: minimalContractDeposit!(), givenTokenId: amount
-          }(
-              giftTemplateId,
-              encodedImmFields,
-              encodedMutFields
-          )
-
+           let mut contractId = #00
+           if(givenTokenId == ALPH){
+               contractId = copyCreateContract!{
+                  caller -> ALPH: amount
+               }(
+                  giftTemplateId,
+                  encodedImmFields,
+                  encodedMutFields
+               )
+           }else{
+               contractId = copyCreateContract!{
+                  caller -> ALPH: minimalContractDeposit!(), givenTokenId: amount
+               }(
+                     giftTemplateId,
+                     encodedImmFields,
+                     encodedMutFields
+               )
+           }
+     
            emit GiftCreated(contractId, caller)
+
    }
 }
