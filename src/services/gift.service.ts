@@ -13,7 +13,7 @@ import {
   Token,
   ZERO_ADDRESS
 } from '@alephium/web3'
-import { Gift, GiftFactory, GiftFactoryTypes, GiftTypes } from 'artifacts/ts'
+import { Gift, GiftFactory, GiftFactoryTypes, GiftTypes, Giftv2 } from 'artifacts/ts'
 import { sha256 } from 'js-sha256'
 import { GIFT_FACTORY_ADDRESS } from './utils'
 
@@ -24,17 +24,18 @@ export const createGift = async (
   secret: Uint8Array,
   announcementLockIntervall: bigint,
   tokenId: string,
-  decimal: number
+  decimal: number,
+  announcementLockedUntil: bigint
 ) => {
   
   const data: GiftFactoryTypes.SignExecuteMethodParams<'createGift'> = {
     args: {
        hashedSecret: sha256(secret),
        announcementLockIntervall: announcementLockIntervall,
-       version: 0n,
+       version: 1n,
        isCancellable: true,
        announcedAddress: ZERO_ADDRESS,
-       announcementLockedUntil: 0n,
+       announcementLockedUntil: announcementLockedUntil,
        givenTokenId: ALPH_TOKEN_ID,
        amount: amount*10n**18n
     },
@@ -93,6 +94,17 @@ export const claim = async (signer: SignerProvider, secretDecoded: Uint8Array, c
     signer: signer
   })
 }
+
+export const claimv2 = async (signer: SignerProvider, secretDecoded: Uint8Array, contractId: string, addressWithdrawTo: string) => {
+   return await Giftv2.at(addressFromContractId(contractId)).transact.withdraw({
+     args: {
+        secret: Buffer.from(secretDecoded).toString('hex'),
+        to: addressWithdrawTo
+     },
+     signer: signer
+   })
+ }
+
 
 export const announce = async (signer: SignerProvider, contractId: string) => {
   return await Gift.at(addressFromContractId(contractId)).transact.announce({

@@ -14,7 +14,7 @@ import {
 import { PrivateKeyWallet } from '@alephium/web3-wallet'
 import { testPrivateKey } from '@alephium/web3-test'
 
-import { Gift, GiftFactory, TestOracle } from '../artifacts/ts'
+import { Gift, GiftFactory, Giftv2, TestOracle } from '../artifacts/ts'
 import giftConfig from '../config'
 
 web3.setCurrentNodeProvider('http://127.0.0.1:22973', undefined, fetch)
@@ -52,14 +52,14 @@ export async function deployGift(
   announcementLockIntervall = 0n,
   tokens: Token | undefined = undefined
 ) {
-  return await Gift.deploy(sender, {
+  return await Giftv2.deploy(sender, {
     initialFields: {
       sender: senderAddress,
       hashedSecret: hashMessage(secret, giftConfig.hashAlgo),
       announcementLockIntervall: announcementLockIntervall,
       announcedAddress: ZERO_ADDRESS,
       announcementLockedUntil: 0n,
-      version: 1n,
+      version: 2n,
       isCancellable: true,
       initialUsdPrice: 0n
     },
@@ -73,7 +73,7 @@ export async function deployGiftFactory(signer: SignerProvider) {
   const testOracle = await deployTestOracle()
   return await GiftFactory.deploy(signer, {
     initialFields: {
-      giftTemplate: gift.contractInstance.contractId,
+      giftTemplateId: gift.contractInstance.contractId,
       oracle: testOracle.contractInstance.address
     },
     initialAttoAlphAmount: MINIMAL_CONTRACT_DEPOSIT

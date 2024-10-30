@@ -41,7 +41,7 @@ import { DIAOracleValue, AllStructs } from "./types";
 export namespace GiftFactoryTypes {
   export type Fields = {
     oracle: HexString;
-    giftTemplate: HexString;
+    giftTemplateId: HexString;
   };
 
   export type State = ContractState<Fields>;
@@ -155,7 +155,7 @@ export const GiftFactory = new Factory(
   Contract.fromJson(
     GiftFactoryContractJson,
     "",
-    "5139f63f3aa2e40843b86930abed77a5ce4ac3f9e88325c815487e3db3217e1e",
+    "9d9906ab133914919c51be4aa39a11b9c7c89b216e015b343baf5cad38e32565",
     AllStructs
   )
 );

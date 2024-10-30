@@ -44,7 +44,7 @@ describe('integration tests', () => {
       const giftFactory = contractResult.contractInstance
 
       const state = await GiftFactory.at(giftFactory.address).fetchState()
-      expect(state.fields.giftTemplate).toBeDefined()
+      expect(state.fields.giftTemplateId).toBeDefined()
     })
   })
 

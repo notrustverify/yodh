@@ -4,7 +4,14 @@
 
 import { RunScriptResult, DeployContractExecutionResult } from "@alephium/cli";
 import { NetworkId } from "@alephium/web3";
-import { Gift, GiftInstance, GiftFactory, GiftFactoryInstance } from ".";
+import {
+  Gift,
+  GiftInstance,
+  GiftFactory,
+  GiftFactoryInstance,
+  Giftv2,
+  Giftv2Instance,
+} from ".";
 import { default as mainnetDeployments } from "../../deployments/.deployments.mainnet.json";
 import { default as testnetDeployments } from "../../deployments/.deployments.testnet.json";
 
@@ -13,6 +20,7 @@ export type Deployments = {
   contracts: {
     Gift: DeployContractExecutionResult<GiftInstance>;
     GiftFactory: DeployContractExecutionResult<GiftFactoryInstance>;
+    Giftv2?: DeployContractExecutionResult<Giftv2Instance>;
   };
 };
 
@@ -30,6 +38,15 @@ function toDeployments(json: any): Deployments {
         json.contracts["GiftFactory"].contractInstance.address
       ),
     },
+    Giftv2:
+      json.contracts["Giftv2"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["Giftv2"],
+            contractInstance: Giftv2.at(
+              json.contracts["Giftv2"].contractInstance.address
+            ),
+          },
   };
   return {
     ...json,

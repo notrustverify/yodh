@@ -2,7 +2,7 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { useState } from 'react'
 import styles from '../styles/Gift.module.css'
-import { announce, cancel, checkHash, claim, getContractState } from '@/services/gift.service'
+import { announce, cancel, checkHash, claim, claimv2, getContractState } from '@/services/gift.service'
 import { TxStatus } from './TxStatus'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
 import {
@@ -15,7 +15,7 @@ import {
   waitForTxConfirmation,
   ZERO_ADDRESS
 } from '@alephium/web3'
-import { GiftTypes } from 'artifacts/ts'
+import { GiftTypes, Giftv2Types } from 'artifacts/ts'
 import Hash from './Hash'
 import {
   contractExists,
@@ -48,13 +48,16 @@ export const WithdrawDapp = ({
 }) => {
   const { signer, account, connectionStatus } = useWallet()
   const [ongoingTxId, setOngoingTxId] = useState<string>()
-  const [contractState, setContractState] = useState<GiftTypes.State | undefined>(undefined)
+  const [contractState, setContractState] = useState<Giftv2Types.State | undefined>(undefined)
   const [secretDecoded, setSecretDecoded] = useState<Uint8Array>(new Uint8Array())
   const initialized = useRef(false)
   const [step, setStep] = useState<WithdrawState>(WithdrawState.Locking)
   const [isNotClaimed, setIsNotClaimed] = useState<boolean>(true)
   const [tokenList, setTokenList] = useState<Token[]>()
   const [contract, setContract] = useState<string>('')
+  const [addressWithdrawTo, setAddressWithdrawTo] = useState<string>('')
+  const [datetimeLock, setDatetimeLock] = useState<Date>()
+
 
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -72,9 +75,21 @@ export const WithdrawDapp = ({
 
         case WithdrawState.Locked:
           setStep(WithdrawState.Claiming)
-          result = await claim(signer, secretDecoded, contract)
-          setOngoingTxId(result.txId)
-          await waitForTxConfirmation(result.txId, 1, 10)
+          switch (contractState?.fields.version) {
+            case 0n:
+              result = await claim(signer, secretDecoded, contract)
+              break
+            case 1n:
+              result = await claimv2(signer, secretDecoded, contract, addressWithdrawTo)
+              break
+
+            default:
+              break
+          }
+          if (result !== undefined) {
+            setOngoingTxId(result.txId)
+            await waitForTxConfirmation(result.txId, 1, 10)
+          }
           break
 
         default:
@@ -112,6 +127,10 @@ export const WithdrawDapp = ({
     setStep(contractState?.fields.announcedAddress === ZERO_ADDRESS ? WithdrawState.Locking : WithdrawState.Locked)
   }, [contractState?.fields, account, isNotClaimed])
 
+  useCallback(() => {
+    account && setAddressWithdrawTo(account.address)
+  }, [account?.address])
+
   useEffect(() => {
     //getState()
 
@@ -137,24 +156,29 @@ export const WithdrawDapp = ({
       // address can be passed
       if (isValidAddress(contractId)) dataContractId = contractIdFromAddressString(contractId)
 
-      contractExists(addressFromContractId(dataContractId)).then((exist) =>  setIsNotClaimed(exist))
+      contractExists(addressFromContractId(dataContractId)).then((exist) => setIsNotClaimed(exist))
 
       if (isNotClaimed) {
         setContract(dataContractId)
         getContractState(dataContractId).then((data) => {
           setContractState(data)
           setStep(data.fields.announcedAddress === ZERO_ADDRESS ? WithdrawState.Locking : WithdrawState.Locked)
+          setDatetimeLock(new Date(Number(data.fields.announcementLockedUntil)))
+ 
         })
-
+        
         getTokenList().then((data) => {
           setTokenList(data)
         })
       }
     }
+   
   }, [contractId, secret, isNotClaimed])
-  return ( 
+
+  console.log(contractState?.fields)
+
+  return (
     <div className={styles.mainContainer}>
-      
       <Header gifts={undefined} />
 
       <section id="yodhSection">
@@ -180,6 +204,7 @@ export const WithdrawDapp = ({
             <small>
               <Icon icon="material-symbols:info" /> You will need to sign 2 times for security purpose.
             </small>
+            {datetimeLock !== undefined && datetimeLock >= new Date() ? <p>Contract is locked until {datetimeLock?.toLocaleString()}</p> : ''} 
           </label>
 
           {contractState !== undefined && (
@@ -193,14 +218,13 @@ export const WithdrawDapp = ({
           <button
             type="submit"
             disabled={
-              contractState !== undefined &&
-              contractState?.fields.announcementLockedUntil >= BigInt(Date.now()) || !checkHash(secretDecoded, contractState?.fields.hashedSecret) &&
-              (!!ongoingTxId ||
-               
-                !isNotClaimed ||
-                contractState?.fields.announcedAddress !== ZERO_ADDRESS ||
-                connectionStatus !== 'connected' ||
-                step != WithdrawState.Locking)
+              (contractState !== undefined && contractState?.fields.announcementLockedUntil >= BigInt(Date.now())) ||
+              (!checkHash(secretDecoded, contractState?.fields.hashedSecret) &&
+                (!!ongoingTxId ||
+                  !isNotClaimed ||
+                  contractState?.fields.announcedAddress !== ZERO_ADDRESS ||
+                  connectionStatus !== 'connected' ||
+                  step != WithdrawState.Locking))
             }
             className={styles.wrapButton}
           >
@@ -234,6 +258,20 @@ export const WithdrawDapp = ({
               'Already claimed'
             )}
           </button>
+
+          <details id="gitflink">
+            <summary>Advanced options</summary>
+            <p>Withdraw to another address</p>
+            <input
+              type="string"
+              id="gift-amount"
+              placeholder="Paste address"
+              value={addressWithdrawTo}
+              onChange={(e) => {
+                setAddressWithdrawTo(e.target.value)
+              }}
+            />
+          </details>
         </form>
       </section>
       {}

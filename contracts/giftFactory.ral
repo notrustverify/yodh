@@ -1,6 +1,6 @@
 Contract GiftFactory (
    oracle: IDIAOracle,
-   giftTemplate: Gift
+   giftTemplateId: ByteVec
   ) {
    
    event GiftCreated(newGiftId: ByteVec, by: Address)
@@ -21,7 +21,6 @@ Contract GiftFactory (
        amount: U256
    ) -> () {
        let caller = callerAddress!()
-       let giftTemplateId = contractId!(giftTemplate)
 
        let mut alphUsdPrice = 0
        if (givenTokenId == ALPH) {

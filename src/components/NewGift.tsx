@@ -22,7 +22,7 @@ import QrCode from './Qrcode'
 import { Footer } from './Footer'
 import store from 'store2'
 import { Gifts } from './CreatedGifts'
-import { contractIdFromAddressString, getTokenList, getUrl, Gift, Token, WithdrawState } from '@/services/utils'
+import { contractIdFromAddressString, getInputDatetime, getTokenList, getUrl, Gift, Token, WithdrawState } from '@/services/utils'
 import Select from 'react-select'
 import { GiftTypes } from 'artifacts/ts'
 import TokenPot from './TokenPot'
@@ -31,6 +31,7 @@ import { FaRegCopy } from 'react-icons/fa'
 import { Tooltip } from 'react-tooltip'
 import Image from 'next/image'
 import { Header } from './Header'
+
 
 interface OptionSelect {
   value: string
@@ -54,6 +55,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   const [isPot, setPot] = useState<boolean>(false)
   const [isCopied, setIsCopied] = useState(false)
   const [detailsLoaded, setDetailsLoaded] = useState(false)
+  const [datetimeLock, setDatetimeLock] = useState<bigint>(0n)
 
   const [selectedToken, setSelectedToken] = useState<Token | undefined>({
     id: '0000000000000000000000000000000000000000000000000000000000000000',
@@ -88,6 +90,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
 
       // store it in case of connection lost
       store.add('gifts', [{ contractId: '', secret: array, message: message, pot: isPot }])
+      const announcementLockedUntil = datetimeLock
 
       try {
         const result = await createGift(
@@ -97,7 +100,8 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
           array,
           1800n * 1000n,
           selectedToken?.id ?? ALPH_TOKEN_ID,
-          selectedToken?.decimals ?? Number(ONE_ALPH)
+          selectedToken?.decimals ?? Number(ONE_ALPH),
+          announcementLockedUntil
         )
 
         setOngoingTxId(result.txId)
@@ -192,7 +196,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   function beforeUnload(e: BeforeUnloadEvent) {
     e.preventDefault()
   }
-
+  console.log(datetimeLock)
   return (
     <div className={styles.mainContainer}>
       <Head>
@@ -279,6 +283,11 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             />
            
           </div>
+          <details id="">
+            <summary>Advanced options</summary>
+            <p>Lock gift until</p>
+            <input aria-label="Date and time" type="datetime-local" onChange={ (e) => {setDatetimeLock(BigInt(e.target.valueAsNumber))}}/>
+            </details>
 
           <button type="submit" disabled={connectionStatus !== 'connected'} className={styles.wrapButton}>
             <Icon icon="fa:gift" /> &nbsp; Wrap & Send Gift

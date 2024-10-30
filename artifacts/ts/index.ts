@@ -4,5 +4,6 @@
 
 export * from "./Gift";
 export * from "./GiftFactory";
+export * from "./Giftv2";
 export * from "./TestOracle";
 export * from "./scripts";
