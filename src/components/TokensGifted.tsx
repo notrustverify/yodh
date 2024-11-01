@@ -25,7 +25,7 @@ export default function TokenGifted({
 
       results.push(
         <>
-          {number256ToNumber(contractState.asset.alphAmount, 18)} ALPH {percentageTxt} <small>since the gift was created</small>
+          {number256ToNumber(contractState.asset.alphAmount, 18)} ALPH {percentageTxt} {contractState.fields.version >= 1n && <small>since the gift was created</small>}
         </>
       )
 
