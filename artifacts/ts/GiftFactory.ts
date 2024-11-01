@@ -31,16 +31,17 @@ import {
   signExecuteMethod,
   addStdIdToFields,
   encodeContractFields,
+  Narrow,
 } from "@alephium/web3";
 import { default as GiftFactoryContractJson } from "../GiftFactory.ral.json";
-import { getContractByCodeHash } from "./contracts";
+import { getContractByCodeHash, registerContract } from "./contracts";
 import { DIAOracleValue, AllStructs } from "./types";
 
 // Custom types for the contract
 export namespace GiftFactoryTypes {
   export type Fields = {
     oracle: HexString;
-    giftTemplate: HexString;
+    giftTemplateId: HexString;
   };
 
   export type State = ContractState<Fields>;
@@ -60,8 +61,9 @@ export namespace GiftFactoryTypes {
         announcedAddress: Address;
         announcementLockedUntil: bigint;
         givenTokenId: HexString;
+        amount: bigint;
       }>;
-      result: CallContractResult<HexString>;
+      result: CallContractResult<null>;
     };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
@@ -90,6 +92,7 @@ export namespace GiftFactoryTypes {
         announcedAddress: Address;
         announcementLockedUntil: bigint;
         givenTokenId: HexString;
+        amount: bigint;
       }>;
       result: SignExecuteScriptTxResult;
     };
@@ -130,9 +133,10 @@ class Factory extends ContractFactory<
           announcedAddress: Address;
           announcementLockedUntil: bigint;
           givenTokenId: HexString;
+          amount: bigint;
         }
       >
-    ): Promise<TestContractResultWithoutMaps<HexString>> => {
+    ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "createGift", params, getContractByCodeHash);
     },
   };
@@ -151,10 +155,11 @@ export const GiftFactory = new Factory(
   Contract.fromJson(
     GiftFactoryContractJson,
     "",
-    "522f3499160cf9f7f59002c6187c414d681b09b1e7c952ebb11188e6a033031e",
+    "9d9906ab133914919c51be4aa39a11b9c7c89b216e015b343baf5cad38e32565",
     AllStructs
   )
 );
+registerContract(GiftFactory);
 
 // Use this class to interact with the blockchain
 export class GiftFactoryInstance extends ContractInstance {
@@ -204,15 +209,4 @@ export class GiftFactoryInstance extends ContractInstance {
       return signExecuteMethod(GiftFactory, this, "createGift", params);
     },
   };
-
-  async multicall<Callss extends GiftFactoryTypes.MultiCallParams[]>(
-    ...callss: Callss
-  ): Promise<GiftFactoryTypes.MulticallReturnType<Callss>> {
-    return (await multicallMethods(
-      GiftFactory,
-      this,
-      callss,
-      getContractByCodeHash
-    )) as GiftFactoryTypes.MulticallReturnType<Callss>;
-  }
 }

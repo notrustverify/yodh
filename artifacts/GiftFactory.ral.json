@@ -1,16 +1,16 @@
 {
-  "version": "v3.6.4",
+  "version": "v3.8.4",
   "name": "GiftFactory",
-  "bytecode": "020140be01030715014062d330fc08b6b41707ce0117081606cd414c40351408414c50482f5553440d0ece00d4a0e6c23117141713161317091607a4170a0c170b16090c334c06160a16091343e82c2d170b16071600160116021603160b13066416041605130264170d170c1607160aa21608160c160daf170e05160e16075f160e024a40240c170f16071600160116021603160f130664160416051302641711171016077ad1a2160616071606a5a3160816101611af171205161216075f161202",
-  "codeHash": "522f3499160cf9f7f59002c6187c414d681b09b1e7c952ebb11188e6a033031e",
+  "bytecode": "020140810103080f00403fd374b9cd42b417080c17091606cd414c091408414c50482f5553440d0ece00d4a0e6c231170e170d160d170916081600160116021603160913066416041605130264170b170a140100170c1606cd414c0916081607a2ce01160a160baf170c4a0c16087ad1a216061607a3ce01160a160baf170c05160c16085f",
+  "codeHash": "9d9906ab133914919c51be4aa39a11b9c7c89b216e015b343baf5cad38e32565",
   "fieldsSig": {
     "names": [
       "oracle",
-      "giftTemplate"
+      "giftTemplateId"
     ],
     "types": [
       "IDIAOracle",
-      "Gift"
+      "ByteVec"
     ],
     "isMutable": [
       false,
@@ -40,7 +40,8 @@
         "isCancellable",
         "announcedAddress",
         "announcementLockedUntil",
-        "givenTokenId"
+        "givenTokenId",
+        "amount"
       ],
       "paramTypes": [
         "ByteVec",
@@ -49,7 +50,8 @@
         "Bool",
         "Address",
         "U256",
-        "ByteVec"
+        "ByteVec",
+        "U256"
       ],
       "paramIsMutable": [
         false,
@@ -58,11 +60,10 @@
         false,
         false,
         false,
+        false,
         false
       ],
-      "returnTypes": [
-        "Gift"
-      ]
+      "returnTypes": []
     }
   ],
   "constants": [],

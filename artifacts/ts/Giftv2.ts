@@ -33,12 +33,12 @@ import {
   encodeContractFields,
   Narrow,
 } from "@alephium/web3";
-import { default as GiftContractJson } from "../Gift.ral.json";
+import { default as Giftv2ContractJson } from "../Giftv2.ral.json";
 import { getContractByCodeHash, registerContract } from "./contracts";
 import { DIAOracleValue, AllStructs } from "./types";
 
 // Custom types for the contract
-export namespace GiftTypes {
+export namespace Giftv2Types {
   export type Fields = {
     sender: Address;
     hashedSecret: HexString;
@@ -71,7 +71,7 @@ export namespace GiftTypes {
       result: CallContractResult<null>;
     };
     withdraw: {
-      params: CallContractParams<{ secret: HexString }>;
+      params: CallContractParams<{ secret: HexString; to: Address }>;
       result: CallContractResult<null>;
     };
     resetLock: {
@@ -121,7 +121,10 @@ export namespace GiftTypes {
       result: SignExecuteScriptTxResult;
     };
     withdraw: {
-      params: SignExecuteContractMethodParams<{ secret: HexString }>;
+      params: SignExecuteContractMethodParams<{
+        secret: HexString;
+        to: Address;
+      }>;
       result: SignExecuteScriptTxResult;
     };
     resetLock: {
@@ -151,8 +154,8 @@ export namespace GiftTypes {
     SignExecuteMethodTable[T]["result"];
 }
 
-class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
-  encodeFields(fields: GiftTypes.Fields) {
+class Factory extends ContractFactory<Giftv2Instance, Giftv2Types.Fields> {
+  encodeFields(fields: Giftv2Types.Fields) {
     return encodeContractFields(
       addStdIdToFields(this.contract, fields),
       this.contract.fieldsSig,
@@ -171,14 +174,14 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     },
   };
 
-  at(address: string): GiftInstance {
-    return new GiftInstance(address);
+  at(address: string): Giftv2Instance {
+    return new Giftv2Instance(address);
   }
 
   tests = {
     deposit: async (
       params: TestContractParamsWithoutMaps<
-        GiftTypes.Fields,
+        Giftv2Types.Fields,
         { tokenId: HexString }
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
@@ -186,7 +189,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     },
     announce: async (
       params: Omit<
-        TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
+        TestContractParamsWithoutMaps<Giftv2Types.Fields, never>,
         "testArgs"
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
@@ -194,15 +197,15 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     },
     withdraw: async (
       params: TestContractParamsWithoutMaps<
-        GiftTypes.Fields,
-        { secret: HexString }
+        Giftv2Types.Fields,
+        { secret: HexString; to: Address }
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "withdraw", params, getContractByCodeHash);
     },
     resetLock: async (
       params: Omit<
-        TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
+        TestContractParamsWithoutMaps<Giftv2Types.Fields, never>,
         "testArgs"
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
@@ -210,7 +213,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     },
     cancel: async (
       params: Omit<
-        TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
+        TestContractParamsWithoutMaps<Giftv2Types.Fields, never>,
         "testArgs"
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
@@ -218,7 +221,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     },
     getInitialUsdPrice: async (
       params: Omit<
-        TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
+        TestContractParamsWithoutMaps<Giftv2Types.Fields, never>,
         "testArgs"
       >
     ): Promise<TestContractResultWithoutMaps<bigint>> => {
@@ -231,7 +234,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     },
     getVersion: async (
       params: Omit<
-        TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
+        TestContractParamsWithoutMaps<Giftv2Types.Fields, never>,
         "testArgs"
       >
     ): Promise<TestContractResultWithoutMaps<bigint>> => {
@@ -239,7 +242,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     },
     isCancellable: async (
       params: Omit<
-        TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
+        TestContractParamsWithoutMaps<Giftv2Types.Fields, never>,
         "testArgs"
       >
     ): Promise<TestContractResultWithoutMaps<boolean>> => {
@@ -247,30 +250,34 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     },
   };
 
-  stateForTest(initFields: GiftTypes.Fields, asset?: Asset, address?: string) {
+  stateForTest(
+    initFields: Giftv2Types.Fields,
+    asset?: Asset,
+    address?: string
+  ) {
     return this.stateForTest_(initFields, asset, address, undefined);
   }
 }
 
 // Use this object to test and deploy the contract
-export const Gift = new Factory(
+export const Giftv2 = new Factory(
   Contract.fromJson(
-    GiftContractJson,
+    Giftv2ContractJson,
     "",
-    "dadf39de130f9d00bff620884228d871ff12de86fea17a63bca8967ce811c15a",
+    "0c1ef7554df27e9220c0aaea672c8fc93f5e4d58d72cbe48f50d6fe727371672",
     AllStructs
   )
 );
-registerContract(Gift);
+registerContract(Giftv2);
 
 // Use this class to interact with the blockchain
-export class GiftInstance extends ContractInstance {
+export class Giftv2Instance extends ContractInstance {
   constructor(address: Address) {
     super(address);
   }
 
-  async fetchState(): Promise<GiftTypes.State> {
-    return fetchContractState(Gift, this);
+  async fetchState(): Promise<Giftv2Types.State> {
+    return fetchContractState(Giftv2, this);
   }
 
   async getContractEventsCurrentCount(): Promise<number> {
@@ -278,11 +285,11 @@ export class GiftInstance extends ContractInstance {
   }
 
   subscribeDepositEvent(
-    options: EventSubscribeOptions<GiftTypes.DepositEvent>,
+    options: EventSubscribeOptions<Giftv2Types.DepositEvent>,
     fromCount?: number
   ): EventSubscription {
     return subscribeContractEvent(
-      Gift.contract,
+      Giftv2.contract,
       this,
       options,
       "Deposit",
@@ -291,11 +298,11 @@ export class GiftInstance extends ContractInstance {
   }
 
   subscribeLockEvent(
-    options: EventSubscribeOptions<GiftTypes.LockEvent>,
+    options: EventSubscribeOptions<Giftv2Types.LockEvent>,
     fromCount?: number
   ): EventSubscription {
     return subscribeContractEvent(
-      Gift.contract,
+      Giftv2.contract,
       this,
       options,
       "Lock",
@@ -304,11 +311,11 @@ export class GiftInstance extends ContractInstance {
   }
 
   subscribeWithdrawEvent(
-    options: EventSubscribeOptions<GiftTypes.WithdrawEvent>,
+    options: EventSubscribeOptions<Giftv2Types.WithdrawEvent>,
     fromCount?: number
   ): EventSubscription {
     return subscribeContractEvent(
-      Gift.contract,
+      Giftv2.contract,
       this,
       options,
       "Withdraw",
@@ -317,11 +324,11 @@ export class GiftInstance extends ContractInstance {
   }
 
   subscribeCancelEvent(
-    options: EventSubscribeOptions<GiftTypes.CancelEvent>,
+    options: EventSubscribeOptions<Giftv2Types.CancelEvent>,
     fromCount?: number
   ): EventSubscription {
     return subscribeContractEvent(
-      Gift.contract,
+      Giftv2.contract,
       this,
       options,
       "Cancel",
@@ -331,27 +338,27 @@ export class GiftInstance extends ContractInstance {
 
   subscribeAllEvents(
     options: EventSubscribeOptions<
-      | GiftTypes.DepositEvent
-      | GiftTypes.LockEvent
-      | GiftTypes.WithdrawEvent
-      | GiftTypes.CancelEvent
+      | Giftv2Types.DepositEvent
+      | Giftv2Types.LockEvent
+      | Giftv2Types.WithdrawEvent
+      | Giftv2Types.CancelEvent
     >,
     fromCount?: number
   ): EventSubscription {
-    return subscribeContractEvents(Gift.contract, this, options, fromCount);
+    return subscribeContractEvents(Giftv2.contract, this, options, fromCount);
   }
 
   view = {
     deposit: async (
-      params: GiftTypes.CallMethodParams<"deposit">
-    ): Promise<GiftTypes.CallMethodResult<"deposit">> => {
-      return callMethod(Gift, this, "deposit", params, getContractByCodeHash);
+      params: Giftv2Types.CallMethodParams<"deposit">
+    ): Promise<Giftv2Types.CallMethodResult<"deposit">> => {
+      return callMethod(Giftv2, this, "deposit", params, getContractByCodeHash);
     },
     announce: async (
-      params?: GiftTypes.CallMethodParams<"announce">
-    ): Promise<GiftTypes.CallMethodResult<"announce">> => {
+      params?: Giftv2Types.CallMethodParams<"announce">
+    ): Promise<Giftv2Types.CallMethodResult<"announce">> => {
       return callMethod(
-        Gift,
+        Giftv2,
         this,
         "announce",
         params === undefined ? {} : params,
@@ -359,15 +366,21 @@ export class GiftInstance extends ContractInstance {
       );
     },
     withdraw: async (
-      params: GiftTypes.CallMethodParams<"withdraw">
-    ): Promise<GiftTypes.CallMethodResult<"withdraw">> => {
-      return callMethod(Gift, this, "withdraw", params, getContractByCodeHash);
+      params: Giftv2Types.CallMethodParams<"withdraw">
+    ): Promise<Giftv2Types.CallMethodResult<"withdraw">> => {
+      return callMethod(
+        Giftv2,
+        this,
+        "withdraw",
+        params,
+        getContractByCodeHash
+      );
     },
     resetLock: async (
-      params?: GiftTypes.CallMethodParams<"resetLock">
-    ): Promise<GiftTypes.CallMethodResult<"resetLock">> => {
+      params?: Giftv2Types.CallMethodParams<"resetLock">
+    ): Promise<Giftv2Types.CallMethodResult<"resetLock">> => {
       return callMethod(
-        Gift,
+        Giftv2,
         this,
         "resetLock",
         params === undefined ? {} : params,
@@ -375,10 +388,10 @@ export class GiftInstance extends ContractInstance {
       );
     },
     cancel: async (
-      params?: GiftTypes.CallMethodParams<"cancel">
-    ): Promise<GiftTypes.CallMethodResult<"cancel">> => {
+      params?: Giftv2Types.CallMethodParams<"cancel">
+    ): Promise<Giftv2Types.CallMethodResult<"cancel">> => {
       return callMethod(
-        Gift,
+        Giftv2,
         this,
         "cancel",
         params === undefined ? {} : params,
@@ -386,10 +399,10 @@ export class GiftInstance extends ContractInstance {
       );
     },
     getInitialUsdPrice: async (
-      params?: GiftTypes.CallMethodParams<"getInitialUsdPrice">
-    ): Promise<GiftTypes.CallMethodResult<"getInitialUsdPrice">> => {
+      params?: Giftv2Types.CallMethodParams<"getInitialUsdPrice">
+    ): Promise<Giftv2Types.CallMethodResult<"getInitialUsdPrice">> => {
       return callMethod(
-        Gift,
+        Giftv2,
         this,
         "getInitialUsdPrice",
         params === undefined ? {} : params,
@@ -397,10 +410,10 @@ export class GiftInstance extends ContractInstance {
       );
     },
     getVersion: async (
-      params?: GiftTypes.CallMethodParams<"getVersion">
-    ): Promise<GiftTypes.CallMethodResult<"getVersion">> => {
+      params?: Giftv2Types.CallMethodParams<"getVersion">
+    ): Promise<Giftv2Types.CallMethodResult<"getVersion">> => {
       return callMethod(
-        Gift,
+        Giftv2,
         this,
         "getVersion",
         params === undefined ? {} : params,
@@ -408,10 +421,10 @@ export class GiftInstance extends ContractInstance {
       );
     },
     isCancellable: async (
-      params?: GiftTypes.CallMethodParams<"isCancellable">
-    ): Promise<GiftTypes.CallMethodResult<"isCancellable">> => {
+      params?: Giftv2Types.CallMethodParams<"isCancellable">
+    ): Promise<Giftv2Types.CallMethodResult<"isCancellable">> => {
       return callMethod(
-        Gift,
+        Giftv2,
         this,
         "isCancellable",
         params === undefined ? {} : params,
@@ -422,56 +435,56 @@ export class GiftInstance extends ContractInstance {
 
   transact = {
     deposit: async (
-      params: GiftTypes.SignExecuteMethodParams<"deposit">
-    ): Promise<GiftTypes.SignExecuteMethodResult<"deposit">> => {
-      return signExecuteMethod(Gift, this, "deposit", params);
+      params: Giftv2Types.SignExecuteMethodParams<"deposit">
+    ): Promise<Giftv2Types.SignExecuteMethodResult<"deposit">> => {
+      return signExecuteMethod(Giftv2, this, "deposit", params);
     },
     announce: async (
-      params: GiftTypes.SignExecuteMethodParams<"announce">
-    ): Promise<GiftTypes.SignExecuteMethodResult<"announce">> => {
-      return signExecuteMethod(Gift, this, "announce", params);
+      params: Giftv2Types.SignExecuteMethodParams<"announce">
+    ): Promise<Giftv2Types.SignExecuteMethodResult<"announce">> => {
+      return signExecuteMethod(Giftv2, this, "announce", params);
     },
     withdraw: async (
-      params: GiftTypes.SignExecuteMethodParams<"withdraw">
-    ): Promise<GiftTypes.SignExecuteMethodResult<"withdraw">> => {
-      return signExecuteMethod(Gift, this, "withdraw", params);
+      params: Giftv2Types.SignExecuteMethodParams<"withdraw">
+    ): Promise<Giftv2Types.SignExecuteMethodResult<"withdraw">> => {
+      return signExecuteMethod(Giftv2, this, "withdraw", params);
     },
     resetLock: async (
-      params: GiftTypes.SignExecuteMethodParams<"resetLock">
-    ): Promise<GiftTypes.SignExecuteMethodResult<"resetLock">> => {
-      return signExecuteMethod(Gift, this, "resetLock", params);
+      params: Giftv2Types.SignExecuteMethodParams<"resetLock">
+    ): Promise<Giftv2Types.SignExecuteMethodResult<"resetLock">> => {
+      return signExecuteMethod(Giftv2, this, "resetLock", params);
     },
     cancel: async (
-      params: GiftTypes.SignExecuteMethodParams<"cancel">
-    ): Promise<GiftTypes.SignExecuteMethodResult<"cancel">> => {
-      return signExecuteMethod(Gift, this, "cancel", params);
+      params: Giftv2Types.SignExecuteMethodParams<"cancel">
+    ): Promise<Giftv2Types.SignExecuteMethodResult<"cancel">> => {
+      return signExecuteMethod(Giftv2, this, "cancel", params);
     },
     getInitialUsdPrice: async (
-      params: GiftTypes.SignExecuteMethodParams<"getInitialUsdPrice">
-    ): Promise<GiftTypes.SignExecuteMethodResult<"getInitialUsdPrice">> => {
-      return signExecuteMethod(Gift, this, "getInitialUsdPrice", params);
+      params: Giftv2Types.SignExecuteMethodParams<"getInitialUsdPrice">
+    ): Promise<Giftv2Types.SignExecuteMethodResult<"getInitialUsdPrice">> => {
+      return signExecuteMethod(Giftv2, this, "getInitialUsdPrice", params);
     },
     getVersion: async (
-      params: GiftTypes.SignExecuteMethodParams<"getVersion">
-    ): Promise<GiftTypes.SignExecuteMethodResult<"getVersion">> => {
-      return signExecuteMethod(Gift, this, "getVersion", params);
+      params: Giftv2Types.SignExecuteMethodParams<"getVersion">
+    ): Promise<Giftv2Types.SignExecuteMethodResult<"getVersion">> => {
+      return signExecuteMethod(Giftv2, this, "getVersion", params);
     },
     isCancellable: async (
-      params: GiftTypes.SignExecuteMethodParams<"isCancellable">
-    ): Promise<GiftTypes.SignExecuteMethodResult<"isCancellable">> => {
-      return signExecuteMethod(Gift, this, "isCancellable", params);
+      params: Giftv2Types.SignExecuteMethodParams<"isCancellable">
+    ): Promise<Giftv2Types.SignExecuteMethodResult<"isCancellable">> => {
+      return signExecuteMethod(Giftv2, this, "isCancellable", params);
     },
   };
 
-  async multicall<Calls extends GiftTypes.MultiCallParams>(
+  async multicall<Calls extends Giftv2Types.MultiCallParams>(
     calls: Calls
-  ): Promise<GiftTypes.MultiCallResults<Calls>>;
-  async multicall<Callss extends GiftTypes.MultiCallParams[]>(
+  ): Promise<Giftv2Types.MultiCallResults<Calls>>;
+  async multicall<Callss extends Giftv2Types.MultiCallParams[]>(
     callss: Narrow<Callss>
-  ): Promise<GiftTypes.MulticallReturnType<Callss>>;
+  ): Promise<Giftv2Types.MulticallReturnType<Callss>>;
   async multicall<
-    Callss extends GiftTypes.MultiCallParams | GiftTypes.MultiCallParams[]
+    Callss extends Giftv2Types.MultiCallParams | Giftv2Types.MultiCallParams[]
   >(callss: Callss): Promise<unknown> {
-    return await multicallMethods(Gift, this, callss, getContractByCodeHash);
+    return await multicallMethods(Giftv2, this, callss, getContractByCodeHash);
   }
 }

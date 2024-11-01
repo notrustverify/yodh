@@ -4,31 +4,52 @@
 
 import { RunScriptResult, DeployContractExecutionResult } from "@alephium/cli";
 import { NetworkId } from "@alephium/web3";
-import { Gift, GiftInstance, GiftFactory, GiftFactoryInstance } from ".";
+import {
+  Gift,
+  GiftInstance,
+  GiftFactory,
+  GiftFactoryInstance,
+  Giftv2,
+  Giftv2Instance,
+} from ".";
+import { default as mainnetDeployments } from "../../deployments/.deployments.mainnet.json";
 import { default as testnetDeployments } from "../../deployments/.deployments.testnet.json";
 
 export type Deployments = {
   deployerAddress: string;
   contracts: {
-    Gift: DeployContractExecutionResult<GiftInstance>;
     GiftFactory: DeployContractExecutionResult<GiftFactoryInstance>;
+    Gift?: DeployContractExecutionResult<GiftInstance>;
+    Giftv2?: DeployContractExecutionResult<Giftv2Instance>;
   };
 };
 
 function toDeployments(json: any): Deployments {
   const contracts = {
-    Gift: {
-      ...json.contracts["Gift"],
-      contractInstance: Gift.at(
-        json.contracts["Gift"].contractInstance.address
-      ),
-    },
     GiftFactory: {
       ...json.contracts["GiftFactory"],
       contractInstance: GiftFactory.at(
         json.contracts["GiftFactory"].contractInstance.address
       ),
     },
+    Gift:
+      json.contracts["Gift"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["Gift"],
+            contractInstance: Gift.at(
+              json.contracts["Gift"].contractInstance.address
+            ),
+          },
+    Giftv2:
+      json.contracts["Giftv2"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["Giftv2"],
+            contractInstance: Giftv2.at(
+              json.contracts["Giftv2"].contractInstance.address
+            ),
+          },
   };
   return {
     ...json,
@@ -40,7 +61,12 @@ export function loadDeployments(
   networkId: NetworkId,
   deployerAddress?: string
 ): Deployments {
-  const deployments = networkId === "testnet" ? testnetDeployments : undefined;
+  const deployments =
+    networkId === "mainnet"
+      ? mainnetDeployments
+      : networkId === "testnet"
+      ? testnetDeployments
+      : undefined;
   if (deployments === undefined) {
     throw Error("The contract has not been deployed to the " + networkId);
   }

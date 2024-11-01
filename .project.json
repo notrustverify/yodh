@@ -1,5 +1,5 @@
 {
-  "fullNodeVersion": "v3.6.4",
+  "fullNodeVersion": "v3.8.1",
   "compilerOptionsUsed": {
     "ignoreUnusedConstantsWarnings": false,
     "ignoreUnusedVariablesWarnings": false,
@@ -7,7 +7,8 @@
     "ignoreUnusedPrivateFunctionsWarnings": false,
     "ignoreUpdateFieldsCheckWarnings": false,
     "ignoreCheckExternalCallerWarnings": false,
-    "ignoreUnusedFunctionReturnWarnings": false
+    "ignoreUnusedFunctionReturnWarnings": false,
+    "skipAbstractContractCheck": false
   },
   "infos": {
     "DIAOracleValue": {
@@ -24,9 +25,15 @@
     },
     "GiftFactory": {
       "sourceFile": "giftFactory.ral",
-      "sourceCodeHash": "78941d0edce71b23be89ddaff28dcb9095e0c7c4d19c9df11ac028497618afd9",
+      "sourceCodeHash": "c90c7db4f3a5277c5d86f398fcefe53ee36fdea2e21929e3cd835c6d060f337c",
       "bytecodeDebugPatch": "",
-      "codeHashDebug": "522f3499160cf9f7f59002c6187c414d681b09b1e7c952ebb11188e6a033031e"
+      "codeHashDebug": "9d9906ab133914919c51be4aa39a11b9c7c89b216e015b343baf5cad38e32565"
+    },
+    "Giftv2": {
+      "sourceFile": "giftv2.ral",
+      "sourceCodeHash": "ae7cc2b9be08fed9758d1780b93db14f811aa11df34b738fdc9933bd5b3bc947",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "0c1ef7554df27e9220c0aaea672c8fc93f5e4d58d72cbe48f50d6fe727371672"
     },
     "IDIAOracle": {
       "sourceFile": "oracle.ral",

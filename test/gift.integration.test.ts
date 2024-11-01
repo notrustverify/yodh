@@ -148,7 +148,8 @@ describe('integration tests', () => {
         gift.transact.withdraw({
           signer: receiver,
           args: {
-            secret: stringToHex('wrong-secret') // This is a wrong secret
+             secret: stringToHex('wrong-secret'), // This is a wrong secret
+             to: receiver.address
           }
         }),
         gift.address,
@@ -160,7 +161,8 @@ describe('integration tests', () => {
         gift.transact.withdraw({
           signer: attacker, // The attacker sign the tx
           args: {
-            secret: stringToHex(secret)
+             secret: stringToHex(secret),
+             to: receiver.address
           }
         }),
         gift.address,
@@ -171,13 +173,71 @@ describe('integration tests', () => {
       const txWithdraw = await gift.transact.withdraw({
         signer: receiver,
         args: {
-          secret: stringToHex(secret)
+           secret: stringToHex(secret),
+           to: receiver.address
         }
       })
       expect(txWithdraw).toBeDefined()
       expect(gift.fetchState).rejects.toThrowError(/^Cannot read properties of undefined \(reading 'address'\)/)
     })
   })
+
+  describe('withdraw to another address', () => {
+   it('should work for the expected users', async () => {
+     const secret = 'my-secret'
+     const alphAttoAmount = 10n * ONE_ALPH
+     const contractResult = await deployGift(sender, sender.address, alphAttoAmount, secret, 10n * 1000n)
+     expect(contractResult).toBeDefined()
+     const gift = contractResult.contractInstance
+
+     const announcementTime = BigInt(Date.now())
+     await gift.transact.announce({
+       signer: receiver
+     })
+
+     const announcedState = await gift.fetchState()
+     expect(announcedState.fields.announcedAddress).toEqual(receiver.address)
+     expect(announcedState.fields.announcementLockedUntil).toBeGreaterThan(announcementTime)
+
+     // It should fail when secret is wrong
+     await expectAssertionError(
+       gift.transact.withdraw({
+         signer: receiver,
+         args: {
+            secret: stringToHex('wrong-secret') // This is a wrong secret
+            ,
+            to: receiver.address
+         }
+       }),
+       gift.address,
+       Gift.consts.ErrorCodes.WrongSecret
+     )
+
+     // It should fail when the withdrawer has not announce (even if has the secret)
+     await expectAssertionError(
+       gift.transact.withdraw({
+         signer: attacker, // The attacker sign the tx
+         args: {
+            secret: stringToHex(secret),
+            to: receiver.address
+         }
+       }),
+       gift.address,
+       Gift.consts.ErrorCodes.UnannouncedCaller
+     )
+
+     // Legit call should work
+     const txWithdraw = await gift.transact.withdraw({
+       signer: receiver,
+       args: {
+          secret: stringToHex(secret),
+          to: (await getRandomSigner(0)).address
+       }
+     })
+     expect(txWithdraw).toBeDefined()
+     expect(gift.fetchState).rejects.toThrowError(/^Cannot read properties of undefined \(reading 'address'\)/)
+   })
+ })
 
   describe('deposit', () => {
     it('should work for ALPH tokens on ALPH gift', async () => {
