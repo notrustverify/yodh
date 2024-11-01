@@ -1,0 +1,200 @@
+{
+  "version": "v3.8.4",
+  "name": "Giftv2",
+  "bytecode": "0808402440444067407b409540a340b140bf010701030010d3cdc56d1cb4170116011600a51702160116001602ac0516011602160060010000000010d37920c9a956a001340c7bb4a10056ce022aa10106a000a0015f010202020014d3ca0d70a0b4a000450d7bce01160050410e7bb281d007a0005e1601b0010000000008d3b474d95eb4ce00450f7b0ca10101020000000dd3a7633c58ce04107bb4ce00450f7b085dce00b0010000000103d37a8243cdce0502010000000103d3da1a8f8ace0302010000000103d35eccdb20ce0402",
+  "codeHash": "0c1ef7554df27e9220c0aaea672c8fc93f5e4d58d72cbe48f50d6fe727371672",
+  "fieldsSig": {
+    "names": [
+      "sender",
+      "hashedSecret",
+      "announcementLockIntervall",
+      "version",
+      "isCancellable",
+      "initialUsdPrice",
+      "announcedAddress",
+      "announcementLockedUntil"
+    ],
+    "types": [
+      "Address",
+      "ByteVec",
+      "U256",
+      "U256",
+      "Bool",
+      "U256",
+      "Address",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "Deposit",
+      "fieldNames": [
+        "by",
+        "amount",
+        "tokenId"
+      ],
+      "fieldTypes": [
+        "Address",
+        "U256",
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "Lock",
+      "fieldNames": [
+        "by",
+        "until"
+      ],
+      "fieldTypes": [
+        "Address",
+        "U256"
+      ]
+    },
+    {
+      "name": "Withdraw",
+      "fieldNames": [
+        "by"
+      ],
+      "fieldTypes": [
+        "Address"
+      ]
+    },
+    {
+      "name": "Cancel",
+      "fieldNames": [],
+      "fieldTypes": []
+    }
+  ],
+  "functions": [
+    {
+      "name": "deposit",
+      "paramNames": [
+        "tokenId"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "announce",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "withdraw",
+      "paramNames": [
+        "secret",
+        "to"
+      ],
+      "paramTypes": [
+        "ByteVec",
+        "Address"
+      ],
+      "paramIsMutable": [
+        false,
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "resetLock",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "cancel",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "getInitialUsdPrice",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getVersion",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "isCancellable",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Bool"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ErrorCodes",
+      "fields": [
+        {
+          "name": "GiftLocked",
+          "value": {
+            "type": "U256",
+            "value": "0"
+          }
+        },
+        {
+          "name": "UnannouncedCaller",
+          "value": {
+            "type": "U256",
+            "value": "1"
+          }
+        },
+        {
+          "name": "WrongSecret",
+          "value": {
+            "type": "U256",
+            "value": "2"
+          }
+        },
+        {
+          "name": "CallerIsNotSender",
+          "value": {
+            "type": "U256",
+            "value": "3"
+          }
+        },
+        {
+          "name": "CancelIsNotAllowed",
+          "value": {
+            "type": "U256",
+            "value": "4"
+          }
+        }
+      ]
+    }
+  ]
+}
