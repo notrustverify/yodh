@@ -11,7 +11,6 @@ const defaultSettings: Settings = {
   oracleAddress: ZERO_ADDRESS
 }
 
-console.log(process.env.TESTNET_NODE_URL)
 configDotenv()
 const configuration: Configuration<Settings> = {
   networks: {

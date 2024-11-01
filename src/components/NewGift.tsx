@@ -196,7 +196,6 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   function beforeUnload(e: BeforeUnloadEvent) {
     e.preventDefault()
   }
-  console.log(datetimeLock)
   return (
     <div className={styles.mainContainer}>
       <Head>
@@ -258,6 +257,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             id="gift-amount"
             placeholder="Enter the amount"
             required
+            autoComplete='false'
             value={withdrawAmount}
             onChange={(e) => {
               setWithdrawAmount(e.target.value)

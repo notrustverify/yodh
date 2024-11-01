@@ -18,26 +18,29 @@ import { default as testnetDeployments } from "../../deployments/.deployments.te
 export type Deployments = {
   deployerAddress: string;
   contracts: {
-    Gift: DeployContractExecutionResult<GiftInstance>;
     GiftFactory: DeployContractExecutionResult<GiftFactoryInstance>;
+    Gift?: DeployContractExecutionResult<GiftInstance>;
     Giftv2?: DeployContractExecutionResult<Giftv2Instance>;
   };
 };
 
 function toDeployments(json: any): Deployments {
   const contracts = {
-    Gift: {
-      ...json.contracts["Gift"],
-      contractInstance: Gift.at(
-        json.contracts["Gift"].contractInstance.address
-      ),
-    },
     GiftFactory: {
       ...json.contracts["GiftFactory"],
       contractInstance: GiftFactory.at(
         json.contracts["GiftFactory"].contractInstance.address
       ),
     },
+    Gift:
+      json.contracts["Gift"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["Gift"],
+            contractInstance: Gift.at(
+              json.contracts["Gift"].contractInstance.address
+            ),
+          },
     Giftv2:
       json.contracts["Giftv2"] === undefined
         ? undefined

@@ -35,7 +35,7 @@ import { Footer } from './Footer'
 import { Locked } from './Locked'
 import TokenGifted from './TokensGifted'
 import { Header } from './Header'
-import { ECDH } from 'crypto'
+import { CoinGeckoClient } from 'coingecko-api-v3'
 
 export const WithdrawDapp = ({
   contractId,
@@ -57,7 +57,7 @@ export const WithdrawDapp = ({
   const [contract, setContract] = useState<string>('')
   const [addressWithdrawTo, setAddressWithdrawTo] = useState<string>('')
   const [datetimeLock, setDatetimeLock] = useState<Date>()
-
+  const [percentageFiat, setPercentageFiat] = useState<number | undefined>(undefined)
 
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -159,23 +159,36 @@ export const WithdrawDapp = ({
       contractExists(addressFromContractId(dataContractId)).then((exist) => setIsNotClaimed(exist))
 
       if (isNotClaimed) {
+        const client = new CoinGeckoClient({
+          timeout: 10000,
+          autoRetry: true
+        })
+
         setContract(dataContractId)
         getContractState(dataContractId).then((data) => {
           setContractState(data)
           setStep(data.fields.announcedAddress === ZERO_ADDRESS ? WithdrawState.Locking : WithdrawState.Locked)
           setDatetimeLock(new Date(Number(data.fields.announcementLockedUntil)))
- 
+
+          client
+            .simplePrice({
+              vs_currencies: 'usd',
+              ids: 'alephium'
+            })
+            .then((cgPrice) => {
+              const fiatPriceWhenCreated = number256ToNumber(data.fields.initialUsdPrice, 8)
+              const priceNow = cgPrice['alephium']['usd']
+              console.log(fiatPriceWhenCreated,priceNow, data.fields.initialUsdPrice)
+              setPercentageFiat(((priceNow - fiatPriceWhenCreated) / priceNow) * 100)
+            })
         })
-        
+
         getTokenList().then((data) => {
           setTokenList(data)
         })
       }
     }
-   
-  }, [contractId, secret, isNotClaimed])
-
-  console.log(contractState?.fields)
+  }, [contractId, secret, isNotClaimed, contractState?.fields.initialUsdPrice])
 
   return (
     <div className={styles.mainContainer}>
@@ -186,7 +199,7 @@ export const WithdrawDapp = ({
 
         <form className={styles.giftForm} id="gift-form" onSubmit={handleWithdrawSubmit}>
           {tokenList !== undefined && contractState !== undefined && (
-            <TokenGifted tokenList={tokenList} contractState={contractState} />
+            <TokenGifted tokenList={tokenList} contractState={contractState} percentage={percentageFiat} />
           )}
 
           <label htmlFor="gift-message">
@@ -204,7 +217,11 @@ export const WithdrawDapp = ({
             <small>
               <Icon icon="material-symbols:info" /> You will need to sign 2 times for security purpose.
             </small>
-            {datetimeLock !== undefined && datetimeLock >= new Date() ? <p>Contract is locked until {datetimeLock?.toLocaleString()}</p> : ''} 
+            {datetimeLock !== undefined && datetimeLock >= new Date() ? (
+              <p>Contract is locked until {datetimeLock?.toLocaleString()}</p>
+            ) : (
+              ''
+            )}
           </label>
 
           {contractState !== undefined && (
@@ -262,15 +279,19 @@ export const WithdrawDapp = ({
           <details id="gitflink">
             <summary>Advanced options</summary>
             <p>Withdraw to another address</p>
-            <input
-              type="string"
-              id="gift-amount"
-              placeholder="Paste address"
-              value={addressWithdrawTo}
-              onChange={(e) => {
-                setAddressWithdrawTo(e.target.value)
-              }}
-            />
+            {contractState !== undefined && contractState.fields.version >= 1n ? (
+              <input
+                type="string"
+                id="gift-amount"
+                placeholder="Paste address"
+                value={addressWithdrawTo}
+                onChange={(e) => {
+                  setAddressWithdrawTo(e.target.value)
+                }}
+              />
+            ) : (
+              <b>Not supported</b>
+            )}
           </details>
         </form>
       </section>
