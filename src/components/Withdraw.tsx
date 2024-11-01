@@ -156,7 +156,7 @@ export const WithdrawDapp = ({
       // address can be passed
       if (isValidAddress(contractId)) dataContractId = contractIdFromAddressString(contractId)
 
-      contractExists(addressFromContractId(dataContractId)).then((exist) => setIsNotClaimed(exist))
+      contractExists(addressFromContractId(dataContractId)).then((exist) =>  setIsNotClaimed(exist))
 
       if (isNotClaimed) {
         const client = new CoinGeckoClient({
@@ -188,9 +188,11 @@ export const WithdrawDapp = ({
         })
       }
     }
+
   }, [contractId, secret, isNotClaimed, contractState?.fields.initialUsdPrice])
 
   return (
+
     <div className={styles.mainContainer}>
       <Header gifts={undefined} />
 
