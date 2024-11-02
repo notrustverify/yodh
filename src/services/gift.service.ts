@@ -51,7 +51,6 @@ export const createGift = async (
     data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
   }
 
-  console.log(data)
   return await GiftFactory.at(GIFT_FACTORY_ADDRESS).transact.createGift(data)
 }
 
@@ -98,6 +97,7 @@ export const claim = async (signer: SignerProvider, secretDecoded: Uint8Array, c
 }
 
 export const claimv2 = async (signer: SignerProvider, secretDecoded: Uint8Array, contractId: string, addressWithdrawTo: string) => {
+   console.log(addressWithdrawTo)
    return await Giftv2.at(addressFromContractId(contractId)).transact.withdraw({
      args: {
         secret: Buffer.from(secretDecoded).toString('hex'),

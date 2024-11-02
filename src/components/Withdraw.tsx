@@ -80,7 +80,10 @@ export const WithdrawDapp = ({
               result = await claim(signer, secretDecoded, contract)
               break
             case 1n:
-              result = await claimv2(signer, secretDecoded, contract, addressWithdrawTo)
+               if(addressWithdrawTo == '')
+                  result = await claimv2(signer, secretDecoded, contract, account.address)
+               else
+                  result = await claimv2(signer, secretDecoded, contract, addressWithdrawTo)
               break
 
             default:
@@ -128,8 +131,8 @@ export const WithdrawDapp = ({
   }, [contractState?.fields, account, isNotClaimed])
 
   useCallback(() => {
-    account && setAddressWithdrawTo(account.address)
-  }, [account?.address])
+   connectionStatus == "connected" && setAddressWithdrawTo(account.address)
+  }, [account?.address, connectionStatus])
 
   useEffect(() => {
     //getState()
@@ -178,7 +181,7 @@ export const WithdrawDapp = ({
             .then((cgPrice) => {
               const fiatPriceWhenCreated = number256ToNumber(data.fields.initialUsdPrice, 8)
               const priceNow = cgPrice['alephium']['usd']
-              console.log(fiatPriceWhenCreated,priceNow, data.fields.initialUsdPrice)
+              
               setPercentageFiat(((priceNow - fiatPriceWhenCreated) / priceNow) * 100)
             })
         })
@@ -190,7 +193,6 @@ export const WithdrawDapp = ({
     }
 
   }, [contractId, secret, isNotClaimed, contractState?.fields.initialUsdPrice])
-
   return (
 
     <div className={styles.mainContainer}>
@@ -237,8 +239,7 @@ export const WithdrawDapp = ({
           <button
             type="submit"
             disabled={
-              (contractState !== undefined && contractState?.fields.announcementLockedUntil >= BigInt(Date.now())) ||
-              (!checkHash(secretDecoded, contractState?.fields.hashedSecret) &&
+              (contractState !== undefined && contractState?.fields.announcementLockedUntil >= BigInt(Date.now()) || !checkHash(secretDecoded, contractState?.fields.hashedSecret) ||
                 (!!ongoingTxId ||
                   !isNotClaimed ||
                   contractState?.fields.announcedAddress !== ZERO_ADDRESS ||

@@ -257,7 +257,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             id="gift-amount"
             placeholder="Enter the amount"
             required
-            autoComplete='false'
+            autoComplete='off'
             value={withdrawAmount}
             onChange={(e) => {
               setWithdrawAmount(e.target.value)
