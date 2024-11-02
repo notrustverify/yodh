@@ -45,12 +45,13 @@ export const createGift = async (
 
   if (tokenId !== ALPH_TOKEN_ID) {
     data.args.givenTokenId = tokenId
-    data.args.amount = 10n ** BigInt(decimal)
+    data.args.amount = amount*10n ** BigInt(decimal)
 
     data.attoAlphAmount = MINIMAL_CONTRACT_DEPOSIT + DUST_AMOUNT
     data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
   }
 
+  console.log(data)
   return await GiftFactory.at(GIFT_FACTORY_ADDRESS).transact.createGift(data)
 }
 
