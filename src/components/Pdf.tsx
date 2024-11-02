@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     height: '100%',
     width: '100%',
-    backgroundColor: '#f9f9f9'
   },
   header: {
     flexDirection: 'row',
