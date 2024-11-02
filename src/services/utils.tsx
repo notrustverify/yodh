@@ -16,19 +16,19 @@ export interface Gift {
 }
 
 export interface TokenList {
-   networkId: number;
-   tokens:    Token[];
+  networkId: number
+  tokens: Token[]
 }
 
 export interface Token {
-   id:             string;
-   name:           string;
-   symbol:         string;
-   decimals:       number;
-   description:    string;
-   logoURI:        string;
-   nameOnChain?:   string;
-   symbolOnChain?: string;
+  id: string
+  name: string
+  symbol: string
+  decimals: number
+  description: string
+  logoURI: string
+  nameOnChain?: string
+  symbolOnChain?: string
 }
 
 export enum WithdrawState {
@@ -41,7 +41,8 @@ export enum WithdrawState {
   Adding = 'Adding tokens'
 }
 
-export const GIFT_FACTORY_ADDRESS = process.env.NEXT_PUBLIC_GIFT_FACTORY_ADDRESS ??"23YbSbpLCpz7PpzMZ23ksjNzpiqEDkoqisyY4fLvba61d"
+export const GIFT_FACTORY_ADDRESS =
+  process.env.NEXT_PUBLIC_GIFT_FACTORY_ADDRESS ?? '23YbSbpLCpz7PpzMZ23ksjNzpiqEDkoqisyY4fLvba61d'
 
 export function getNetwork(): NetworkId {
   const network = (process.env.NEXT_PUBLIC_NETWORK ?? 'testnet') as NetworkId
@@ -49,11 +50,11 @@ export function getNetwork(): NetworkId {
 }
 
 export function getNode(): string {
-  return (process.env.NEXT_PUBLIC_NODE_URL ?? 'https://fullnode-testnet.alephium.notrustverify.ch')
+  return process.env.NEXT_PUBLIC_NODE_URL ?? 'https://fullnode-testnet.alephium.notrustverify.ch'
 }
 
 export function getUrl(): string {
-  return (process.env.NEXT_PUBLIC_URL ?? "https://yodh.app")
+  return process.env.NEXT_PUBLIC_URL ?? 'https://yodh.app'
 }
 
 export function getContractIdGroup(contractId: string): number {
@@ -62,73 +63,83 @@ export function getContractIdGroup(contractId: string): number {
 
 export function getUrlParams(path: string) {
   // This ensures the code runs on the client-side only
-  if(!router.isReady) return
+  if (!router.isReady) return
   // Parse the URL fragment (hash) from the router's `asPath`
-  const hashIndex = router.asPath.indexOf('#');
+  const hashIndex = router.asPath.indexOf('#')
 
   if (hashIndex > -1) {
-    const hash = router.asPath.substring(hashIndex + 1); // Get rid of the `#`
-    const searchParams = new URLSearchParams(hash);
+    const hash = router.asPath.substring(hashIndex + 1) // Get rid of the `#`
+    const searchParams = new URLSearchParams(hash)
 
-    const contract = searchParams.get('contract') || '';
-    const secret = searchParams.get('secret') || '';
-    const msg = searchParams.get('msg') || '';
+    const contract = searchParams.get('contract') || ''
+    const secret = searchParams.get('secret') || ''
+    const msg = searchParams.get('msg') || ''
 
-    return({
+    return {
       contract,
       secret,
-      msg,
-    });
-
+      msg
+    }
   }
 }
 export async function contractExists(address: string): Promise<boolean> {
   try {
-    const nodeProvider = web3.getCurrentNodeProvider();
-    await nodeProvider.contracts.getContractsAddressState(address);
-    return true;
+    const nodeProvider = web3.getCurrentNodeProvider()
+    await nodeProvider.contracts.getContractsAddressState(address)
+    return true
   } catch (error) {
-    if (error instanceof Error && error.message.includes("KeyNotFound")) {
-      return false;
+    if (error instanceof Error && error.message.includes('KeyNotFound')) {
+      return false
     }
-    throw error;
+    throw error
   }
 }
 
-export function shortAddress(address: string){
+export function shortAddress(address: string) {
   return `${address.substring(0, 3)}...${address.substring(address.length - 3)}`
 }
 
-export function getGiftUrl(contractId:string, secret: Uint8Array, message:string){
+export function getGiftUrl(contractId: string, secret: Uint8Array, message: string) {
   const encodedSecret = Buffer.from(secret).toString('base64')
 
-  return `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(encodedSecret)}&msg=${encodeURIComponent(message)}`
+  return `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(encodedSecret)}&msg=${encodeURIComponent(
+    message
+  )}`
 }
 
-export async function getTokenList(): Promise<Token[]>{
-   const url = `https://raw.githubusercontent.com/alephium/token-list/master/tokens/${getNetwork()}.json`
-   
-   const response = await fetch(url);
-  
-   if (!response.ok) {
-     throw new Error('Network response was not ok');
-   }
- 
-   const data: TokenList = await response.json(); // Ensure type assertion here
-   return data.tokens; // Correctly returning the value
-    
+export async function getTokenList(): Promise<Token[]> {
+  const url = `https://raw.githubusercontent.com/alephium/token-list/master/tokens/${getNetwork()}.json`
+
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw new Error('Network response was not ok')
+  }
+
+  const data: TokenList = await response.json() // Ensure type assertion here
+  return data.tokens // Correctly returning the value
 }
 
-export function findTokenFromId(tokenList: Token[], tokenId: string): Token|undefined{
-   return tokenList?.find((token) => token.id === tokenId)
+export function findTokenFromId(tokenList: Token[], tokenId: string): Token | undefined {
+  return tokenList?.find((token) => token.id === tokenId)
 }
 
-export const contractIdFromAddressString = (contractAddr: string) =>  {
-   return binToHex(contractIdFromAddress(contractAddr))
+export const contractIdFromAddressString = (contractAddr: string) => {
+  return binToHex(contractIdFromAddress(contractAddr))
 }
 
-export const isEncodedFormat = (secret: string) => Buffer.from(decodeURIComponent(secret), 'base64').toString('base64') == decodeURIComponent(secret)
+export const isEncodedFormat = (secret: string) =>
+  Buffer.from(decodeURIComponent(secret), 'base64').toString('base64') == decodeURIComponent(secret)
 
 export const isBase64 = (secret: string) => Buffer.from(secret, 'base64').toString('base64') == secret
 
-export const getInputDatetime = () => new Date().toISOString()
+export const convertToInt = (withdrawAmount: string):[bigint, number] => {
+  let amountToWithdrawFloat = ''
+
+  if (withdrawAmount.split('.').length > 0)
+    amountToWithdrawFloat = withdrawAmount.split('.')[0] + withdrawAmount.split('.')[1]
+  return [
+    withdrawAmount.split('.').length > 1 ? BigInt(amountToWithdrawFloat) : BigInt(withdrawAmount),
+    withdrawAmount.split('.').length > 1 ? Number(withdrawAmount.split('.')[1].length) : Number(0)
+  ]
+}

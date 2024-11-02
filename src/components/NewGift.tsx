@@ -5,8 +5,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
   addressFromContractId,
   ALPH_TOKEN_ID,
-  contractIdFromAddress,
-  isValidAddress,
   node,
   number256ToNumber,
   ONE_ALPH,
@@ -21,10 +19,9 @@ import PdfGiftCard from './Pdf'
 import QrCode from './Qrcode'
 import { Footer } from './Footer'
 import store from 'store2'
-import { Gifts } from './CreatedGifts'
 import {
   contractIdFromAddressString,
-  getInputDatetime,
+  convertToInt,
   getTokenList,
   getUrl,
   Gift,
@@ -37,7 +34,6 @@ import TokenPot from './TokenPot'
 import Link from 'next/link'
 import { FaRegCopy } from 'react-icons/fa'
 import { Tooltip } from 'react-tooltip'
-import Image from 'next/image'
 import { Header } from './Header'
 
 interface OptionSelect {
@@ -100,14 +96,11 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
       const announcementLockedUntil = datetimeLock
 
       try {
-        let amountToWithdrawFloat = ''
-
-        if (withdrawAmount.split('.').length > 0)
-          amountToWithdrawFloat = withdrawAmount.split('.')[0] + withdrawAmount.split('.')[1]
-
+         const floatToDecimals = convertToInt(withdrawAmount)
+         console.log(floatToDecimals)
         const result = await createGift(
-          withdrawAmount.split('.').length > 1 ? BigInt(amountToWithdrawFloat) : BigInt(withdrawAmount),
-          withdrawAmount.split('.').length > 1 ? withdrawAmount.split('.')[1].length : 0,
+          floatToDecimals[0],
+          floatToDecimals[1],
           signer,
           account.address,
           array,
@@ -158,19 +151,12 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
 
     if (signer) {
       setDetailsLoaded(false)
+      const floatToDecimals = convertToInt(withdrawAmount)
 
-      let amountToWithdrawFloat = ''
-
-        if (withdrawAmount.split('.').length > 0)
-          amountToWithdrawFloat = withdrawAmount.split('.')[0] + withdrawAmount.split('.')[1]
-
-      withdrawAmount.split('.').length > 1 ? BigInt(amountToWithdrawFloat) : BigInt(withdrawAmount),
-          withdrawAmount.split('.').length > 1 ? withdrawAmount.split('.')[1].length : 0
-          
       const result = await giftDeposit(
         contractId,
-        withdrawAmount.split('.').length > 1 ? BigInt(amountToWithdrawFloat) : BigInt(withdrawAmount),
-          withdrawAmount.split('.').length > 1 ? withdrawAmount.split('.')[1].length : 0,
+        floatToDecimals[0],
+        floatToDecimals[1],
         signer,
         selectedToken?.id ?? ALPH_TOKEN_ID,
         selectedToken?.decimals ?? Number(ONE_ALPH)
