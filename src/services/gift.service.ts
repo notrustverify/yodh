@@ -19,6 +19,7 @@ import { GIFT_FACTORY_ADDRESS } from './utils'
 
 export const createGift = async (
   amount: bigint,
+  decimalsAmount: number,
   sender: any,
   senderAddress: string,
   secret: Uint8Array,
@@ -27,8 +28,9 @@ export const createGift = async (
   decimal: number,
   announcementLockedUntil: bigint
 ) => {
+   const amountDecimals = BigInt(decimal-decimalsAmount)
 
-  const data: GiftFactoryTypes.SignExecuteMethodParams<'createGift'> = {
+   const data: GiftFactoryTypes.SignExecuteMethodParams<'createGift'> = {
     args: {
        hashedSecret: sha256(secret),
        announcementLockIntervall: announcementLockIntervall,
@@ -37,18 +39,18 @@ export const createGift = async (
        announcedAddress: ZERO_ADDRESS,
        announcementLockedUntil: announcementLockedUntil,
        givenTokenId: ALPH_TOKEN_ID,
-       amount: amount*10n**18n
+       amount: amount*10n**amountDecimals
     },
     signer: sender,
-    attoAlphAmount: amount*10n**18n
+    attoAlphAmount: amount*10n**amountDecimals
   }
 
   if (tokenId !== ALPH_TOKEN_ID) {
     data.args.givenTokenId = tokenId
-    data.args.amount = amount*10n ** BigInt(decimal)
+    data.args.amount = amount*10n ** amountDecimals
 
     data.attoAlphAmount = MINIMAL_CONTRACT_DEPOSIT + DUST_AMOUNT
-    data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
+    data.tokens = [{ id: tokenId, amount: amount * 10n ** amountDecimals }]
   }
 
   return await GiftFactory.at(GIFT_FACTORY_ADDRESS).transact.createGift(data)
@@ -57,23 +59,26 @@ export const createGift = async (
 export const giftDeposit = async (
   contractId: string,
   amount: bigint,
+  decimalsAmount: number,
   sender: SignerProvider,
   tokenId: string,
   decimal: number
 ) => {
+   const amountDecimals = BigInt(decimal-decimalsAmount)
+
   const data: GiftTypes.SignExecuteMethodParams<'deposit'> = {
     args: {
       tokenId: ALPH_TOKEN_ID
     },
     signer: sender,
-    attoAlphAmount: amount * ONE_ALPH
+    attoAlphAmount: amount * amountDecimals
   }
 
   if (tokenId !== ALPH_TOKEN_ID) {
     data.args.tokenId = tokenId
 
     data.attoAlphAmount = MINIMAL_CONTRACT_DEPOSIT
-    data.tokens = [{ id: tokenId, amount: amount * 10n ** BigInt(decimal) }]
+    data.tokens = [{ id: tokenId, amount: amount * 10n ** amountDecimals }]
   }
 
   return await Gift.at(addressFromContractId(contractId)).transact.deposit(data)

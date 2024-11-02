@@ -3,7 +3,7 @@ import styles from '@/styles/Gift.module.css'
 import { AlephiumConnectButton, useBalance, useWallet } from '@alephium/web3-react'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
-   addressFromContractId,
+  addressFromContractId,
   ALPH_TOKEN_ID,
   contractIdFromAddress,
   isValidAddress,
@@ -22,7 +22,15 @@ import QrCode from './Qrcode'
 import { Footer } from './Footer'
 import store from 'store2'
 import { Gifts } from './CreatedGifts'
-import { contractIdFromAddressString, getInputDatetime, getTokenList, getUrl, Gift, Token, WithdrawState } from '@/services/utils'
+import {
+  contractIdFromAddressString,
+  getInputDatetime,
+  getTokenList,
+  getUrl,
+  Gift,
+  Token,
+  WithdrawState
+} from '@/services/utils'
 import Select from 'react-select'
 import { GiftTypes } from 'artifacts/ts'
 import TokenPot from './TokenPot'
@@ -31,7 +39,6 @@ import { FaRegCopy } from 'react-icons/fa'
 import { Tooltip } from 'react-tooltip'
 import Image from 'next/image'
 import { Header } from './Header'
-
 
 interface OptionSelect {
   value: string
@@ -93,8 +100,14 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
       const announcementLockedUntil = datetimeLock
 
       try {
+        let amountToWithdrawFloat = ''
+
+        if (withdrawAmount.split('.').length > 0)
+          amountToWithdrawFloat = withdrawAmount.split('.')[0] + withdrawAmount.split('.')[1]
+
         const result = await createGift(
-          BigInt(withdrawAmount),
+          withdrawAmount.split('.').length > 1 ? BigInt(amountToWithdrawFloat) : BigInt(withdrawAmount),
+          withdrawAmount.split('.').length > 1 ? withdrawAmount.split('.')[1].length : 0,
           signer,
           account.address,
           array,
@@ -146,9 +159,18 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
     if (signer) {
       setDetailsLoaded(false)
 
+      let amountToWithdrawFloat = ''
+
+        if (withdrawAmount.split('.').length > 0)
+          amountToWithdrawFloat = withdrawAmount.split('.')[0] + withdrawAmount.split('.')[1]
+
+      withdrawAmount.split('.').length > 1 ? BigInt(amountToWithdrawFloat) : BigInt(withdrawAmount),
+          withdrawAmount.split('.').length > 1 ? withdrawAmount.split('.')[1].length : 0
+          
       const result = await giftDeposit(
         contractId,
-        BigInt(withdrawAmount),
+        withdrawAmount.split('.').length > 1 ? BigInt(amountToWithdrawFloat) : BigInt(withdrawAmount),
+          withdrawAmount.split('.').length > 1 ? withdrawAmount.split('.')[1].length : 0,
         signer,
         selectedToken?.id ?? ALPH_TOKEN_ID,
         selectedToken?.decimals ?? Number(ONE_ALPH)
@@ -210,7 +232,11 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         {/* Add the local class to the form */}
         <form className={styles.giftForm} id="gift-form" onSubmit={!pot ? handleWithdrawSubmit : handleAddPotSubmit}>
           <label htmlFor="gift-message">{!pot ? 'Your Message' : 'Add tokens in the pot'}</label>
-          { pot &&<Link href={`https://explorer.alephium.org/addresses/${addressFromContractId(contractId)}`}>Visit pot contract</Link> }
+          {pot && (
+            <Link href={`https://explorer.alephium.org/addresses/${addressFromContractId(contractId)}`}>
+              Visit pot contract
+            </Link>
+          )}
           {pot && contractState !== undefined && (
             <label htmlFor="gift-message">
               {contractState?.asset.tokens !== undefined &&
@@ -257,7 +283,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             id="gift-amount"
             placeholder="Enter the amount"
             required
-            autoComplete='off'
+            autoComplete="off"
             value={withdrawAmount}
             onChange={(e) => {
               setWithdrawAmount(e.target.value)
@@ -273,7 +299,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             >
               Pool gift card <Icon icon="material-symbols:info" />
             </label>
-            
+
             <input
               disabled={pot}
               checked={pot}
@@ -281,13 +307,18 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
               type="checkbox"
               id="poolGiftCard"
             />
-           
           </div>
           <details id="">
             <summary>Advanced options</summary>
             <p>Lock gift until</p>
-            <input aria-label="Date and time" type="datetime-local" onChange={ (e) => {setDatetimeLock(BigInt(e.target.valueAsNumber))}}/>
-            </details>
+            <input
+              aria-label="Date and time"
+              type="datetime-local"
+              onChange={(e) => {
+                setDatetimeLock(BigInt(e.target.valueAsNumber))
+              }}
+            />
+          </details>
 
           <button type="submit" disabled={connectionStatus !== 'connected'} className={styles.wrapButton}>
             <Icon icon="fa:gift" /> &nbsp; Wrap & Send Gift
@@ -313,7 +344,14 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
         {!pot && contractId !== '' && giftWrapped ? (
           <PDFDownloadLink
             document={
-              <PdfGiftCard sender={account?.address} contractId={contractId} message={message} secret={secret} amount={withdrawAmount} tokenSymbol={selectedToken?.symbol}/>
+              <PdfGiftCard
+                sender={account?.address}
+                contractId={contractId}
+                message={message}
+                secret={secret}
+                amount={withdrawAmount}
+                tokenSymbol={selectedToken?.symbol}
+              />
             }
             title="Yodh Gift Card"
           >
@@ -349,7 +387,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
           </details>
         )}
       </div>
-      
+
       {pot && contractId !== '' && <Link href={'/'}>Create a new Gift Card</Link>}
       <Footer />
     </div>
