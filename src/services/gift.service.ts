@@ -71,7 +71,7 @@ export const giftDeposit = async (
       tokenId: ALPH_TOKEN_ID
     },
     signer: sender,
-    attoAlphAmount: amount * amountDecimals
+    attoAlphAmount: amount * 10n**amountDecimals
   }
 
   if (tokenId !== ALPH_TOKEN_ID) {
