@@ -1,4 +1,6 @@
-# Yodh
+[![GitHub Pages](https://github.com/notrustverify/yodh/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/notrustverify/yodh/actions/workflows/gh-pages.yml)
+
+# Yodh 
 
 Yodh is a dApp with the mission of facilitating and promoting the adoption of Alephium among the general public. Its primary goal is to democratize access to the Alephium blockchain by providing a simple and intuitive way to send and receive cryptocurrencies.
 
