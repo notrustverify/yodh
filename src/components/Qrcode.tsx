@@ -21,10 +21,11 @@ export default function QrCode({
   const [isCopiedPot, setIsCopiedPot] = useState(false)
 
   const encodedSecret = Buffer.from(secret).toString('base64')
+  const hasSecret = secret.length > 0
 
-  const urlToEncode = `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(
-    encodedSecret
-  )}&msg=${encodeURIComponent(message)}`
+  const urlToEncode = hasSecret
+    ? `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(encodedSecret)}&msg=${encodeURIComponent(message)}`
+    : `${getUrl()}/#contract=${contractId}&msg=${encodeURIComponent(message)}`
   const urlPotToEncode = `${getUrl()}/#contract=${contractId}&pot=${pot}`
   return (
     <>

@@ -1,6 +1,7 @@
 import {
   addressFromContractId,
   ALPH_TOKEN_ID,
+  binToHex,
   DUST_AMOUNT,
   hashMessage,
   MINIMAL_CONTRACT_DEPOSIT,
@@ -10,6 +11,7 @@ import {
   ONE_ALPH,
   SignerProvider,
   SignExecuteContractMethodParams,
+  stringToHex,
   Token,
   ZERO_ADDRESS
 } from '@alephium/web3'
@@ -22,14 +24,14 @@ export const createGift = async (
   decimalsAmount: number,
   sender: any,
   senderAddress: string,
-  secret: Uint8Array,
+  secret: Uint8Array | string,
   announcementLockIntervall: bigint,
   tokenId: string,
   decimal: number,
   announcementLockedUntil: bigint
 ) => {
    const amountDecimals = BigInt(decimal-decimalsAmount)
-
+    console.log(secret)
    const data: GiftFactoryTypes.SignExecuteMethodParams<'createGift'> = {
     args: {
        hashedSecret: sha256(secret),

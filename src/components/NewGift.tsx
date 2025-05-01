@@ -59,6 +59,8 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   const [isCopied, setIsCopied] = useState(false)
   const [detailsLoaded, setDetailsLoaded] = useState(false)
   const [datetimeLock, setDatetimeLock] = useState<bigint>(0n)
+  const [customPassword, setCustomPassword] = useState<string>('')
+  const [passwordError, setPasswordError] = useState<string>('')
 
   const [selectedToken, setSelectedToken] = useState<Token | undefined>({
     id: '0000000000000000000000000000000000000000000000000000000000000000',
@@ -84,17 +86,28 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (signer) {
+      if (customPassword && customPassword.length < 6) {
+        setPasswordError('Password must be at least 6 characters long')
+        return
+      }
+      setPasswordError('')
       setDetailsLoaded(false)
 
-      const array = new Uint8Array(128)
-      crypto.getRandomValues(array)
-      //array = new TextEncoder().encode("testingsecret")
+      let array: Uint8Array
+      if (customPassword) {
+        // Pass custom password directly as string
+        array = new TextEncoder().encode(customPassword)
+      } else {
+        // Generate random password if no custom password
+        array = new Uint8Array(128)
+        crypto.getRandomValues(array)
+      }
       setSecret(array)
 
       // store it in case of connection lost
       store.add('gifts', [{ contractId: '', secret: array, message: message, pot: isPot }])
       const announcementLockedUntil = datetimeLock
-
+      console.log(customPassword, array)
       try {
          const floatToDecimals = convertToInt(withdrawAmount)
          console.log(floatToDecimals)
@@ -304,9 +317,28 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
                 setDatetimeLock(BigInt(e.target.valueAsNumber))
               }}
             />
+            <p>Custom password (optional)</p>
+            <input
+              type="text"
+              placeholder="Enter custom password (min 6 characters)"
+              value={customPassword}
+              onChange={(e) => {
+                setCustomPassword(e.target.value)
+                if (e.target.value && e.target.value.length < 6) {
+                  setPasswordError('Password must be at least 6 characters long')
+                } else {
+                  setPasswordError('')
+                }
+              }}
+            />
+            {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
           </details>
 
-          <button type="submit" disabled={connectionStatus !== 'connected'} className={styles.wrapButton}>
+          <button 
+            type="submit" 
+            disabled={connectionStatus !== 'connected' || Boolean(customPassword && customPassword.length < 6)} 
+            className={styles.wrapButton}
+          >
             <Icon icon="fa:gift" /> &nbsp; Wrap & Send Gift
           </button>
         </form>
@@ -337,6 +369,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
                 secret={secret}
                 amount={withdrawAmount}
                 tokenSymbol={selectedToken?.symbol}
+                customPassword={customPassword}
               />
             }
             title="Yodh Gift Card"
@@ -367,11 +400,39 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             )}
         {!pot && contractId !== '' && secret.length >= 0 && giftWrapped && (
           <details id="gitflink">
-            <summary>Click to display QRCode</summary>
+            <summary>Click to display Link and QRCode</summary>
             <p>Share this to the person you want to send the gift card</p>
-            <QrCode contractId={contractId} secret={secret} message={message} pot={isPot} />
+            <QrCode 
+              contractId={contractId} 
+              secret={customPassword ? new Uint8Array() : secret} 
+              message={message} 
+              pot={isPot} 
+            />
           </details>
         )}
+        {/*!pot && contractId !== '' && secret.length >= 0 && giftWrapped && customPassword && (
+          <details id="gitflink">
+            <summary>Click to display gift link</summary>
+            <p>Share this to the person you want to send the gift card</p>
+            <p>
+              <Link href={`${getUrl()}/#contract=${contractId}&msg=${encodeURIComponent(message)}`} rel="noopener noreferrer" target="_blank">
+                Gift URL
+              </Link>{' '}
+              {isCopied ? (
+                'URL Copied'
+              ) : (
+                <FaRegCopy
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${getUrl()}/#contract=${contractId}&msg=${encodeURIComponent(message)}`)
+                    setIsCopied(true)
+                  }}
+                >
+                  Copy to Clipboard
+                </FaRegCopy>
+              )}
+            </p>
+          </details>
+        )*/}
       </div>
 
       {pot && contractId !== '' && <Link href={'/'}>Create a new Gift Card</Link>}

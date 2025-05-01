@@ -2,8 +2,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import { RunScriptResult, DeployContractExecutionResult } from "@alephium/cli";
-import { NetworkId } from "@alephium/web3";
+import {
+  RunScriptResult,
+  DeployContractExecutionResult,
+  NetworkId,
+} from "@alephium/web3";
 import {
   Gift,
   GiftInstance,
@@ -11,9 +14,12 @@ import {
   GiftFactoryInstance,
   Giftv2,
   Giftv2Instance,
+  TestOracle,
+  TestOracleInstance,
 } from ".";
 import { default as mainnetDeployments } from "../../deployments/.deployments.mainnet.json";
 import { default as testnetDeployments } from "../../deployments/.deployments.testnet.json";
+import { default as devnetDeployments } from "../../deployments/.deployments.devnet.json";
 
 export type Deployments = {
   deployerAddress: string;
@@ -21,6 +27,7 @@ export type Deployments = {
     GiftFactory: DeployContractExecutionResult<GiftFactoryInstance>;
     Gift?: DeployContractExecutionResult<GiftInstance>;
     Giftv2?: DeployContractExecutionResult<Giftv2Instance>;
+    TestOracle?: DeployContractExecutionResult<TestOracleInstance>;
   };
 };
 
@@ -50,6 +57,15 @@ function toDeployments(json: any): Deployments {
               json.contracts["Giftv2"].contractInstance.address
             ),
           },
+    TestOracle:
+      json.contracts["TestOracle"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["TestOracle"],
+            contractInstance: TestOracle.at(
+              json.contracts["TestOracle"].contractInstance.address
+            ),
+          },
   };
   return {
     ...json,
@@ -66,6 +82,8 @@ export function loadDeployments(
       ? mainnetDeployments
       : networkId === "testnet"
       ? testnetDeployments
+      : networkId === "devnet"
+      ? devnetDeployments
       : undefined;
   if (deployments === undefined) {
     throw Error("The contract has not been deployed to the " + networkId);

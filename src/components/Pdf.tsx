@@ -92,7 +92,8 @@ export default function PdfGiftCard({
   message,
   secret,
   amount,
-  tokenSymbol
+  tokenSymbol,
+  customPassword
 }: {
   sender: string | undefined
   contractId: string
@@ -100,12 +101,12 @@ export default function PdfGiftCard({
   secret: Uint8Array
   amount: string
   tokenSymbol: string | undefined
+  customPassword?: string
 }) {
   const [qrCode, setQrCode] = useState<string | null>(null)
-  const encodedSecret = Buffer.from(secret).toString('base64')
-  const urlToEncode = `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(
-    encodedSecret
-  )}&msg=${encodeURIComponent(message)}`
+  const urlToEncode = customPassword 
+    ? `${getUrl()}/#contract=${contractId}&msg=${encodeURIComponent(message)}`
+    : `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(Buffer.from(secret).toString('base64'))}&msg=${encodeURIComponent(message)}`
 
   // Generate QR code
   useEffect(() => {
@@ -148,7 +149,11 @@ export default function PdfGiftCard({
         <Link style={styles.link} src={'https://alephium.org/#wallets'}>
           alephium.org/#wallets
         </Link>
-        <Text style={styles.instructions}>To claim your gift, visit the link below or scan the QR code:</Text>
+        <Text style={styles.instructions}>
+          {customPassword 
+            ? "To claim your gift, visit the link below or scan the QR code, then enter the password you were given:"
+            : "To claim your gift, visit the link below or scan the QR code:"}
+        </Text>
 
         {/* Centered Link */}
         <Link style={styles.link} src={urlToEncode}>

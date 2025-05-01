@@ -139,17 +139,13 @@ export const WithdrawDapp = ({
 
     if (!initialized.current && contractId !== '') {
       initialized.current = true
-
+      console.log(secret)
       if (secret == undefined || secret == '') {
         const secretPrompt = prompt('Secret missing, copy paste secret.', '')
         if (secretPrompt !== null) {
-          if (isEncodedFormat(secretPrompt)) {
-            setSecretDecoded(new Uint8Array(Buffer.from(decodeURIComponent(secretPrompt), 'base64')))
-          } else {
-            isBase64(secretPrompt)
-              ? Buffer.from(secretPrompt, 'base64')
-              : setSecretDecoded(new TextEncoder().encode(secretPrompt))
-          }
+          console.log(new TextEncoder().encode(secretPrompt))
+          setSecretDecoded(new TextEncoder().encode(secretPrompt))
+
         }
       } else {
         setSecretDecoded(new Uint8Array(Buffer.from(decodeURIComponent(secret), 'base64')))
