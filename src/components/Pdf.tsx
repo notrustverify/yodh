@@ -204,7 +204,7 @@ export default function PdfGiftCard({
             </Text>
             <Text style={styles.instructions}>
               1. Download an Alephium wallet from{' '}
-              <Link style={styles.link} src={'https://alephium.org/#wallets'}>
+              <Link style={styles.link} src={'https://alephium.org/wallets'}>
                 alephium.org/#wallets
               </Link>
             </Text>
