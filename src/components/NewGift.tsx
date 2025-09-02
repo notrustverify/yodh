@@ -263,7 +263,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             options={tokenSelect}
             isSearchable={true}
             isClearable={true}
-            onChange={(option) => setSelectedToken(tokenList?.find((token) => token.symbol === option?.label))}
+            onChange={(option: { label: string }) => setSelectedToken(tokenList?.find((token) => token.symbol === option?.label))}
             value={tokenSelect?.find(function (option) {
               return option.value === selectedToken?.symbol
             })}
@@ -389,14 +389,17 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
           ? 'URL Copied'
           : isPot &&
             contractId !== '' && (
-              <FaRegCopy
+              <span
                 onClick={() => {
                   navigator.clipboard.writeText(`${getUrl()}/#contract=${contractId}&pot=${isPot}`)
                   setIsCopied(true)
                 }}
+                style={{ cursor: 'pointer' }}
+                role="button"
+                tabIndex={0}
               >
-                Copy to Clipboard
-              </FaRegCopy>
+                📋
+              </span>
             )}
         {!pot && contractId !== '' && secret.length >= 0 && giftWrapped && (
           <details id="gitflink">

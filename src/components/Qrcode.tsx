@@ -36,14 +36,17 @@ export default function QrCode({
         {isCopied ? (
           'URL Copied'
         ) : (
-          <FaRegCopy
+          <span
             onClick={() => {
               navigator.clipboard.writeText(urlToEncode)
               setIsCopied(true)
             }}
+            style={{ cursor: 'pointer' }}
+            role="button"
+            tabIndex={0}
           >
-            Copy to Clipboard
-          </FaRegCopy>
+            📋
+          </span>
         )}
         <br />
         {pot && (
@@ -55,14 +58,17 @@ export default function QrCode({
           isCopiedPot ? (
             'URL Copied'
           ) : (
-            <FaRegCopy
+            <span
               onClick={() => {
                 navigator.clipboard.writeText(urlPotToEncode)
                 setIsCopiedPot(true)
               }}
+              style={{ cursor: 'pointer' }}
+              role="button"
+              tabIndex={0}
             >
-              Copy to Clipboard
-            </FaRegCopy>
+              📋
+            </span>
           )
         ) : (
           ''
