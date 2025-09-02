@@ -254,8 +254,12 @@ export const WithdrawDapp = ({
             disabled={
               !!ongoingTxId ||
               !checkHash(secretDecoded, contractState?.fields.hashedSecret) ||
-              (contractState?.fields.announcedAddress !== account?.address &&
-                contractState?.fields.announcedAddress !== ZERO_ADDRESS) ||
+              ((contractState?.fields.announcedAddress.includes(':') ? 
+                contractState?.fields.announcedAddress.split(':')[0] : 
+                contractState?.fields.announcedAddress) !== account?.address &&
+              (contractState?.fields.announcedAddress.includes(':') ? 
+                contractState?.fields.announcedAddress.split(':')[0] : 
+                contractState?.fields.announcedAddress) !== ZERO_ADDRESS) ||
               !isNotClaimed ||
               step !== WithdrawState.Locked ||
               connectionStatus !== 'connected'
@@ -266,7 +270,9 @@ export const WithdrawDapp = ({
               <div>
                 {' '}
                 <Icon icon="fa:gift" /> &nbsp;{' '}
-                {contractState?.fields.announcedAddress === account?.address
+                {(contractState?.fields.announcedAddress.includes(':') ? 
+                  contractState?.fields.announcedAddress.split(':')[0] : 
+                  contractState?.fields.announcedAddress) === account?.address
                   ? '2 - Open your gift'
                   : 'You cannot open the gift'}
               </div>
@@ -302,10 +308,17 @@ export const WithdrawDapp = ({
           access to this option.
         </b>
       )}
-      {connectionStatus === 'connected' && contractState?.fields.sender === account?.address && (
+      {connectionStatus === 'connected' && 
+        (contractState?.fields.sender.includes(':') ? 
+          contractState?.fields.sender.split(':')[0] : 
+          contractState?.fields.sender) === account?.address && (
         <button
           type="button"
-          disabled={!!ongoingTxId || contractState?.fields.sender !== account?.address || !isNotClaimed}
+          disabled={!!ongoingTxId || 
+            (contractState?.fields.sender.includes(':') ? 
+              contractState?.fields.sender.split(':')[0] : 
+              contractState?.fields.sender) !== account?.address || 
+            !isNotClaimed}
           className={styles.wrapButton}
           onClick={handleCancelGift}
         >
