@@ -6,7 +6,6 @@ import NewGift from '@/components/NewGift'
 import MobileLayout from '@/components/MobileLayout'
 import MobileHome from '@/components/MobileHome'
 import MobileGiftsList from '@/components/MobileGiftsList'
-import MobileProfile from '@/components/MobileProfile'
 import { useRouter } from 'next/router'
 
 export default function Home({
@@ -67,8 +66,6 @@ export default function Home({
         return <NewGift pot={false} contractIdParam={undefined} />
       case 'gifts':
         return <MobileGiftsList onBack={handleBackToHome} onCreateGift={handleCreateGift} />
-      case 'profile':
-        return <MobileProfile onBack={handleBackToHome} onNavigate={handleTabChange} />
       default:
         return <MobileHome onCreateGift={handleCreateGift} onNavigate={handleTabChange} />
     }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
 import { Icon } from '@iconify/react'
 import store from 'store2'
-import { Gift, getNetwork } from '@/services/utils'
+import { Gift } from '@/services/utils'
 import styles from './MobileHome.module.css'
 
 interface MobileHomeProps {
@@ -26,7 +26,6 @@ export default function MobileHome({ onCreateGift, onNavigate }: MobileHomeProps
           day digital.
         </h1>
         <p className={styles.welcomeSubtitle}>Give ALPH or tokens with a personal message and a QR code.</p>
-        <span className={styles.networkBadge}>{getNetwork()} network</span>
       </section>
       <section className={styles.connectSection}>
         <div className={styles.connectCard}>
@@ -95,10 +94,7 @@ export default function MobileHome({ onCreateGift, onNavigate }: MobileHomeProps
             <Icon icon="material-symbols:history" className={styles.actionIcon} />
             <span>My gifts</span>
           </button>
-          <button className={styles.actionCard} onClick={() => onNavigate('profile')}>
-            <Icon icon="material-symbols:settings" className={styles.actionIcon} />
-            <span>Account</span>
-          </button>
+
           <a
             className={styles.actionCard}
             href="https://github.com/notrustverify/yodh"

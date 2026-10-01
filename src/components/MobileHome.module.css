@@ -380,7 +380,7 @@
 .savedGifts > summary { list-style: none; margin: 0; padding: 8px 0; }
 .savedGifts > summary::-webkit-details-marker { display: none; }
 .giftCount::after { content: ' ⌄'; }
-.actionGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.actionGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-height: 740px) {
   .homeContainer { padding-top: 0; }
   .welcomeTitle { font-size: 30px; }

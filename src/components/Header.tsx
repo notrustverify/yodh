@@ -1,6 +1,5 @@
 import React from 'react'
 import styles from '../styles/Gift.module.css'
-import { getNetwork } from '@/services/utils'
 import { Gifts } from './CreatedGifts'
 import Image from 'next/image'
 import logo from '../../public/img/yodh.jpg'
@@ -21,7 +20,6 @@ export const Header = ({ gifts, preview }: { gifts: any; preview?: React.ReactNo
         </h2>
       )}
       <p>Send ALPH or tokens with a personal message, a link, and a little joy.</p>
-      <span>{getNetwork()} network</span>
       {preview}
       {gifts && <Gifts gifts={gifts} />}
     </header>

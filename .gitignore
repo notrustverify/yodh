@@ -41,3 +41,6 @@ alephium-stack
 
 # Generated PDF previews and QA output
 /output/pdf/
+
+# Generated UI verification screenshots
+/output/ui/

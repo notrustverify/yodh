@@ -17,8 +17,7 @@ export default function MobileLayout({ children, activeTab, onTabChange }: Mobil
   const tabs = [
     { id: 'home', label: 'Home', icon: 'material-symbols:home' },
     { id: 'create', label: 'Create', icon: 'material-symbols:add-circle' },
-    { id: 'gifts', label: 'My Gifts', icon: 'material-symbols:card-giftcard' },
-    { id: 'profile', label: 'Profile', icon: 'material-symbols:person' }
+    { id: 'gifts', label: 'My Gifts', icon: 'material-symbols:card-giftcard' }
   ]
 
   const formatBalance = (balance: string | undefined) => {
