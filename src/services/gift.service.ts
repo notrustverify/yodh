@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer'
 import {
   addressFromContractId,
   ALPH_TOKEN_ID,
@@ -30,26 +31,28 @@ export const createGift = async (
   decimal: number,
   announcementLockedUntil: bigint
 ) => {
-   const amountDecimals = BigInt(decimal-decimalsAmount)
-    console.log(secret)
-   const data: GiftFactoryTypes.SignExecuteMethodParams<'createGift'> = {
+  if (amount <= 0n || decimalsAmount > decimal) {
+    throw new Error(`Enter a positive amount with at most ${decimal} decimal places.`)
+  }
+  const amountDecimals = BigInt(decimal - decimalsAmount)
+  const data: GiftFactoryTypes.SignExecuteMethodParams<'createGift'> = {
     args: {
-       hashedSecret: sha256(secret),
-       announcementLockIntervall: announcementLockIntervall,
-       version: 1n,
-       isCancellable: true,
-       announcedAddress: ZERO_ADDRESS,
-       announcementLockedUntil: announcementLockedUntil,
-       givenTokenId: ALPH_TOKEN_ID,
-       amount: amount*10n**amountDecimals
+      hashedSecret: sha256(secret),
+      announcementLockIntervall: announcementLockIntervall,
+      version: 1n,
+      isCancellable: true,
+      announcedAddress: ZERO_ADDRESS,
+      announcementLockedUntil: announcementLockedUntil,
+      givenTokenId: ALPH_TOKEN_ID,
+      amount: amount * 10n ** amountDecimals
     },
     signer: sender,
-    attoAlphAmount: amount*10n**amountDecimals
+    attoAlphAmount: amount * 10n ** amountDecimals
   }
 
   if (tokenId !== ALPH_TOKEN_ID) {
     data.args.givenTokenId = tokenId
-    data.args.amount = amount*10n ** amountDecimals
+    data.args.amount = amount * 10n ** amountDecimals
 
     data.attoAlphAmount = MINIMAL_CONTRACT_DEPOSIT + DUST_AMOUNT
     data.tokens = [{ id: tokenId, amount: amount * 10n ** amountDecimals }]
@@ -66,14 +69,17 @@ export const giftDeposit = async (
   tokenId: string,
   decimal: number
 ) => {
-   const amountDecimals = BigInt(decimal-decimalsAmount)
+  if (amount <= 0n || decimalsAmount > decimal) {
+    throw new Error(`Enter a positive amount with at most ${decimal} decimal places.`)
+  }
+  const amountDecimals = BigInt(decimal - decimalsAmount)
 
   const data: GiftTypes.SignExecuteMethodParams<'deposit'> = {
     args: {
       tokenId: ALPH_TOKEN_ID
     },
     signer: sender,
-    attoAlphAmount: amount * 10n**amountDecimals
+    attoAlphAmount: amount * 10n ** amountDecimals
   }
 
   if (tokenId !== ALPH_TOKEN_ID) {
@@ -91,7 +97,7 @@ export const checkHash = (secret: Uint8Array, hashedSecretContract: string | und
 }
 
 export const getContractState = async (contractId: string) => {
-   return await Gift.at(addressFromContractId(contractId)).fetchState()
+  return await Gift.at(addressFromContractId(contractId)).fetchState()
 }
 
 export const claim = async (signer: SignerProvider, secretDecoded: Uint8Array, contractId: string) => {
@@ -103,17 +109,20 @@ export const claim = async (signer: SignerProvider, secretDecoded: Uint8Array, c
   })
 }
 
-export const claimv2 = async (signer: SignerProvider, secretDecoded: Uint8Array, contractId: string, addressWithdrawTo: string) => {
-   console.log(addressWithdrawTo)
-   return await Giftv2.at(addressFromContractId(contractId)).transact.withdraw({
-     args: {
-        secret: Buffer.from(secretDecoded).toString('hex'),
-        to: addressWithdrawTo
-     },
-     signer: signer
-   })
- }
-
+export const claimv2 = async (
+  signer: SignerProvider,
+  secretDecoded: Uint8Array,
+  contractId: string,
+  addressWithdrawTo: string
+) => {
+  return await Giftv2.at(addressFromContractId(contractId)).transact.withdraw({
+    args: {
+      secret: Buffer.from(secretDecoded).toString('hex'),
+      to: addressWithdrawTo
+    },
+    signer: signer
+  })
+}
 
 export const announce = async (signer: SignerProvider, contractId: string) => {
   return await Gift.at(addressFromContractId(contractId)).transact.announce({
@@ -122,7 +131,7 @@ export const announce = async (signer: SignerProvider, contractId: string) => {
 }
 
 export const cancel = async (signer: SignerProvider, contractId: string) => {
-   return await Gift.at(addressFromContractId(contractId)).transact.cancel({
-     signer: signer
-   })
- }
+  return await Gift.at(addressFromContractId(contractId)).transact.cancel({
+    signer: signer
+  })
+}

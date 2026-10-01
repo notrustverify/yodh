@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer'
 import React, { useCallback, useState } from 'react'
 import { QRCodeCanvas, QRCodeSVG } from 'qrcode.react'
 import Link from 'next/link'

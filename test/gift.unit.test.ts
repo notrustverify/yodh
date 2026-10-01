@@ -29,7 +29,7 @@ describe('unit tests', () => {
   let sender: PrivateKeyWallet
   let receiver: PrivateKeyWallet
   let attacker: PrivateKeyWallet
-  let testParamsFixture: TestContractParams<GiftTypes.Fields, { secret: string }>
+  let testParamsFixture: Omit<TestContractParams<GiftTypes.Fields, never>, 'args'>
 
   // We initialize the fixture variables before all tests
   beforeEach(async () => {
@@ -44,7 +44,7 @@ describe('unit tests', () => {
 
     testParamsFixture = {
       // a random address that the test contract resides in the tests
-      address: testContractAddress,
+      contractAddress: testContractAddress,
       // assets owned by the test contract before a test
       initialAsset: { alphAmount: INITIAL_AMOUT },
       // initial state of the test contract
@@ -59,7 +59,7 @@ describe('unit tests', () => {
         initialUsdPrice: 0n
       },
       // arguments to test the target function of the test contract
-      testArgs: { secret: stringToHex('test-secret') }
+
       // assets owned by the caller of the function
       //inputAssets: [{ address: testAddress, asset: { alphAmount: ONE_ALPH } }]
     }
@@ -119,6 +119,7 @@ describe('unit tests', () => {
       await expectAssertionError(
         Gift.tests.withdraw({
           ...testParamsFixture,
+          args: { secret: stringToHex('test-secret') },
           inputAssets: [{ address: receiver.address, asset: { alphAmount: ONE_ALPH } }]
         }),
         testContractAddress,
@@ -132,7 +133,7 @@ describe('unit tests', () => {
       const depositAmount = 5n * ONE_ALPH
       const testResult = await Gift.tests.deposit({
         ...testParamsFixture,
-        testArgs: {
+        args: {
           tokenId: ALPH_TOKEN_ID
         },
         inputAssets: [{ address: attacker.address, asset: { alphAmount: MAX_GAS_PER_TX + depositAmount } }]

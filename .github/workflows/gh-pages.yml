@@ -20,10 +20,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "lts/hydrogen"
+          node-version-file: ".nvmrc"
           cache: "yarn"
 
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       #- run: |
        #   echo 'module.exports.basePath = "/nextjs-template"' >> next.config.js
        

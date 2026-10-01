@@ -1,0 +1,363 @@
+/* Container */
+.container {
+  min-height: 100vh;
+  background: #f8fafc;
+}
+
+/* Header */
+.header {
+  background: white;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.backButton:active {
+  transform: scale(0.95);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: 8px;
+}
+
+.searchButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.searchButton:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+/* Connect Section */
+.connectSection {
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.connectCard {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  max-width: 300px;
+  width: 100%;
+}
+
+.connectIcon {
+  font-size: 48px;
+  color: #667eea;
+  margin-bottom: 16px;
+}
+
+.connectCard h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.connectCard p {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Filter Tabs */
+.filterTabs {
+  background: white;
+  padding: 16px;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #e2e8f0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.filterTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.filterTab {
+  background: #f1f5f9;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.filterTab:hover {
+  background: #e2e8f0;
+}
+
+.filterTabActive {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.filterTabActive:hover {
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+/* Gifts List */
+.giftsList {
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+.giftCard {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.giftCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.giftCard:active {
+  transform: translateY(0);
+}
+
+.giftHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.giftInfo {
+  flex: 1;
+}
+
+.giftAmount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.giftMessage {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.giftStatus {
+  font-size: 10px;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.giftFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.giftDate {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.giftActions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.actionButton:active {
+  transform: scale(0.95);
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.emptyIcon {
+  font-size: 64px;
+  color: #cbd5e1;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.emptyMessage {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.createFirstButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  margin: 0 auto;
+}
+
+.createFirstButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.createFirstButton:active {
+  transform: translateY(0);
+}
+
+/* Floating Action Button */
+.fab {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: all 0.2s ease;
+  z-index: 50;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+  .giftCard:active {
+    transform: scale(0.98);
+  }
+  
+  .actionButton:active {
+    transform: scale(0.9);
+  }
+  
+  .fab:active {
+    transform: scale(0.9);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 375px) {
+  .giftsList {
+    padding: 12px;
+  }
+  
+  .giftCard {
+    padding: 16px;
+  }
+  
+  .filterTabs {
+    padding: 12px;
+  }
+  
+  .fab {
+    bottom: 90px;
+    right: 16px;
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "name": "Yodh - Digital Gift Cards",
+  "short_name": "Yodh",
+  "description": "Create and manage digital gift cards with ALPH cryptocurrency",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#667eea",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/img/yodh.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/img/yodh.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "categories": ["finance", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}

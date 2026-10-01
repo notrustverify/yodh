@@ -1,4 +1,5 @@
 'use client'
+import { Buffer } from 'buffer'
 import React, { useCallback, useEffect, useRef } from 'react'
 import { useState } from 'react'
 import styles from '../styles/Gift.module.css'
@@ -139,11 +140,9 @@ export const WithdrawDapp = ({
 
     if (!initialized.current && contractId !== '') {
       initialized.current = true
-      console.log(secret)
       if (secret == undefined || secret == '') {
         const secretPrompt = prompt('Secret missing, copy paste secret.', '')
         if (secretPrompt !== null) {
-          console.log(new TextEncoder().encode(secretPrompt))
           setSecretDecoded(new TextEncoder().encode(secretPrompt))
 
         }

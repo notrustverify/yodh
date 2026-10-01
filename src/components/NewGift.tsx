@@ -14,8 +14,9 @@ import {
 import { createGift, getContractState, giftDeposit } from '@/services/gift.service'
 import { Icon } from '@iconify/react'
 import { TxStatus } from './TxStatus'
-import { PDFDownloadLink } from '@react-pdf/renderer'
-import PdfGiftCard from './Pdf'
+import GiftPdfDownload from './GiftPdfDownload'
+import type { GiftPdfProps } from './Pdf'
+import GiftPreview from './GiftPreview'
 import QrCode from './Qrcode'
 import { Footer } from './Footer'
 import store from 'store2'
@@ -60,6 +61,9 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   const [detailsLoaded, setDetailsLoaded] = useState(false)
   const [datetimeLock, setDatetimeLock] = useState<bigint>(0n)
   const [customPassword, setCustomPassword] = useState<string>('')
+  const [createdGift, setCreatedGift] = useState<GiftPdfProps>()
+  const [transactionError, setTransactionError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [passwordError, setPasswordError] = useState<string>('')
 
   const [selectedToken, setSelectedToken] = useState<Token | undefined>({
@@ -73,8 +77,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   })
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<any> => {
-      setGiftWrapped(false)
-      if (detailsLoaded || (status.type === 'TxNotFound' && numberOfChecks > 5)) {
+      if (detailsLoaded && status.type === 'Confirmed') {
         setOngoingTxId(undefined)
         setGiftWrapped(true)
       }
@@ -85,12 +88,14 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   )
   const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (signer) {
+    if (signer && !isSubmitting) {
       if (customPassword && customPassword.length < 6) {
         setPasswordError('Password must be at least 6 characters long')
         return
       }
       setPasswordError('')
+      setTransactionError('')
+      setIsSubmitting(true)
       setDetailsLoaded(false)
 
       let array: Uint8Array
@@ -107,10 +112,8 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
       // store it in case of connection lost
       store.add('gifts', [{ contractId: '', secret: array, message: message, pot: isPot }])
       const announcementLockedUntil = datetimeLock
-      console.log(customPassword, array)
       try {
-         const floatToDecimals = convertToInt(withdrawAmount)
-         console.log(floatToDecimals)
+        const floatToDecimals = convertToInt(withdrawAmount)
         const result = await createGift(
           floatToDecimals[0],
           floatToDecimals[1],
@@ -119,7 +122,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
           array,
           1800n * 1000n,
           selectedToken?.id ?? ALPH_TOKEN_ID,
-          selectedToken?.decimals ?? Number(ONE_ALPH),
+          selectedToken?.decimals ?? 18,
           announcementLockedUntil
         )
 
@@ -131,6 +134,16 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
 
           setContractId(contractIdFromAddressString(contractAddr))
           setDetailsLoaded(true)
+          setGiftWrapped(true)
+          setCreatedGift({
+            sender: account.address,
+            contractId: contractIdFromAddressString(contractAddr),
+            message,
+            secret: array,
+            amount: withdrawAmount,
+            tokenSymbol: selectedToken?.symbol || 'ALPH',
+            customPassword
+          })
 
           let giftsStored = store.get('gifts')
           giftsStored.pop() // remove last entry to replace with the right one with contractid
@@ -146,15 +159,19 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
 
           store.remove('gifts')
           store.add('gifts', giftsStored)
-          setGifts(store.get('gifts'))
+          setGifts(store.get('gifts') || [])
         }
       } catch (error) {
-        if ((error as Error).message.toLowerCase() == 'user rejected') {
+        setTransactionError(error instanceof Error ? error.message : 'Gift creation failed. Please try again.')
+        setOngoingTxId(undefined)
+        if (error instanceof Error && error.message.toLowerCase().includes('user rejected')) {
           const giftsStored = store.get('gifts')
           giftsStored.pop()
           store.remove('gifts')
           store.add('gifts', giftsStored)
         }
+      } finally {
+        setIsSubmitting(false)
       }
     }
   }
@@ -162,43 +179,57 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
   const handleAddPotSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (signer) {
-      setDetailsLoaded(false)
-      const floatToDecimals = convertToInt(withdrawAmount)
+    if (signer && !isSubmitting) {
+      setIsSubmitting(true)
+      setTransactionError('')
+      try {
+        setDetailsLoaded(false)
+        const floatToDecimals = convertToInt(withdrawAmount)
 
-      const result = await giftDeposit(
-        contractId,
-        floatToDecimals[0],
-        floatToDecimals[1],
-        signer,
-        selectedToken?.id ?? ALPH_TOKEN_ID,
-        selectedToken?.decimals ?? Number(ONE_ALPH)
-      )
+        const result = await giftDeposit(
+          contractId,
+          floatToDecimals[0],
+          floatToDecimals[1],
+          signer,
+          selectedToken?.id ?? ALPH_TOKEN_ID,
+          selectedToken?.decimals ?? 18
+        )
 
-      setOngoingTxId(result.txId)
-      await waitForTxConfirmation(result.txId, 1, 5 * 1000)
-      setDetailsLoaded(true)
-      setGiftWrapped(true)
+        setOngoingTxId(result.txId)
+        await waitForTxConfirmation(result.txId, 1, 5 * 1000)
+        setDetailsLoaded(true)
+        setGiftWrapped(true)
 
-      getContractState(contractId).then((data) => {
-        setContractState(data)
-      })
+        getContractState(contractId).then((data) => {
+          setContractState(data)
+        })
+      } catch (error) {
+        setTransactionError(error instanceof Error ? error.message : 'Deposit failed. Please try again.')
+        setOngoingTxId(undefined)
+      } finally {
+        setIsSubmitting(false)
+      }
     }
+  }
+  function beforeUnload(e: BeforeUnloadEvent) {
+    e.preventDefault()
   }
   useEffect(() => {
     if (!initialized.current) {
       initialized.current = true
-      getTokenList().then((data) => {
-        setTokenList(data)
-        setTokenSelect(
-          data.map((token) => ({
-            value: token.symbol,
-            label: token.symbol
-          }))
-        )
-      })
+      getTokenList()
+        .then((data) => {
+          setTokenList(data)
+          setTokenSelect(
+            data.map((token) => ({
+              value: token.symbol,
+              label: token.symbol
+            }))
+          )
+        })
+        .catch(() => setTransactionError('Token list could not be loaded. You can still create an ALPH gift.'))
 
-      setGifts(store.get('gifts'))
+      setGifts(store.get('gifts') || [])
     }
 
     if (contractIdParam !== undefined) {
@@ -214,18 +245,32 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
     }
   }, [contractIdParam, pot])
 
-  function beforeUnload(e: BeforeUnloadEvent) {
-    e.preventDefault()
-  }
   return (
-    <div className={styles.mainContainer}>
+    <div className={`${styles.mainContainer} ${styles.workspace}`}>
       <Head>
         <title>Yodh - Alephium Gift Cards</title>
       </Head>
 
-      <Header gifts={gifts} />
+      <Header
+        gifts={gifts}
+        preview={
+          !pot ? (
+            <GiftPreview
+              amount={withdrawAmount}
+              tokenSymbol={selectedToken?.symbol || 'ALPH'}
+              message={message}
+              pot={isPot}
+            />
+          ) : undefined
+        }
+      />
 
-      <section id="yodhSection">
+      {transactionError && (
+        <p className={styles.error} role="alert">
+          {transactionError}
+        </p>
+      )}
+      <section className={styles.editorSection} id="yodhSection">
         <AlephiumConnectButton />
 
         {/* Add the local class to the form */}
@@ -251,19 +296,22 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
               id="gift-message"
               placeholder="Write a personalized message..."
               required
-              rows={4}
+              rows={3}
               cols={50}
               maxLength={100}
               onChange={(e) => setMessage(e.target.value)}
-              autoFocus
             ></textarea>
           )}
 
           <Select
+            inputId="gift-token"
+            aria-label="Gift token"
             options={tokenSelect}
             isSearchable={true}
-            isClearable={true}
-            onChange={(option: { label: string }) => setSelectedToken(tokenList?.find((token) => token.symbol === option?.label))}
+            isClearable={false}
+            onChange={(option: { label: string } | null) =>
+              setSelectedToken(tokenList?.find((token) => token.symbol === option?.label))
+            }
             value={tokenSelect?.find(function (option) {
               return option.value === selectedToken?.symbol
             })}
@@ -278,6 +326,9 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             </small>
           </label>
           <input
+            min="0"
+            step="any"
+            inputMode="decimal"
             type="number"
             id="gift-amount"
             placeholder="Enter the amount"
@@ -301,7 +352,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
 
             <input
               disabled={pot}
-              checked={pot}
+              checked={pot || isPot}
               onChange={(e) => setPot(e.target.checked)}
               type="checkbox"
               id="poolGiftCard"
@@ -314,12 +365,14 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
               aria-label="Date and time"
               type="datetime-local"
               onChange={(e) => {
-                setDatetimeLock(BigInt(e.target.valueAsNumber))
+                setDatetimeLock(e.target.value ? BigInt(new Date(e.target.value).getTime()) : 0n)
               }}
             />
             <p>Custom password (optional)</p>
             <input
-              type="text"
+              type="password"
+              autoComplete="new-password"
+              aria-label="Custom gift password"
               placeholder="Enter custom password (min 6 characters)"
               value={customPassword}
               onChange={(e) => {
@@ -334,12 +387,15 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
             {passwordError && <p style={{ color: 'red' }}>{passwordError}</p>}
           </details>
 
-          <button 
-            type="submit" 
-            disabled={connectionStatus !== 'connected' || Boolean(customPassword && customPassword.length < 6)} 
+          <button
+            type="submit"
+            disabled={
+              isSubmitting || connectionStatus !== 'connected' || Boolean(customPassword && customPassword.length < 6)
+            }
             className={styles.wrapButton}
           >
-            <Icon icon="fa:gift" /> &nbsp; Wrap & Send Gift
+            <Icon icon="fa:gift" /> &nbsp;{' '}
+            {isSubmitting ? 'Wrapping your gift…' : pot ? 'Add tokens to the pot' : 'Wrap & send gift'}
           </button>
         </form>
       </section>
@@ -359,26 +415,7 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
       )}
 
       <div>
-        {!pot && contractId !== '' && giftWrapped ? (
-          <PDFDownloadLink
-            document={
-              <PdfGiftCard
-                sender={account?.address}
-                contractId={contractId}
-                message={message}
-                secret={secret}
-                amount={withdrawAmount}
-                tokenSymbol={selectedToken?.symbol}
-                customPassword={customPassword}
-              />
-            }
-            title="Yodh Gift Card"
-          >
-            <Icon icon="material-symbols:download" fontSize="2.2em" /> Download gift card
-          </PDFDownloadLink>
-        ) : (
-          ''
-        )}
+        {!pot && contractId !== '' && giftWrapped ? createdGift && <GiftPdfDownload {...createdGift} /> : ''}
         <br />
         {isPot && contractId !== '' && (
           <Link href={`${getUrl()}/#contract=${contractId}&pot=${isPot}`} rel="noopener noreferrer" target="_blank">
@@ -405,11 +442,11 @@ export default function Home({ pot, contractIdParam }: { pot: boolean; contractI
           <details id="gitflink">
             <summary>Click to display Link and QRCode</summary>
             <p>Share this to the person you want to send the gift card</p>
-            <QrCode 
-              contractId={contractId} 
-              secret={customPassword ? new Uint8Array() : secret} 
-              message={message} 
-              pot={isPot} 
+            <QrCode
+              contractId={contractId}
+              secret={customPassword ? new Uint8Array() : secret}
+              message={message}
+              pot={isPot}
             />
           </details>
         )}

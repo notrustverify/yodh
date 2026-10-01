@@ -1,0 +1,394 @@
+/* Container */
+.container {
+  min-height: 100vh;
+  background: #E9F5FF;
+}
+
+/* Header */
+.header {
+  background: white;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #475569;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.backButton:active {
+  transform: scale(0.95);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+/* Connect Section */
+.connectSection {
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.connectCard {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  max-width: 300px;
+  width: 100%;
+}
+
+.connectIcon {
+  font-size: 48px;
+  color: #667eea;
+  margin-bottom: 16px;
+}
+
+.connectCard h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.connectCard p {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Form */
+.form {
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.inputGroup {
+  margin-bottom: 24px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.2s ease;
+  background: white;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.charCount {
+  text-align: right;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* Token Selector */
+.tokenSelector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.tokenSelector:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.selectedToken {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tokenLogo {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.tokenSymbol {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.tokenName {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.changeTokenButton {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.changeTokenButton:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Amount Input */
+.amountInput {
+  display: flex;
+  align-items: center;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.amountInput:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.amountField {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  background: none;
+  outline: none;
+}
+
+.amountField::placeholder {
+  color: #9ca3af;
+  font-weight: normal;
+}
+
+.amountInput .tokenSymbol {
+  padding: 12px 16px;
+  background: #f9fafb;
+  color: #6b7280;
+  font-weight: 600;
+  border-left: 1px solid #e5e7eb;
+}
+
+.balanceInfo {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Error Message */
+.errorMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+/* Create Button */
+.createButton {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  margin-top: 8px;
+}
+
+.createButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.createButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.createButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.loadingIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success Section */
+.successSection {
+  padding: 40px 20px;
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.successIcon {
+  font-size: 64px;
+  color: #10b981;
+  margin-bottom: 16px;
+}
+
+.successTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.successMessage {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.successActions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.primaryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.secondaryButton {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.secondaryButton:hover {
+  background: #f8fafc;
+  transform: translateY(-1px);
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+  .backButton:active {
+    transform: scale(0.9);
+  }
+  
+  .createButton:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+  
+  .primaryButton:active {
+    transform: scale(0.98);
+  }
+  
+  .secondaryButton:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 375px) {
+  .form {
+    padding: 16px;
+  }
+  
+  .successSection {
+    padding: 32px 16px;
+  }
+  
+  .title {
+    font-size: 18px;
+  }
+}

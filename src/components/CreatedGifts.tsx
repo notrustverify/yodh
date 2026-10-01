@@ -3,9 +3,10 @@ import QrCode from './Qrcode'
 import Modal from 'react-modal'
 import styles from '@/styles/Gift.module.css'
 import { Icon } from '@iconify/react'
+import { FiGift } from 'react-icons/fi'
 import { Gift } from '@/services/utils'
 
-export const Gifts = ({ gifts }:{ gifts:Array<Gift> }) => {
+export const Gifts = ({ gifts }: { gifts: Array<Gift> }) => {
   const customStyles = {
     content: {
       top: '50%',
@@ -31,32 +32,30 @@ export const Gifts = ({ gifts }:{ gifts:Array<Gift> }) => {
   }
 
   if (gifts !== null) {
+    gifts.forEach((element) => {
+      let message = element.message
+      if (element.message === undefined) message = ''
 
-   gifts.forEach(element => {
-   
-       let message = element.message
-       if (element.message === undefined) message = ''
-   
-       results.push(
-         <div key={element.contractId}>
-           <label htmlFor="gift-message">
-             <QrCode contractId={element.contractId} message={message} secret={new Uint8Array(Object.values(element.secret))} pot={element.pot}  />
-           </label>
-         </div>
-       )
-   });
-  
-}
+      results.push(
+        <div key={element.contractId}>
+          <label htmlFor="gift-message">
+            <QrCode
+              contractId={element.contractId}
+              message={message}
+              secret={new Uint8Array(Object.values(element.secret))}
+              pot={element.pot}
+            />
+          </label>
+        </div>
+      )
+    })
+  }
 
   return (
     <>
       <div>
-        <button
-          className={styles.wrapButtonModal}
-          onClick={openModal}
-          disabled={gifts === null || gifts.length <= 0}
-        >
-          Your gifts cards
+        <button className={styles.wrapButtonModal} onClick={openModal} disabled={gifts === null || gifts.length <= 0}>
+          <FiGift aria-hidden="true" /> My gifts
         </button>
         <Modal
           isOpen={modalIsOpen}
@@ -65,7 +64,7 @@ export const Gifts = ({ gifts }:{ gifts:Array<Gift> }) => {
           style={customStyles}
           contentLabel="Gift created"
         >
-          <button className={styles.wrapButtonModal} onClick={closeModal}>
+          <button className={styles.wrapButtonModal} onClick={closeModal} aria-label="Close saved gifts">
             <Icon icon="material-symbols:close" />
           </button>
           {results}

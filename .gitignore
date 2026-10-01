@@ -38,3 +38,6 @@ next-env.d.ts
 
 .ralph-lsp/
 alephium-stack
+
+# Generated PDF previews and QA output
+/output/pdf/

@@ -287,3 +287,4 @@
 
 
  
+.container { padding: 0; word-break: normal; overflow-wrap: anywhere; width: 100%; }

@@ -11,15 +11,15 @@
    transition: box-shadow 0.3s ease;
    overflow-x: hidden;
  }
- 
+
  .mainContainer:hover {
    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
  }
- 
+
  .header {
    text-align: center;
  }
- 
+
  .header h1 {
    font-size: 2.8rem;
    margin-bottom: 0px;
@@ -30,20 +30,20 @@
    -webkit-background-clip: text;
    -webkit-text-fill-color: transparent;
  }
- 
- .header p {
+
+ .header > p {
    font-size: 1.1rem;
    line-height: 1.5;
    margin-bottom: -25px;
    color: #555;
  }
- 
+
  #yodhSection {
    display: flex;
    flex-direction: column;
    align-items: center;
  }
- 
+
  /* Add a class for the form */
  .giftForm {
    width: 100%;
@@ -53,14 +53,14 @@
    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
    margin-bottom: 30px;
  }
- 
+
  .giftForm label {
    display: block;
    margin-bottom: 8px;
    font-size: 1rem;
    color: #333;
  }
- 
+
  .giftForm textarea,
  .giftForm input {
    width: 100%;
@@ -72,13 +72,13 @@
    color: #333;
    transition: border-color 0.3s ease, box-shadow 0.3s ease;
  }
- 
+
  .giftForm textarea:focus,
  .giftForm input:focus {
    border-color: #8f94fb;
    box-shadow: 0 0 10px rgba(143, 148, 251, 0.25);
  }
- 
+
  .wrapButtonModal {
    width: 30%;
    padding: 10px;
@@ -108,29 +108,29 @@
    align-items: center;
    justify-content: center;
  }
- 
+
  .wrapButton i {
    margin-right: 10px;
  }
- 
+
  .wrapButton:hover {
    transform: translateY(-5px);
  }
- 
+
  .responseMessage {
    margin-top: 20px;
    font-size: 1.1rem;
    color: #333;
  }
- 
+
  .responseMessage.success {
    color: #28a745;
  }
- 
+
  .responseMessage.error {
    color: #e3342f;
  }
- 
+
  .footerGift {
    margin-top: -40px;
    font-size: 0.9rem;
@@ -166,21 +166,86 @@
    height: 20px;
    accent-color: #4e54c8; /* Optional, to set checkbox color */
 }
- 
- 
+
+
  @media (max-width: 768px) {
    .mainContainer {
      padding: 30px;
    }
- 
+
    .header h1 {
      font-size: 2.0rem;
    }
- 
+
    .walletButton,
    .wrapButton {
      font-size: 1rem;
      padding: 12px 20px;
    }
  }
- 
+
+/* Shared gift workspace, including the complete mobile creation flow. */
+.mainContainer { max-width: 680px; margin: 0 auto; padding: 36px; border: 1px solid #e4e7f0; box-shadow: 0 16px 64px #2927530d; overflow-wrap: anywhere; }
+.mainContainer:hover { box-shadow: 0 16px 64px #2927530d; }
+.header { margin-bottom: 28px; }
+.header h1 { gap: 12px; font-size: 2rem; letter-spacing: -.06em; }
+.header h1 img { border-radius: 16px; }
+.header > p { margin: 8px 0; color: #67718a; }
+.header h2 { margin: 24px 0 8px; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.15; letter-spacing: -.04em; }
+.header > span { display: inline-block; border: 1px solid #e0ddff; background: #f2f0ff; padding: 4px 12px; color: #4e54c8; border-radius: 50px; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.giftForm { margin: 24px 0; padding: 24px; text-align: left; background: #f8f9fd; border: 1px solid #e4e7f0; box-shadow: none; }
+.giftForm textarea, .giftForm input { border-radius: 10px; }
+.giftForm details { border-top: 1px solid #e4e7f0; padding-top: 8px; }
+.giftCardSection { justify-content: space-between; }
+.giftCardSection label { white-space: normal; }
+.wrapButton, .wrapButtonModal { border-radius: 12px; background: #4e54c8; min-height: 44px; }
+.wrapButtonModal { width: auto; margin: 0 0 20px auto; padding: 10px 16px; }
+.wrapButton:hover { transform: none; background: #3d42ac; }
+.footerGift { margin: 28px 0 0; color: #67718a; }
+.error { color: #a42136; background: #fff0f2; padding: 12px; border-radius: 10px; text-align: left; }
+@media (max-width: 768px) { .mainContainer { padding: 20px; border-radius: 18px; } .giftForm { padding: 16px; } }
+
+.editorSection { min-width: 0; text-align: left; }
+.workspace .header h1 { margin: 0; }
+.workspace .header > div { margin-top: 24px; }
+.workspace .wrapButtonModal { margin: 0 auto; }
+.workspace .giftForm { margin: 12px 0 0; padding: 20px; }
+.workspace .giftForm input, .workspace .giftForm textarea { margin-bottom: 12px; padding: 10px 12px; }
+.workspace .giftForm label { margin-bottom: 4px; }
+.workspace .giftForm details { margin: 8px 0; }
+.workspace .giftForm summary { padding: 8px 0; }
+.workspace .giftCardSection { min-height: 32px; }
+.workspace .giftForm > br { display: none; }
+.workspace .giftForm > input[type='number'] { margin-top: 4px; }
+.workspace .giftForm > label[for='gift-amount'] { margin-top: 12px; }
+.workspace .giftForm > label[for='gift-amount']:has(small:empty) { display: none; }
+@media (min-width: 769px) {
+  .workspace { display: grid; grid-template-columns: minmax(240px, .85fr) minmax(0, 1.15fr); gap: 0 36px; max-width: 980px; padding: 28px; text-align: left; align-items: center; }
+  .workspace .header { grid-column: 1; grid-row: 1; text-align: left; margin: 0; }
+  .workspace .header h2 { margin: 28px 0 12px; }
+  .workspace .header > div { margin-top: 24px; }
+  .workspace .wrapButtonModal { margin: 0; }
+  .editorSection { grid-column: 2; grid-row: 1 / span 2; }
+  .workspace .footerGift { grid-column: 1; grid-row: 2; margin: 16px 0 0; font-size: 12px; }
+  .workspace .footerGift br { display: none; }
+  .workspace > div { grid-column: 1 / -1; }
+  .workspace > div:empty { display: none; }
+  .workspace .error { grid-column: 1 / -1; }
+}
+.previewFrame { margin-top: 18px; }
+.previewLabel { display: block; margin-bottom: 8px; font-size: 11px; color: #67718a; text-transform: uppercase; letter-spacing: .08em; }
+.previewCard { text-align: left; position: relative; border-radius: 18px; color: white; padding: 20px; background: radial-gradient(circle at 100% 0%, #9296ee, transparent 55%), #4e54c8; overflow: hidden; }
+.previewTop { display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: 700; }
+.previewTop svg { width: 26px; height: 26px; }
+.previewKind { display: block; margin: 16px 0 4px; font-size: 11px; color: #e3e1ff; }
+.previewAmount { font-size: 30px; line-height: 1.2; overflow-wrap: anywhere; }
+.previewAmount small { color: #e3e1ff; font-size: 16px; }
+.previewMessage { color: #fff; font-size: 14px; margin: 12px 0 16px; overflow-wrap: anywhere; }
+.previewBottom { font-size: 10px; color: #e3e1ff; }
+.workspace .header .previewFrame { margin-top: 16px; }
+.workspace .header .previewFrame + div { margin-top: 12px; }
+.workspace .header .previewFrame ~ div .wrapButtonModal { display: inline-flex; gap: 8px; align-items: center; }
+.previewBottomRow { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.previewPdfButton { background: #ffffff1a; color: white; border: 1px solid #ffffff50; border-radius: 8px; padding: 6px 10px; font-size: 11px; min-height: 32px; }
+.sampleDownload { font-size: 13px; padding: 8px 0; }
+.sampleDownload small { display: block; font-size: 11px; }

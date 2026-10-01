@@ -1,248 +1,103 @@
-import React, { useState, useEffect } from 'react'
-import { Page, Text, Document, StyleSheet, View, Image, Link } from '@react-pdf/renderer'
+import React from 'react'
+import { Page, Text, Document, StyleSheet, View, Image, Link, Font } from '@react-pdf/renderer'
 import QRCode from 'qrcode'
-import { getUrl } from '@/services/utils'
+import { getGiftUrl, getUrl } from '../services/utils'
 
-// Styles for the PDF based on the image provided
-const styles = StyleSheet.create({
-  body: {
-    padding: 20,
-    fontFamily: 'Helvetica',
-    color: '#333',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    height: '100%',
-    width: '100%',
-    backgroundColor: '#fff'
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 15,
-    borderBottom: '1 solid #eee',
-    paddingBottom: 10
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    marginRight: 10
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#2c3e50',
-    textTransform: 'uppercase',
-    letterSpacing: 1
-  },
-  content: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15
-  },
-  leftSection: {
-    width: '45%'
-  },
-  rightSection: {
-    width: '45%'
-  },
-  section: {
-    marginBottom: 10,
-    padding: 10,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 5
-  },
-  inputLabel: {
-    fontSize: 12,
-    marginBottom: 3,
-    color: '#555',
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5
-  },
-  inputField: {
-    fontSize: 12,
-    marginBottom: 5,
-    color: '#333',
-    paddingBottom: 2,
-    borderBottom: '1 solid #ddd'
-  },
-  instructions: {
-    fontSize: 11,
-    color: '#555',
-    textAlign: 'center',
-    marginBottom: 8,
-    lineHeight: 1.4
-  },
-  link: {
-    fontSize: 11,
-    color: '#2980B9',
-    textDecoration: 'underline',
-    marginVertical: 5,
-    textAlign: 'center'
-  },
-  qrCodeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    border: '1 solid #eee'
-  },
-  qrCode: {
-    width: 180,
-    height: 180
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 15,
-    left: 20,
-    right: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    fontSize: 9,
-    color: '#555',
-    borderTop: '1 solid #eee',
-    paddingTop: 5
-  },
-  footerText: {
-    fontSize: 9,
-    color: '#777'
-  },
-  warning: {
-    color: '#e74c3c',
-    fontSize: 10,
-    textAlign: 'center',
-    marginTop: 5,
-    fontStyle: 'italic'
-  }
-})
+Font.registerHyphenationCallback((word) => [word])
+Font.registerEmojiSource({ format: 'png', url: 'https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/72x72/' })
 
-export default function PdfGiftCard({
-  sender,
-  contractId,
-  message,
-  secret,
-  amount,
-  tokenSymbol,
-  customPassword
-}: {
-  sender: string | undefined
+export interface GiftPdfProps {
+  sender?: string
   contractId: string
   message: string
   secret: Uint8Array
   amount: string
-  tokenSymbol: string | undefined
+  tokenSymbol?: string
   customPassword?: string
-}) {
-  const [qrCode, setQrCode] = useState<string | null>(null)
-  const urlToEncode = customPassword 
-    ? `${getUrl()}/#contract=${contractId}&msg=${encodeURIComponent(message)}`
-    : `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(Buffer.from(secret).toString('base64'))}&msg=${encodeURIComponent(message)}`
+  example?: boolean
+}
 
-  // Generate QR code
-  useEffect(() => {
-    const generateQR = async () => {
-      try {
-        const qrDataUrl = await QRCode.toDataURL(urlToEncode, {
-          type: 'image/png',
-          width: 200,
-          margin: 2,
-          errorCorrectionLevel: 'H',
-          color: {
-            dark: '#000000',
-            light: '#ffffff'
-          }
-        })
-        setQrCode(qrDataUrl)
-      } catch (err) {
-        console.error('QR Code generation failed', err)
-      }
-    }
-    generateQR()
-  }, [urlToEncode])
+export function getPdfGiftUrl(props: GiftPdfProps) {
+  return getGiftUrl(props.contractId, props.secret, props.message, Boolean(props.customPassword))
+}
 
+// Prepare the image before mounting the document so an early download cannot omit the QR code.
+export async function createGiftPdfDocument(props: GiftPdfProps) {
+  const qrCode = await QRCode.toDataURL(getPdfGiftUrl(props), {
+    type: 'image/png',
+    width: 1024,
+    margin: 4,
+    errorCorrectionLevel: 'M'
+  })
+  return <PdfGiftCard {...props} qrCode={qrCode} />
+}
+
+const styles = StyleSheet.create({
+  page: { padding: 24, fontFamily: 'Helvetica', backgroundColor: '#f5f6fb', color: '#20243b' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 18 },
+  brand: { fontSize: 22, fontFamily: 'Helvetica-Bold', color: '#4e54c8' },
+  caption: { fontSize: 10, color: '#67718a', marginTop: 6 },
+  content: { flexDirection: 'row', flexGrow: 1 },
+  gift: { width: '54%', backgroundColor: '#4e54c8', borderRadius: 16, padding: 22, color: '#fff', marginRight: 18 },
+  eyebrow: { fontSize: 10, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 },
+  amount: { fontSize: 30, fontFamily: 'Helvetica-Bold', marginBottom: 14 },
+  message: { fontSize: 15, lineHeight: 1.5, marginBottom: 18 },
+  fromLabel: { fontSize: 9, marginBottom: 5, color: '#e2dfff' },
+  sender: { fontSize: 8, lineHeight: 1.4 },
+  scan: { width: '43%', alignItems: 'center', padding: 8 },
+  scanTitle: { fontSize: 14, fontFamily: 'Helvetica-Bold', marginBottom: 6 },
+  qr: { width: 154, height: 154 },
+  link: { fontSize: 10, color: '#4e54c8', marginVertical: 6 },
+  instructions: { fontSize: 9, lineHeight: 1.5, textAlign: 'center', color: '#67718a' },
+  password: { fontSize: 9, lineHeight: 1.4, textAlign: 'center', color: '#4e54c8', marginTop: 8 },
+  footer: { fontSize: 8, color: '#67718a', marginTop: 14, flexDirection: 'row', justifyContent: 'space-between' }
+})
+
+export default function PdfGiftCard(props: GiftPdfProps & { qrCode: string }) {
+  const url = getPdfGiftUrl(props)
   return (
-    <Document>
-      <Page size="A4" orientation="landscape" style={styles.body}>
-        {/* Header Section */}
+    <Document title="Yodh digital gift card" author="Yodh" subject="Alephium gift card">
+      <Page size="A5" orientation="landscape" style={styles.page} wrap={false}>
         <View style={styles.header}>
-          <Image style={styles.logo} src="/img/yodh.jpg" />
-          <Text style={styles.title}>Digital Gift Certificate</Text>
+          <Text style={styles.brand}>Yodh</Text>
+          <Text style={styles.caption}>A thoughtful gift. A new way to give.</Text>
         </View>
-
-        {/* Main Content */}
         <View style={styles.content}>
-          {/* Left Section */}
-          <View style={styles.leftSection}>
-            {/* From Field */}
-            <View style={styles.section}>
-              <Text style={styles.inputLabel}>From:</Text>
-              <Text style={styles.inputField}>{sender}</Text>
-            </View>
-
-            {/* Amount Field */}
-            <View style={styles.section}>
-              <Text style={styles.inputLabel}>Amount:</Text>
-              <Text style={styles.inputField}>
-                {amount} {tokenSymbol}
-              </Text>
-            </View>
-
-            {/* Message Field */}
-            <View style={styles.section}>
-              <Text style={styles.inputLabel}>Message:</Text>
-              <Text style={styles.inputField}>{message}</Text>
-            </View>
+          <View style={styles.gift}>
+            <Text style={styles.eyebrow}>A little gift for you</Text>
+            <Text style={styles.amount}>
+              {props.amount} {props.tokenSymbol || 'ALPH'}
+            </Text>
+            <Text style={styles.message}>{props.message}</Text>
+            <Text style={styles.fromLabel}>FROM</Text>
+            <Text style={styles.sender}>
+              {props.sender ? props.sender.match(/.{1,28}/g)?.join('\n') : 'Someone thinking of you'}
+            </Text>
           </View>
-
-          {/* Right Section */}
-          <View style={styles.rightSection}>
-            {/* Claim Instructions */}
-            <Text style={styles.instructions}>
-              To claim your gift, follow these steps:
-            </Text>
-            <Text style={styles.instructions}>
-              1. Download an Alephium wallet from{' '}
-              <Link style={styles.link} src={'https://alephium.org/wallets'}>
-                alephium.org/#wallets
-              </Link>
-            </Text>
-            <Text style={styles.instructions}>
-              2. Scan the QR code below or visit the gift link
-            </Text>
-            {customPassword && (
-              <Text style={styles.instructions}>
-                3. Enter the password you were given to claim your gift
-              </Text>
-            )}
-
-            {/* Centered Link */}
-            <Link style={styles.link} src={urlToEncode}>
-              Gift Link
+          <View style={styles.scan}>
+            <Text style={styles.scanTitle}>Open your gift</Text>
+            {/* This image is ready before the document is rendered. */}
+            <Image style={styles.qr} src={props.qrCode} />
+            <Link style={styles.link} src={url}>
+              Open gift link
             </Link>
-
-            {/* QR Code */}
-            <View style={styles.qrCodeContainer}>
-              {qrCode ? (
-                <Image style={styles.qrCode} src={qrCode} />
-              ) : (
-                <Text style={styles.instructions}>Generating QR code...</Text>
-              )}
-            </View>
-
-            {customPassword && (
-              <Text style={styles.warning}>
-                Important: Keep this password secure. You will need it to claim your gift.
+            <Text style={styles.instructions}>Scan the QR code or open the link.</Text>
+            <Text style={styles.instructions}>
+              Connect an Alephium wallet and follow the steps to unwrap your gift.
+            </Text>
+            <Link style={styles.link} src="https://alephium.org/wallets">
+              Get an Alephium wallet
+            </Link>
+            {props.customPassword && (
+              <Text style={styles.password}>
+                Password protected. Ask the sender for your password; it is not printed on this card.
               </Text>
             )}
           </View>
         </View>
-
-        {/* Footer Section */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Yodh | DigitALPH Gift Card</Text>
-          <Text style={styles.footerText}>yodh.app</Text>
+          <Text>{props.example ? 'EXAMPLE ONLY - no redeemable funds' : 'Digital gift card - Alephium'}</Text>
+          <Text>{new URL(getUrl()).hostname}</Text>
         </View>
       </Page>
     </Document>

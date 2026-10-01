@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer'
 import { addressFromContractId, binToHex, contractIdFromAddress, groupOfAddress, NetworkId, web3 } from '@alephium/web3'
 import router from 'next/router'
 
@@ -99,7 +100,10 @@ export function shortAddress(address: string) {
   return `${address.substring(0, 3)}...${address.substring(address.length - 3)}`
 }
 
-export function getGiftUrl(contractId: string, secret: Uint8Array, message: string) {
+export function getGiftUrl(contractId: string, secret: Uint8Array, message: string, passwordProtected = false) {
+  if (passwordProtected) {
+    return `${getUrl()}/#contract=${contractId}&msg=${encodeURIComponent(message)}`
+  }
   const encodedSecret = Buffer.from(secret).toString('base64')
 
   return `${getUrl()}/#contract=${contractId}&secret=${encodeURIComponent(encodedSecret)}&msg=${encodeURIComponent(
@@ -133,13 +137,12 @@ export const isEncodedFormat = (secret: string) =>
 
 export const isBase64 = (secret: string) => Buffer.from(secret, 'base64').toString('base64') == secret
 
-export const convertToInt = (withdrawAmount: string):[bigint, number] => {
-  let amountToWithdrawFloat = ''
-
-  if (withdrawAmount.split('.').length > 0)
-    amountToWithdrawFloat = withdrawAmount.split('.')[0] + withdrawAmount.split('.')[1]
-  return [
-    withdrawAmount.split('.').length > 1 ? BigInt(amountToWithdrawFloat) : BigInt(withdrawAmount),
-    withdrawAmount.split('.').length > 1 ? Number(withdrawAmount.split('.')[1].length) : Number(0)
-  ]
+export const convertToInt = (value: string): [bigint, number] => {
+  if (!/^\d+(\.\d+)?$/.test(value)) {
+    throw new Error('Enter a positive amount using digits and a decimal point.')
+  }
+  const [whole, fraction = ''] = value.split('.')
+  const amount = BigInt(whole + fraction)
+  if (amount <= 0n) throw new Error('The amount must be greater than zero.')
+  return [amount, fraction.length]
 }

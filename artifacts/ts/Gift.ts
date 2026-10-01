@@ -187,7 +187,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     announce: async (
       params: Omit<
         TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
-        "testArgs"
+        "args"
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "announce", params, getContractByCodeHash);
@@ -203,7 +203,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     resetLock: async (
       params: Omit<
         TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
-        "testArgs"
+        "args"
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "resetLock", params, getContractByCodeHash);
@@ -211,7 +211,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     cancel: async (
       params: Omit<
         TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
-        "testArgs"
+        "args"
       >
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "cancel", params, getContractByCodeHash);
@@ -219,7 +219,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     getInitialUsdPrice: async (
       params: Omit<
         TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
-        "testArgs"
+        "args"
       >
     ): Promise<TestContractResultWithoutMaps<bigint>> => {
       return testMethod(
@@ -232,7 +232,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     getVersion: async (
       params: Omit<
         TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
-        "testArgs"
+        "args"
       >
     ): Promise<TestContractResultWithoutMaps<bigint>> => {
       return testMethod(this, "getVersion", params, getContractByCodeHash);
@@ -240,7 +240,7 @@ class Factory extends ContractFactory<GiftInstance, GiftTypes.Fields> {
     isCancellable: async (
       params: Omit<
         TestContractParamsWithoutMaps<GiftTypes.Fields, never>,
-        "testArgs"
+        "args"
       >
     ): Promise<TestContractResultWithoutMaps<boolean>> => {
       return testMethod(this, "isCancellable", params, getContractByCodeHash);

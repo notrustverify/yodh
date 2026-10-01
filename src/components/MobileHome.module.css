@@ -1,0 +1,389 @@
+/* Home Container */
+.homeContainer {
+  padding: 24px 20px;
+  background-color: #E9F5FF;
+  min-height: 100vh;
+}
+
+/* Welcome Section */
+.welcomeSection {
+  margin-bottom: 24px;
+}
+
+.welcomeTitle {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 12px;
+  line-height: 1.1;
+}
+
+.welcomeSubtitle {
+  font-size: 18px;
+  color: #475569;
+  line-height: 1.4;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Connect Section */
+.connectSection {
+  margin-bottom: 24px;
+}
+
+.connectCard {
+  background: white;
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.connectIcon {
+  font-size: 48px;
+  color: #667eea;
+  margin-bottom: 16px;
+}
+
+.connectCard h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.connectCard p {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Create Section */
+.createSection {
+  margin-bottom: 32px;
+}
+
+.createButton {
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 24px 32px;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.createButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.createButton:active {
+  transform: translateY(0);
+}
+
+.createIcon {
+  font-size: 24px;
+}
+
+/* Gallery Section */
+.gallerySection {
+  margin-bottom: 32px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.giftCount {
+  font-size: 14px;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+/* Gift Grid */
+.giftGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.giftCard {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.giftCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+}
+
+.giftCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-radius: 20px 20px 0 0;
+}
+
+/* Gradient Colors for Gift Cards */
+.giftCard.gradient1::before {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.giftCard.gradient2::before {
+  background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+}
+
+.giftCard.gradient3::before {
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.giftCard.gradient4::before {
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.giftHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.giftAmount {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.giftStatus {
+  font-size: 10px;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.giftMessage {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-weight: 500;
+}
+
+.giftFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.giftDate {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.giftArrow {
+  font-size: 16px;
+  color: #cbd5e1;
+}
+
+/* Quick Actions */
+.quickActions {
+  margin-bottom: 24px;
+}
+
+.quickActionsTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+.actionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.actionCard {
+  background: white;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+  border-radius: 16px;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.actionCard:hover {
+  background: #f8fafc;
+  border-color: rgba(102, 126, 234, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.actionCard:active {
+  transform: translateY(0);
+}
+
+.actionIcon {
+  font-size: 24px;
+  color: #667eea;
+}
+
+.actionCard span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* Responsive Design */
+@media (max-width: 375px) {
+  .giftGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .actionGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .welcomeTitle {
+    font-size: 24px;
+  }
+  
+  .createButton {
+    padding: 16px 20px;
+    font-size: 16px;
+  }
+}
+
+/* Touch-friendly interactions */
+@media (hover: none) and (pointer: coarse) {
+  .giftCard:active {
+    transform: scale(0.98);
+  }
+  
+  .actionCard:active {
+    transform: scale(0.95);
+  }
+  
+  .createButton:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Loading states */
+.giftCard.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+.homeContainer { padding: 12px 4px; background: transparent; min-height: auto; }
+.welcomeTitle { font-size: clamp(36px, 8vw, 52px); letter-spacing: -.055em; margin: 16px 0; line-height: 1.08; }
+.welcomeSubtitle { font-size: 16px; font-weight: 400; line-height: 1.65; }
+.eyebrow { color: #4e54c8; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.networkBadge { display: inline-block; margin-top: 16px; border-radius: 50px; padding: 4px 12px; background: #eae8ff; color: #4e54c8; font-size: 12px; }
+.connectCard { text-align: left; padding: 24px; box-shadow: none; border-color: #e4e7f0; }
+.connectCard h2 { font-size: 22px; margin: 8px 0; letter-spacing: -.03em; }
+.connectCard p { margin-bottom: 20px; }
+.createButton { border-radius: 12px; background: #4e54c8; padding: 16px 20px; font-size: 16px; box-shadow: none; justify-content: space-between; }
+.emptyState { border: 1px dashed #c9cede; padding: 24px; border-radius: 16px; color: #67718a; }
+.giftCard { text-align: left; min-width: 0; padding: 20px; box-shadow: none; }
+.giftAmount { font-size: 18px; }
+.actionCard { text-decoration: none; min-width: 0; padding: 16px 8px; box-shadow: none; }
+.steps { list-style: none; padding: 0; counter-reset: steps; margin: 16px 0 24px; }
+.steps li { counter-increment: steps; position: relative; padding: 0 0 20px 44px; }
+.steps li::before { content: counter(steps); position: absolute; left: 0; width: 28px; height: 28px; background: #eae8ff; color: #4e54c8; border-radius: 50%; text-align: center; font-weight: 700; }
+.steps strong, .steps span { display: block; }
+.steps span { color: #67718a; font-size: 14px; }
+/* Keep the initial home screen concise, with guidance available on demand. */
+.welcomeSection { margin-bottom: 16px; }
+.welcomeTitle { font-size: clamp(30px, 8vw, 40px); margin: 10px 0; }
+.welcomeSubtitle { font-size: 14px; line-height: 1.5; }
+.networkBadge { margin-top: 8px; }
+.connectSection, .gallerySection { margin-bottom: 16px; }
+.connectCard { padding: 16px 20px; }
+.connectIcon { display: none; }
+.connectCard h2 { margin: 0 0 6px; font-size: 20px; }
+.connectCard p { margin: 0 0 12px; }
+.sectionHeader { margin-bottom: 8px; }
+.sectionTitle { font-size: 16px; }
+.emptyState { padding: 12px 16px; margin: 0; font-size: 13px; }
+.quickActions { margin-bottom: 0; display: flex; flex-direction: column; gap: 12px; }
+.actionGrid { order: -1; }
+.actionCard { padding: 10px 4px; gap: 4px; }
+.howItWorks { margin: 0; font-size: 13px; }
+.howItWorks summary { padding: 4px 0; }
+.giftCard { min-height: 100px; padding: 14px; }
+.giftMessage { margin: 8px 0; font-size: 13px; }
+.savedGifts { margin: 0; width: 100%; }
+.savedGifts > summary { list-style: none; margin: 0; padding: 8px 0; }
+.savedGifts > summary::-webkit-details-marker { display: none; }
+.giftCount::after { content: ' ⌄'; }
+.actionGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-height: 740px) {
+  .homeContainer { padding-top: 0; }
+  .welcomeTitle { font-size: 30px; }
+  .welcomeSection, .connectSection, .gallerySection { margin-bottom: 12px; }
+  .connectCard { padding: 12px 16px; }
+}
